@@ -2,6 +2,7 @@
 #include "lightmaterial.h"
 #include "metric.h"
 #include <list>
+#include <GL/glu.h>
 
 bool inside(Vertex v, double min[], double max[], double pad){
     double x = v.NormCoordinates[1];
@@ -489,6 +490,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
         Tetrahedron t = delCplx->DeluanayTet[vert->tetIndex];
         if(vert->inside && (!considerAlpha || (t.AlphaStatus < 1))){
             GraphNode node;
+            node.index = index;
             node.boundary = false;
             node.x = vert->center.X;
             node.y = vert->center.Y;
@@ -509,6 +511,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
         if(!considerAlpha || (tri.AlphaStatus<1)){
             if(pEdge->edgeType == INSIDE){
                 GraphEdge edge;
+                edge.index = edgeIndex;
                 edge.pEdge = pEdge;
                 edge.v1 = map[pEdge->v1];
                 edge.v2 = map[pEdge->v2];
@@ -521,10 +524,12 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 edgeIndex++;
             } else if(pEdge->edgeType == INTERSECTING){
                 GraphEdge edge;
+                edge.index = edgeIndex;
                 edge.pEdge = pEdge;
                 edge.v1 = map[pEdge->v1];
 
                 GraphNode node;
+                node.index = index;
                 node.boundary = true;
                 node.x = pEdge->intersect.X;
                 node.y = pEdge->intersect.Y;
@@ -543,10 +548,12 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 edgeIndex++;
             } else if(pEdge->edgeType == (INTERSECTING | INFINITE)){
                 GraphEdge edge;
+                edge.index = edgeIndex;
                 edge.pEdge = pEdge;
                 edge.v1 = map[pEdge->v1];
 
                 GraphNode node;
+                node.index = index;
                 node.boundary = true;
                 node.x = pEdge->intersect.X;
                 node.y = pEdge->intersect.Y;
@@ -568,11 +575,13 @@ void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.initLemonGraph();
 }
 
-void PowerDiagram::findShortestPath(int start, int target){
-    std::vector<GraphNode*> path;
-    double cost = currentGraph.runDijkstra(start, target, &path);
+void PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, QVector<double>* Y,
+                                    double * length, double *minY, double *maxY){
+    std::vector<GraphNode*> pathNodes;
+    std::vector<GraphEdge*> pathEdges;
+    double cost = currentGraph.runDijkstra(start, target, &pathNodes, &pathEdges);
     std::cout << cost << std::endl;
-    if(!path.empty()){
+    if(!pathNodes.empty()){
         if(glIsList(pathListID) == GL_TRUE){
             glDeleteLists(pathListID, 1);
         }
@@ -580,28 +589,155 @@ void PowerDiagram::findShortestPath(int start, int target){
         glNewList(pathListID, GL_COMPILE);
 
         glEnable(GL_COLOR_MATERIAL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glLineWidth(3);
         glColor3d(0,1,1);
-        glBegin(GL_LINES);
-        for(int i=0;i<path.size()-1;i++){
-            GraphNode* curr = path[i];
-            GraphNode* next = path[i+1];
-            glVertex3d(curr->x, curr->y, curr->z);
-            glVertex3d(next->x, next->y, next->z);
-        }
-        glEnd();
 
-        glColor3d(0,0,1);
-        glPointSize(6);
-        glBegin(GL_POINTS);
-        for(int i=0;i<path.size();i++){
-            GraphNode* curr = path[i];
-            glVertex3d(curr->x, curr->y, curr->z);
+        GLUquadric* quad = gluNewQuadric();
+        gluQuadricNormals(quad, GLU_SMOOTH);
+        gluQuadricOrientation(quad, GLU_OUTSIDE);
+
+//        glBegin(GL_LINES);
+        for(int i=0;i<pathNodes.size()-1;i++){
+            GraphNode* curr = pathNodes[i];
+            GraphNode* next = pathNodes[i+1];
+            Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
+            double length;
+            Vector3::DotProduct(&n, &n, &length);
+            length = sqrt(length);
+            n.Normalize();
+            glPushMatrix();
+            double div = sqrt(n.X * n.X + n.Z * n.Z);
+            if(div==0){
+                div = 0.0000001;
+            }
+            double m[] = {n.Z/div, 0, -n.X/div, 0,
+                         -(n.X*n.Y)/div , div, -(n.Y*n.Z)/div, 0,
+                          n.X, n.Y, n.Z, 0,
+                         curr->x, curr->y, curr->z, 1};
+            glMultMatrixd(m);
+            gluCylinder(quad, 0.05, 0.05, length ,5, 5);
+            glPopMatrix();
+//            glVertex3d(curr->x, curr->y, curr->z);
+//            glVertex3d(next->x, next->y, next->z);
         }
-        glEnd();
+//        glEnd();
+
+        glPointSize(8);
+//        glBegin(GL_POINTS);
+        for(int i=0;i<pathNodes.size();i++){
+            if(i==0){
+                glColor3d(0.8,0.2,0);
+            }else if(i==pathNodes.size()-1){
+                glColor3d(0,0.5,0);
+            }else{
+                glColor3d(0,0,1);
+            }
+            GraphNode* curr = pathNodes[i];
+            glPushMatrix();
+            glTranslated(curr->x, curr->y, curr->z);
+            gluSphere(quad, 0.1, 6, 6);
+            glPopMatrix();
+//            glVertex3d(curr->x, curr->y, curr->z);
+        }
+//        glEnd();
+
+        glLineWidth(1);
+        glPointSize(6);
+
+        glDisable(GL_COLOR_MATERIAL);
 
         glEndList();
+
+        getPathWeights(&pathNodes, &pathEdges, X, Y, length, minY, maxY);
+    }
+}
+
+void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
+                            QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY)
+{
+    int steps = X->size();
+    double totalLength = 0;
+    for(uint i = 0; i< pathEdges->size();i++){
+        GraphEdge* gEdge = pathEdges->at(i);
+        totalLength += gEdge->length(&currentGraph.nodes);
+    }
+    *length = totalLength;
+    assert (pathEdges->size()+1 == pathNodes->size());
+    assert (totalLength > 0 && steps > 0);
+    double alreadyCovered = 0;
+    double stepSize = totalLength/steps;
+    int index = 0;
+    for(uint i = 0; i < pathEdges->size();i++){
+        GraphEdge* gEdge = pathEdges->at(i);
+        GraphNode* n1 = pathNodes->at(i);
+        GraphNode* n2 = pathNodes->at(i+1);
+        Vector3 n1Vec(n1->x, n1->y, n1->z);
+        Vector3 n2Vec(n2->x, n2->y, n2->z);
+        Vector3 dir = gEdge->direction(&currentGraph.nodes);
+
+        Triangle tri = delCplx->DeluanayTrigs[gEdge->pEdge->triIndex];
+        Vertex t1 = vertList[tri.Corners[1]];
+        Vector3 tv1 = t1.getCoordVector();
+        Vertex t2 = vertList[tri.Corners[2]];
+        Vector3 tv2 = t2.getCoordVector();
+        Vertex t3 = vertList[tri.Corners[3]];
+        Vector3 tv3 = t3.getCoordVector();
+
+        double  edgeLen = gEdge->length(&currentGraph.nodes);
+        double curr = stepSize - alreadyCovered;
+        if(index == 0){
+            curr = 0;
+        }
+        while(curr <= edgeLen){
+            if(index == steps){
+                break;  // for safety
+            }
+            Vector3 pt;
+            Vector3 toAdd;
+            if(n1->index == gEdge->v1){
+                Vector3::Scale(&toAdd, &dir, curr);
+                Vector3::Sum(&pt, &n1Vec, &toAdd);
+            } else {
+                Vector3::Scale(&toAdd, &dir, -curr);
+                Vector3::Sum(&pt, &n2Vec, &toAdd);
+            }
+            Vector3 diff;
+            double dsq;
+            Vector3::DiffVector(&diff, &tv1, &pt);
+            Vector3::DotProduct(&diff, &diff, &dsq);
+            double pd1;
+            pd1 = dsq - (t1.Radius*t1.Radius);
+
+            Vector3 diff2;
+            double dsq2;
+            Vector3::DiffVector(&diff2, &tv2, &pt);
+            Vector3::DotProduct(&diff2, &diff2, &dsq2);
+            double pd2;
+            pd2 = dsq2 - (t2.Radius*t2.Radius);
+
+            Vector3 diff3;
+            double dsq3;
+            Vector3::DiffVector(&diff3, &tv3, &pt);
+            Vector3::DotProduct(&diff3, &diff3, &dsq3);
+            double pd3;
+            pd3 = dsq3 - (t3.Radius*t3.Radius);
+
+            std::cout << pd1 << " \t" << pd2 << " \t" << pd3 << std::endl;
+
+            if(index == 0){
+                *minY = *maxY = pd1;
+            } else {
+                *minY = (*minY < pd1)? *minY : pd1;
+                *maxY = (*maxY > pd1)? *maxY : pd1;
+            }
+            (*X)[index] = index * stepSize;
+            (*Y)[index] = pd1;
+            index++;
+            curr+=stepSize;
+        }
+        alreadyCovered = edgeLen - curr;
     }
 }
 

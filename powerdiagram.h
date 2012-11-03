@@ -89,7 +89,10 @@ public:
     int getEdgeTo(int v1, int v2);
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);
-    void findShortestPath(int start, int end);
+    void findShortestPath(int start, int end, QVector<double>* X, QVector<double>* Y,
+                          double * length, double *minY, double *maxY);
+    void getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
+                                      QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY);
     ~PowerDiagram();
 };
 

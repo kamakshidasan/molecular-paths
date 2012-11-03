@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Nov 2 15:55:05 2012
+** Created: Sat Nov 3 04:07:38 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -33,6 +33,7 @@
 #include <QtGui/QTableWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -124,6 +125,8 @@ public:
     QLabel *label_2;
     QComboBox *targetCombo;
     QPushButton *buttonShortestSTPath;
+    QWidget *tab_4;
+    QCustomPlot *graphWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -323,6 +326,10 @@ public:
         tableWidgetMouth->setObjectName(QString::fromUtf8("tableWidgetMouth"));
         tableWidgetMouth->setGeometry(QRect(10, 70, 320, 160));
         tableWidgetMouth->setColumnCount(4);
+        labelMouthTotalSurfaceArea->raise();
+        lineEditMouthTotalSurfArea->raise();
+        tableWidgetMouth->raise();
+        tableWidgetPocket->raise();
         FirstViewerPlaceHolder = new QWidget(centralWidget);
         FirstViewerPlaceHolder->setObjectName(QString::fromUtf8("FirstViewerPlaceHolder"));
         FirstViewerPlaceHolder->setGeometry(QRect(10, 240, 900, 671));
@@ -476,6 +483,12 @@ public:
         verticalLayout_3->addWidget(buttonShortestSTPath);
 
         tabWidget->addTab(tab_3, QString());
+        tab_4 = new QWidget();
+        tab_4->setObjectName(QString::fromUtf8("tab_4"));
+        graphWidget = new QCustomPlot(tab_4);
+        graphWidget->setObjectName(QString::fromUtf8("graphWidget"));
+        graphWidget->setGeometry(QRect(0, 0, 331, 211));
+        tabWidget->addTab(tab_4, QString());
         MainWindow->setCentralWidget(centralWidget);
         alphaSlider->raise();
         labelAlphaRank->raise();
@@ -530,7 +543,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -614,6 +627,7 @@ public:
         label_2->setText(QApplication::translate("MainWindow", "Target Node:", 0, QApplication::UnicodeUTF8));
         buttonShortestSTPath->setText(QApplication::translate("MainWindow", "Find Shortest Source-Target path", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Shortest Path", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("MainWindow", "Path Profile", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "&File", 0, QApplication::UnicodeUTF8));
         menuHelp->setTitle(QApplication::translate("MainWindow", "&Help", 0, QApplication::UnicodeUTF8));
         menu_Tools->setTitle(QApplication::translate("MainWindow", "&Tools", 0, QApplication::UnicodeUTF8));

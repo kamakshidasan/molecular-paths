@@ -345,7 +345,19 @@ void MainWindow::onCheckCHullNorm()
 void MainWindow::onSTPathClick(){
     int startIndex = ui->startCombo->currentText().toInt();
     int targetIndex = ui->targetCombo->currentText().toInt();
-    m_processor->powerDiagram->findShortestPath(startIndex, targetIndex);
+    QVector<double> X(100), Y(100);
+    double length, minY, maxY;
+    m_processor->powerDiagram->findShortestPath(startIndex, targetIndex, &X, &Y, &length, &minY, &maxY);
+    ui->graphWidget->addGraph();
+    ui->graphWidget->graph(0)->setData(X, Y);
+    // give the axes some labels:
+    ui->graphWidget->xAxis->setLabel("Distance from Source");
+    ui->graphWidget->yAxis->setLabel("Power Distance");
+    // set axes ranges, so we see all data:
+    ui->graphWidget->xAxis->setRange(0, length);
+    ui->graphWidget->yAxis->setRange(minY, maxY);
+    ui->graphWidget->replot();
+
     m_viewer1->updateGL();
 }
 

@@ -90,7 +90,8 @@ void Graph::runDijkstra(int start, std::vector<double> *cost){
     }
 }
 
-double Graph::runDijkstra(int start, int target, std::vector<GraphNode*> *path){
+double Graph::runDijkstra(int start, int target, std::vector<GraphNode*> *pathNodes,
+                          std::vector<GraphEdge*> *pathEdges){
     if(start<0 || start>=nodes.size() || target<0 || target>=nodes.size()){
         return -1;
     }
@@ -102,15 +103,17 @@ double Graph::runDijkstra(int start, int target, std::vector<GraphNode*> *path){
     dijkstra.init();
     dijkstra.run(nodeMap[start], nodeMap[target]);
 
-    path->clear();
+    pathNodes->clear();
+    pathEdges->clear();
 
     if(dijkstra.reached(nodeMap[target])){
-        path->push_back(&nodes[start]);
+        pathNodes->push_back(&nodes[start]);
         Path<ListGraph> p = dijkstra.path(nodeMap[target]);
         for (Path<ListGraph>::ArcIt it(p); it != INVALID; ++it) {
             ListGraph::Arc e = it;
             ListGraph::Node succ = lemonGraph->target(e);
-            path->push_back((*revNodeMap)[succ]);
+            pathNodes->push_back((*revNodeMap)[succ]);
+            pathEdges->push_back((*revEdgeMap)[e]);
         }
         return dist[nodeMap[target]];
     } else {
