@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Sat Nov 3 15:58:26 2012
+** Created: Sun Nov 4 01:13:29 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      37,   14, // methods
+      38,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -58,16 +58,17 @@ static const uint qt_meta_data_MainWindow[] = {
      536,   11,   11,   11, 0x0a,
      555,   11,   11,   11, 0x0a,
      571,   11,   11,   11, 0x0a,
-     608,   11,   11,   11, 0x0a,
-     647,   11,   11,   11, 0x0a,
-     683,   11,   11,   11, 0x0a,
-     721,   11,   11,   11, 0x0a,
-     748,   11,   11,   11, 0x0a,
-     777,   11,   11,   11, 0x0a,
-     810,   11,   11,   11, 0x0a,
-     845,   11,   11,   11, 0x0a,
-     876,   11,   11,   11, 0x0a,
-     902,   11,   11,   11, 0x0a,
+     591,   11,   11,   11, 0x0a,
+     628,   11,   11,   11, 0x0a,
+     667,   11,   11,   11, 0x0a,
+     703,   11,   11,   11, 0x0a,
+     741,   11,   11,   11, 0x0a,
+     768,   11,   11,   11, 0x0a,
+     797,   11,   11,   11, 0x0a,
+     830,   11,   11,   11, 0x0a,
+     865,   11,   11,   11, 0x0a,
+     896,   11,   11,   11, 0x0a,
+     922,   11,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -89,7 +90,8 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "onCheckInsideVerts()\0onCheckPruneIsolatedVerts()\0"
     "onCheckIntersectEdges()\0onCheckCHull()\0"
     "onCheckCHullWF()\0onCheckCHullNorm()\0"
-    "onSTPathClick()\0onCheckBoxPocketSkinSurfaceToggled()\0"
+    "onSTPathClick()\0onEscapePathClick()\0"
+    "onCheckBoxPocketSkinSurfaceToggled()\0"
     "onCheckBoxPocketSkinWireFrameToggled()\0"
     "onCheckBoxAlphaSkinSurfaceToggled()\0"
     "onCheckBoxAlphaSkinWireFrameToggled()\0"
@@ -134,17 +136,18 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 23: _t->onCheckCHullWF(); break;
         case 24: _t->onCheckCHullNorm(); break;
         case 25: _t->onSTPathClick(); break;
-        case 26: _t->onCheckBoxPocketSkinSurfaceToggled(); break;
-        case 27: _t->onCheckBoxPocketSkinWireFrameToggled(); break;
-        case 28: _t->onCheckBoxAlphaSkinSurfaceToggled(); break;
-        case 29: _t->onCheckBoxAlphaSkinWireFrameToggled(); break;
-        case 30: _t->onRadiobuttonFlatClicked(); break;
-        case 31: _t->onRadioButtonSmoothClicked(); break;
-        case 32: _t->onRadioButtonAllPocketsClicked(); break;
-        case 33: _t->onRadioButtonIndivPocketsClicked(); break;
-        case 34: _t->onSpinBoxPocketsValueChanged(); break;
-        case 35: _t->onCheckBoxVolumeToggled(); break;
-        case 36: _t->onCheckBoxPocketWireFrameToggled(); break;
+        case 26: _t->onEscapePathClick(); break;
+        case 27: _t->onCheckBoxPocketSkinSurfaceToggled(); break;
+        case 28: _t->onCheckBoxPocketSkinWireFrameToggled(); break;
+        case 29: _t->onCheckBoxAlphaSkinSurfaceToggled(); break;
+        case 30: _t->onCheckBoxAlphaSkinWireFrameToggled(); break;
+        case 31: _t->onRadiobuttonFlatClicked(); break;
+        case 32: _t->onRadioButtonSmoothClicked(); break;
+        case 33: _t->onRadioButtonAllPocketsClicked(); break;
+        case 34: _t->onRadioButtonIndivPocketsClicked(); break;
+        case 35: _t->onSpinBoxPocketsValueChanged(); break;
+        case 36: _t->onCheckBoxVolumeToggled(); break;
+        case 37: _t->onCheckBoxPocketWireFrameToggled(); break;
         default: ;
         }
     }
@@ -183,9 +186,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 37)
+        if (_id < 38)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 37;
+        _id -= 38;
     }
     return _id;
 }

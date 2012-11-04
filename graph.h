@@ -64,7 +64,8 @@ public:
 
     void clear();
     void initLemonGraph();
-    void runDijkstra(int start, std::vector<double> *cost);
+    int runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNodes,
+                     std::vector<std::vector<GraphEdge*> > *pathsEdges);
     double runDijkstra(int start, int target, std::vector<GraphNode*> *pathNodes,
                        std::vector<GraphEdge*> *pathEdges);
     void writeGraph(const char* file);

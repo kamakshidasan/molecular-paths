@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "qcustomplot.h"
 
 MainWindow::MainWindow(Processor *pr,QWidget *parent) :
     QMainWindow(parent),
@@ -86,6 +87,7 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
     connect(ui->checkCHullNorm,SIGNAL(toggled(bool)),this,SLOT(onCheckCHullNorm()));
 
     connect(ui->buttonShortestSTPath,SIGNAL(clicked()),this,SLOT(onSTPathClick()));
+    connect(ui->buttonShortestEscapePath,SIGNAL(clicked()),this,SLOT(onEscapePathClick()));
 
     connect(ui->checkBoxAlphaSkinSolid,SIGNAL(toggled(bool)),this,SLOT(onCheckBoxAlphaSkinSurfaceToggled()));
     connect(ui->checkBoxAlphaSkinWireFrame,SIGNAL(toggled(bool)),this,SLOT(onCheckBoxAlphaSkinWireFrameToggled()));
@@ -348,6 +350,11 @@ void MainWindow::onSTPathClick(){
     QVector<double> X(100), Y(100);
     double length, minY, maxY;
     m_processor->powerDiagram->findShortestPath(startIndex, targetIndex, &X, &Y, &length, &minY, &maxY);
+
+    int numGraphs = ui->graphWidget->graphCount();
+    for(int i=0;i<numGraphs;i++){
+        ui->graphWidget->removeGraph(0);
+    }
     ui->graphWidget->addGraph();
     ui->graphWidget->graph(0)->setData(X, Y);
     // give the axes some labels:
@@ -356,6 +363,47 @@ void MainWindow::onSTPathClick(){
     // set axes ranges, so we see all data:
     ui->graphWidget->xAxis->setRange(0, length);
     ui->graphWidget->yAxis->setRange(minY, maxY);
+    ui->graphWidget->replot();
+
+    m_viewer1->updateGL();
+}
+
+void MainWindow::onEscapePathClick(){
+    int startIndex = ui->startCombo->currentText().toInt();
+    std::vector<QVector<double> > Xs, Ys;
+    std::vector<double> lengths, minYs, maxYs;
+    int shortest = m_processor->powerDiagram->findShortestEscapePaths(startIndex, 100, &Xs, &Ys, &lengths, &minYs, &maxYs);
+    int numGraphs = ui->graphWidget->graphCount();
+    for(int i=0;i<numGraphs;i++){
+        ui->graphWidget->removeGraph(0);
+    }
+    if(!Xs.empty()){
+        double maxLength = lengths[0];
+        double maxY = maxYs[0];
+        double minY = minYs[0];
+        for(int i=0;i<Xs.size();i++){
+            ui->graphWidget->addGraph();
+            ui->graphWidget->graph(i)->setData(Xs[i], Ys[i]);
+            if(maxLength<lengths[i]){
+                maxLength = lengths[i];
+            }
+            if(maxY<maxYs[i]){
+                maxY = maxYs[i];
+            }
+            if(minY>minYs[i]){
+                minY = minYs[i];
+            }
+            if(i==shortest){
+                ui->graphWidget->graph(i)->setPen(QPen(Qt::red));
+            }
+        }
+        // give the axes some labels:
+        ui->graphWidget->xAxis->setLabel("Distance from Source");
+        ui->graphWidget->yAxis->setLabel("Power Distance");
+        // set axes ranges, so we see all data:
+        ui->graphWidget->xAxis->setRange(0, maxLength);
+        ui->graphWidget->yAxis->setRange(minY, maxY);
+    }
     ui->graphWidget->replot();
 
     m_viewer1->updateGL();

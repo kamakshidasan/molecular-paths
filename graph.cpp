@@ -67,7 +67,8 @@ void Graph::initLemonGraph(){
 
 typedef ListGraph::EdgeMap<double> CostMap;
 
-void Graph::runDijkstra(int start, std::vector<double> *cost){
+int Graph::runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNodes,
+                        std::vector<std::vector<GraphEdge*> > *pathsEdges){
     ListGraph::NodeMap<double> dist(*lemonGraph);
 //    dijkstra(*lemonGraph, *weights).distMap(dist).run(nodeMap[start]);
 
@@ -78,16 +79,39 @@ void Graph::runDijkstra(int start, std::vector<double> *cost){
     dijkstra.init();
     dijkstra.run(nodeMap[start]);
 
+    pathsNodes->clear();
+    pathsEdges->clear();
+
+    int shortest = -1;
+    double leastCost = 0;
+    int index = 0;
+
     for(uint i=0;i<nodeMap.size();i++){
         if(nodes[i].boundary && dijkstra.reached(nodeMap[i])){
             Path<ListGraph> p = dijkstra.path(nodeMap[i]);
+            std::vector<GraphNode*> nodeList;
+            std::vector<GraphEdge*> edgeList;
+            nodeList.push_back(&nodes[start]);
             for (Path<ListGraph>::ArcIt it(p); it != INVALID; ++it) {
                 ListGraph::Arc e = it;
-                std::cout << lemonGraph->id(lemonGraph->target(e)) << " ";
+                ListGraph::Node succ = lemonGraph->target(e);
+                nodeList.push_back((*revNodeMap)[succ]);
+                edgeList.push_back((*revEdgeMap)[e]);
             }
-            std::cout << "--  " << lemonGraph->id(nodeMap[i]) << "   " << dist[nodeMap[i]] << std::endl;
+            pathsNodes->push_back(nodeList);
+            pathsEdges->push_back(edgeList);
+            double cost = dist[nodeMap[i]];
+            if(index == 0){
+                leastCost = cost;
+                shortest = index;
+            }else if(cost<leastCost){
+                leastCost = cost;
+                shortest = index;
+            }
         }
     }
+
+    return shortest;
 }
 
 double Graph::runDijkstra(int start, int target, std::vector<GraphNode*> *pathNodes,

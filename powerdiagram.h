@@ -91,8 +91,12 @@ public:
     void writeGraph(bool considerAlpha, const char* filename);
     void findShortestPath(int start, int end, QVector<double>* X, QVector<double>* Y,
                           double * length, double *minY, double *maxY);
+    int findShortestEscapePaths(int start, int steps, std::vector<QVector<double> >* Xs,
+                                 std::vector<QVector<double> >* Ys,
+                                 std::vector<double> * lengths, std::vector<double> *minYs,
+                                 std::vector<double> *maxYs);
     void getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
-                                      QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY);
+                        QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY);
     ~PowerDiagram();
 };
 

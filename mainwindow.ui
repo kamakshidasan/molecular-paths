@@ -26,667 +26,13 @@
    <string>Pocket Viewer</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QSlider" name="alphaSlider">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>10</y>
-      <width>660</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <property name="tickPosition">
-     <enum>QSlider::TicksBelow</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelAlphaRank">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>75</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Alpha Rank</string>
-    </property>
-    <property name="buddy">
-     <cstring>alphaSlider</cstring>
-    </property>
-   </widget>
-   <widget class="QLabel" name="labelPersistence">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>75</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Persistence</string>
-    </property>
-    <property name="buddy">
-     <cstring>persistenceSlider</cstring>
-    </property>
-   </widget>
-   <widget class="QSlider" name="persistenceSlider">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>40</y>
-      <width>660</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <property name="tickPosition">
-     <enum>QSlider::TicksBelow</enum>
-    </property>
-   </widget>
-   <widget class="Line" name="lineVOne">
-    <property name="geometry">
-     <rect>
-      <x>920</x>
-      <y>0</y>
-      <width>3</width>
-      <height>911</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>3</width>
-      <height>700</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>3</width>
-      <height>1000</height>
-     </size>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
-   </widget>
-   <widget class="Line" name="lineHOne">
-    <property name="geometry">
-     <rect>
-      <x>920</x>
-      <y>130</y>
-      <width>350</width>
-      <height>3</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>350</width>
-      <height>3</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>350</width>
-      <height>3</height>
-     </size>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="Line" name="lineHTwo">
-    <property name="geometry">
-     <rect>
-      <x>920</x>
-      <y>420</y>
-      <width>350</width>
-      <height>3</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>350</width>
-      <height>3</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>350</width>
-      <height>3</height>
-     </size>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditAlphaRank">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>10</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditPersistenceRank">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>50</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxAlphaShape">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>80</y>
-      <width>221</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>AlphaShape</string>
-    </property>
-    <widget class="QCheckBox" name="checkBoxAlphaShape">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>20</y>
-       <width>111</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>AlphaShape</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxWireFrame">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>40</y>
-       <width>95</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>WireFrame</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelAlphaValue">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>20</y>
-       <width>90</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Alpha Value :</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEditAlphaValue</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditAlphaValue">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>40</y>
-       <width>101</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxPockets">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>70</y>
-      <width>291</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Pockets</string>
-    </property>
-    <widget class="QCheckBox" name="checkBoxAllPockets">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>20</y>
-       <width>101</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>All Pockets</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxOnlyPockets">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>20</y>
-       <width>111</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Only Pockets</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxOnlyVoids">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>40</y>
-       <width>105</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Only Voids</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxAllMouths">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>40</y>
-       <width>90</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Mouths</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxPocketWireFrame">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>60</y>
-       <width>141</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PocketWireFrame</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxVolumeEnabled">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>60</y>
-       <width>141</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Display Properties</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxSkinSurface">
-    <property name="geometry">
-     <rect>
-      <x>730</x>
-      <y>90</y>
-      <width>181</width>
-      <height>151</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>SkinSurface</string>
-    </property>
-    <widget class="QCheckBox" name="checkBoxPocketSkinSolid">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>171</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PocketSkinSurface</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonFlat">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>171</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Flat Shading</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonSmooth">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>171</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Smooth Shading</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxAlphaSkinSolid">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>171</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>AlphaSkinSurface</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxAlphaSkinWireFrame">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>171</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>AlphaSkinWireFrame</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBoxPocketSkinWireFrame">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>171</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PocketSkinWireFrame</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxMoleclueProperties">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>10</y>
-      <width>330</width>
-      <height>125</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Molecular Properties</string>
-    </property>
-    <widget class="QLabel" name="labelMolTotalVolume">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>90</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Total Volume</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEditMolTotalVolume</cstring>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelMolTotalSurfaceArea">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>120</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Total Surface Area</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEditMolTotSurfArea</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditMolTotalVolume">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>30</y>
-       <width>180</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditMolTotSurfArea">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>70</y>
-       <width>180</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxPocketProperties">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>140</y>
-      <width>340</width>
-      <height>271</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Pocket Properties</string>
-    </property>
-    <widget class="QLabel" name="labelPocketTotalVolume">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>90</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Total Volume</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEditPocketTotalVolume</cstring>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelPocketTotalSurfaceArea">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>120</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Total Surface Area</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEditPocTotSurfArea</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditPocketTotalVolume">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>20</y>
-       <width>180</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditPocTotSurfArea">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>60</y>
-       <width>180</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidgetPocket">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>320</width>
-       <height>161</height>
-      </rect>
-     </property>
-     <property name="columnCount">
-      <number>5</number>
-     </property>
-     <column>
-      <property name="text">
-       <string>Identifier</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Select</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>No.of Mouths</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Volume</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Surface Area</string>
-      </property>
-     </column>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxMouthProperties">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>420</y>
-      <width>340</width>
-      <height>240</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Mouth Properties</string>
-    </property>
-    <widget class="QLabel" name="labelMouthTotalSurfaceArea">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>120</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Total Surface Area</string>
-     </property>
-     <property name="buddy">
-      <cstring>lineEditMouthTotalSurfArea</cstring>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditMouthTotalSurfArea">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>30</y>
-       <width>180</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTableWidget" name="tableWidgetMouth">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>320</width>
-       <height>160</height>
-      </rect>
-     </property>
-     <property name="columnCount">
-      <number>4</number>
-     </property>
-     <column>
-      <property name="text">
-       <string>Identifier</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Select</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Parent Pocket</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Surface Area</string>
-      </property>
-     </column>
-    </widget>
-    <zorder>labelMouthTotalSurfaceArea</zorder>
-    <zorder>lineEditMouthTotalSurfArea</zorder>
-    <zorder>tableWidgetMouth</zorder>
-    <zorder>graphWidget</zorder>
-    <zorder>tableWidgetPocket</zorder>
-   </widget>
    <widget class="QWidget" name="FirstViewerPlaceHolder" native="true">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
-      <width>900</width>
-      <height>671</height>
+      <y>300</y>
+      <width>1251</width>
+      <height>611</height>
      </rect>
     </property>
     <property name="minimumSize">
@@ -697,326 +43,771 @@
     </property>
     <property name="maximumSize">
      <size>
-      <width>1000</width>
+      <width>1300</width>
       <height>800</height>
      </size>
     </property>
    </widget>
-   <widget class="QWidget" name="IndivPocMenuPlaceHolder" native="true">
+   <widget class="QTabWidget" name="tabWidget_2">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
-      <width>331</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <widget class="QGroupBox" name="groupBoxIndivPockets">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>10</y>
-       <width>321</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Individual Pockets</string>
-     </property>
-     <widget class="QRadioButton" name="radioButtonAllPockets">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>103</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>All Pockets</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButtonIndivPockets">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>20</y>
-        <width>150</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Individual Pockets</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinBoxPockets">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>20</y>
-        <width>54</width>
-        <height>25</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBoxUserInput">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>160</y>
-      <width>131</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Epsilon Input</string>
-    </property>
-    <widget class="QLineEdit" name="lineEditEpsilonInput">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>30</y>
-       <width>131</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>670</y>
-      <width>331</width>
-      <height>241</height>
+      <y>0</y>
+      <width>1251</width>
+      <height>291</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>1</number>
     </property>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="tab_5">
      <attribute name="title">
-      <string>Power Diagram</string>
+      <string>Alpha Shape and Pockets Controls</string>
      </attribute>
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QGroupBox" name="groupBoxUserInput">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>199</width>
-        <height>155</height>
+        <x>690</x>
+        <y>70</y>
+        <width>131</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="title">
-       <string>PowerDiagram</string>
+       <string>Epsilon Input</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QCheckBox" name="checkPowerDiag">
+      <widget class="QLineEdit" name="lineEditEpsilonInput">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>30</y>
+         <width>131</width>
+         <height>25</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBoxAlphaShape">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>321</width>
+        <height>85</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>AlphaShape</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="checkBoxAlphaShape">
          <property name="text">
-          <string>Show Power Diagram</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
+          <string>AlphaShape</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkComplementSpacePD">
+       <item row="0" column="1">
+        <widget class="QLabel" name="labelAlphaValue">
          <property name="text">
-          <string>Complement Space PD</string>
+          <string>Alpha Value :</string>
          </property>
-         <property name="checked">
-          <bool>true</bool>
+         <property name="buddy">
+          <cstring>lineEditAlphaValue</cstring>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkInsideVerts">
-         <property name="text">
-          <string>Only Inside Vertices</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEditAlphaValue"/>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkPruneIsolatedVerts">
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="checkBoxWireFrame">
          <property name="text">
-          <string>Prune Isolated Vertices</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkEdgeIntersect">
-         <property name="text">
-          <string>Intersect Edges</string>
+          <string>WireFrame</string>
          </property>
         </widget>
        </item>
       </layout>
-      <zorder>checkPowerDiag</zorder>
-      <zorder>checkInsideVerts</zorder>
-      <zorder>checkPruneIsolatedVerts</zorder>
-      <zorder>checkEdgeIntersect</zorder>
-      <zorder>checkComplementSpacePD</zorder>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Convex Hull</string>
-     </attribute>
-     <widget class="QGroupBox" name="cHullBox">
+     <widget class="QGroupBox" name="groupBoxPockets">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>192</width>
+        <x>360</x>
+        <y>70</y>
+        <width>309</width>
         <height>105</height>
        </rect>
       </property>
       <property name="title">
-       <string>Convex Hull</string>
+       <string>Pockets</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QCheckBox" name="checkCHull">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="checkBoxAllPockets">
          <property name="text">
-          <string>Show Convex Hull</string>
+          <string>All Pockets</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkCHullWireFrame">
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="checkBoxOnlyPockets">
          <property name="text">
-          <string>Convex Hull Wireframe</string>
+          <string>Only Pockets</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkCHullNorm">
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="checkBoxAllMouths">
          <property name="text">
-          <string>Show Hull Normals</string>
+          <string>Mouths</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="checkBoxPocketWireFrame">
+         <property name="text">
+          <string>PocketWireFrame</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="checkBoxOnlyVoids">
+         <property name="text">
+          <string>Only Voids</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="checkBoxVolumeEnabled">
+         <property name="text">
+          <string>Display Properties</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Shortest Path</string>
-     </attribute>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QLabel" name="labelAlphaRank">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>9</y>
-        <width>250</width>
-        <height>160</height>
+        <y>10</y>
+        <width>75</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Alpha Rank</string>
+      </property>
+      <property name="buddy">
+       <cstring>alphaSlider</cstring>
+      </property>
+     </widget>
+     <widget class="QSlider" name="alphaSlider">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>991</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBelow</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelPersistence">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>75</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Persistence</string>
+      </property>
+      <property name="buddy">
+       <cstring>persistenceSlider</cstring>
+      </property>
+     </widget>
+     <widget class="QSlider" name="persistenceSlider">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>40</y>
+        <width>991</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBelow</enum>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBoxSkinSurface">
+      <property name="geometry">
+       <rect>
+        <x>860</x>
+        <y>70</y>
+        <width>188</width>
+        <height>180</height>
        </rect>
       </property>
       <property name="title">
-       <string>Shortest Escape Route</string>
+       <string>SkinSurface</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="startLabel">
-           <property name="text">
-            <string>Start Node:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="startCombo">
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QPushButton" name="buttonShortestEscapePath">
+        <widget class="QCheckBox" name="checkBoxAlphaSkinSolid">
          <property name="text">
-          <string>Find Shortest Escape Path</string>
+          <string>AlphaSkinSurface</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Target Node:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="targetCombo">
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QCheckBox" name="checkBoxPocketSkinSolid">
+         <property name="text">
+          <string>PocketSkinSurface</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="buttonShortestSTPath">
+        <widget class="QCheckBox" name="checkBoxAlphaSkinWireFrame">
          <property name="text">
-          <string>Find Shortest Source-Target path</string>
+          <string>AlphaSkinWireFrame</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxPocketSkinWireFrame">
+         <property name="text">
+          <string>PocketSkinWireFrame</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioButtonSmooth">
+         <property name="text">
+          <string>Smooth Shading</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioButtonFlat">
+         <property name="text">
+          <string>Flat Shading</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>Path Profile</string>
-     </attribute>
-     <widget class="QCustomPlot" name="graphWidget" native="true">
+     <widget class="QLineEdit" name="lineEditAlphaRank">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>331</width>
-        <height>211</height>
+        <x>1090</x>
+        <y>10</y>
+        <width>151</width>
+        <height>25</height>
        </rect>
       </property>
      </widget>
+     <widget class="QLineEdit" name="lineEditPersistenceRank">
+      <property name="geometry">
+       <rect>
+        <x>1090</x>
+        <y>40</y>
+        <width>151</width>
+        <height>25</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBoxIndivPockets">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>329</width>
+        <height>60</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Individual Pockets</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QRadioButton" name="radioButtonAllPockets">
+         <property name="text">
+          <string>All Pockets</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioButtonIndivPockets">
+         <property name="text">
+          <string>Individual Pockets</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBoxPockets"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_6">
+     <attribute name="title">
+      <string>Power Diagram Controls</string>
+     </attribute>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>1231</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::South</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Power Diagram</string>
+       </attribute>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>199</width>
+          <height>155</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>PowerDiagram</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="checkPowerDiag">
+           <property name="text">
+            <string>Show Power Diagram</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkComplementSpacePD">
+           <property name="text">
+            <string>Complement Space PD</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkInsideVerts">
+           <property name="text">
+            <string>Only Inside Vertices</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkPruneIsolatedVerts">
+           <property name="text">
+            <string>Prune Isolated Vertices</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkEdgeIntersect">
+           <property name="text">
+            <string>Intersect Edges</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+        <zorder>checkPowerDiag</zorder>
+        <zorder>checkInsideVerts</zorder>
+        <zorder>checkPruneIsolatedVerts</zorder>
+        <zorder>checkEdgeIntersect</zorder>
+        <zorder>checkComplementSpacePD</zorder>
+       </widget>
+       <widget class="QGroupBox" name="cHullBox">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>10</y>
+          <width>192</width>
+          <height>105</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Convex Hull</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QCheckBox" name="checkCHull">
+           <property name="text">
+            <string>Show Convex Hull</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkCHullWireFrame">
+           <property name="text">
+            <string>Convex Hull Wireframe</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkCHullNorm">
+           <property name="text">
+            <string>Show Hull Normals</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Shortest Path</string>
+       </attribute>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>9</y>
+          <width>301</width>
+          <height>201</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Shortest Escape Route</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="startLabel">
+             <property name="text">
+              <string>Start Node:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="startCombo">
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonShortestEscapePath">
+           <property name="text">
+            <string>Find Shortest Escape Path</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Target Node:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="targetCombo">
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonShortestSTPath">
+           <property name="text">
+            <string>Find Shortest Source-Target path</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QCustomPlot" name="graphWidget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>320</x>
+          <y>0</y>
+          <width>901</width>
+          <height>221</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_7">
+     <attribute name="title">
+      <string>Pocket and Mouth Properties</string>
+     </attribute>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QGroupBox" name="groupBoxMoleclueProperties">
+        <property name="title">
+         <string>Molecular Properties</string>
+        </property>
+        <widget class="QLabel" name="labelMolTotalVolume">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>90</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Total Volume</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEditMolTotalVolume</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelMolTotalSurfaceArea">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>120</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Total Surface Area</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEditMolTotSurfArea</cstring>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEditMolTotalVolume">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>30</y>
+           <width>180</width>
+           <height>25</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEditMolTotSurfArea">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>70</y>
+           <width>180</width>
+           <height>25</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBoxPocketProperties">
+        <property name="title">
+         <string>Pocket Properties</string>
+        </property>
+        <widget class="QLabel" name="labelPocketTotalVolume">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>90</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Total Volume</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEditPocketTotalVolume</cstring>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelPocketTotalSurfaceArea">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>120</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Total Surface Area</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEditPocTotSurfArea</cstring>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEditPocketTotalVolume">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>20</y>
+           <width>180</width>
+           <height>25</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEditPocTotSurfArea">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>60</y>
+           <width>180</width>
+           <height>25</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QTableWidget" name="tableWidgetPocket">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>90</y>
+           <width>391</width>
+           <height>151</height>
+          </rect>
+         </property>
+         <property name="columnCount">
+          <number>5</number>
+         </property>
+         <column>
+          <property name="text">
+           <string>Identifier</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Select</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>No.of Mouths</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Volume</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Surface Area</string>
+          </property>
+         </column>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBoxMouthProperties">
+        <property name="title">
+         <string>Mouth Properties</string>
+        </property>
+        <widget class="QLabel" name="labelMouthTotalSurfaceArea">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>120</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Total Surface Area</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEditMouthTotalSurfArea</cstring>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEditMouthTotalSurfArea">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>30</y>
+           <width>180</width>
+           <height>25</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QTableWidget" name="tableWidgetMouth">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>89</y>
+           <width>391</width>
+           <height>151</height>
+          </rect>
+         </property>
+         <property name="columnCount">
+          <number>4</number>
+         </property>
+         <column>
+          <property name="text">
+           <string>Identifier</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Select</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Parent Pocket</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Surface Area</string>
+          </property>
+         </column>
+        </widget>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
-   <zorder>alphaSlider</zorder>
-   <zorder>labelAlphaRank</zorder>
-   <zorder>labelPersistence</zorder>
-   <zorder>persistenceSlider</zorder>
-   <zorder>lineVOne</zorder>
-   <zorder>lineHOne</zorder>
-   <zorder>lineHTwo</zorder>
-   <zorder>lineEditAlphaRank</zorder>
-   <zorder>lineEditPersistenceRank</zorder>
-   <zorder>groupBoxAlphaShape</zorder>
-   <zorder>groupBoxPockets</zorder>
-   <zorder>groupBoxSkinSurface</zorder>
-   <zorder>groupBoxMoleclueProperties</zorder>
-   <zorder>groupBoxPocketProperties</zorder>
-   <zorder>groupBoxMouthProperties</zorder>
-   <zorder>IndivPocMenuPlaceHolder</zorder>
-   <zorder>groupBoxUserInput</zorder>
-   <zorder>tabWidget</zorder>
-   <zorder>FirstViewerPlaceHolder</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
