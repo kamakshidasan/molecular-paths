@@ -377,7 +377,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -529,6 +529,13 @@
           <widget class="QPushButton" name="buttonShortestEscapePath">
            <property name="text">
             <string>Find Shortest Escape Path</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonShortestEscapePathAll">
+           <property name="text">
+            <string>Find Shortest Escape Path (All)</string>
            </property>
           </widget>
          </item>

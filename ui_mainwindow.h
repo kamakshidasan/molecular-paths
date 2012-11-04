@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Sun Nov 4 15:34:42 2012
+** Created: Mon Nov 5 01:21:35 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -108,6 +108,7 @@ public:
     QLabel *startLabel;
     QComboBox *startCombo;
     QPushButton *buttonShortestEscapePath;
+    QPushButton *buttonShortestEscapePathAll;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_2;
     QComboBox *targetCombo;
@@ -425,6 +426,11 @@ public:
 
         verticalLayout_3->addWidget(buttonShortestEscapePath);
 
+        buttonShortestEscapePathAll = new QPushButton(groupBox_2);
+        buttonShortestEscapePathAll->setObjectName(QString::fromUtf8("buttonShortestEscapePathAll"));
+
+        verticalLayout_3->addWidget(buttonShortestEscapePathAll);
+
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
@@ -572,7 +578,7 @@ public:
         retranslateUi(MainWindow);
 
         tabWidget_2->setCurrentIndex(1);
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -627,6 +633,7 @@ public:
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Shortest Escape Route", 0, QApplication::UnicodeUTF8));
         startLabel->setText(QApplication::translate("MainWindow", "Start Node:", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePath->setText(QApplication::translate("MainWindow", "Find Shortest Escape Path", 0, QApplication::UnicodeUTF8));
+        buttonShortestEscapePathAll->setText(QApplication::translate("MainWindow", "Find Shortest Escape Path (All)", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("MainWindow", "Target Node:", 0, QApplication::UnicodeUTF8));
         buttonShortestSTPath->setText(QApplication::translate("MainWindow", "Find Shortest Source-Target path", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Shortest Path", 0, QApplication::UnicodeUTF8));

@@ -72,6 +72,7 @@ class MainWindow : public QMainWindow
 
         void onSTPathClick();
         void onEscapePathClick();
+        void onShortestEscapePathClick();
 
         void onCheckBoxPocketSkinSurfaceToggled();
         void onCheckBoxPocketSkinWireFrameToggled();

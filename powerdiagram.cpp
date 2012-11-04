@@ -282,9 +282,9 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
                 double pd1;
                 pd1 = d1sq - (t1.Radius*t1.Radius);
                 if(intersects){
-                    edge.leastPowerDistance = pd1;
+                    edge.setLeastPowerDistance(pd1, &vertices, true);
                 } else {
-                    double leastPD = vertices[i].powerDistance < vertices[x].powerDistance ?
+                    double leastPD = (vertices[i].powerDistance < vertices[x].powerDistance) ?
                                 vertices[i].powerDistance : vertices[x].powerDistance;
                     edge.setLeastPowerDistance(leastPD, &vertices, true);
                 }
@@ -575,7 +575,54 @@ void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.initLemonGraph();
 }
 
-void PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, QVector<double>* Y,
+void drawPath(std::vector<GraphNode*> *pathNodes, GLUquadric* quad){
+//  glBegin(GL_LINES);
+    for(int i=0;i<pathNodes->size()-1;i++){
+        GraphNode* curr = pathNodes->at(i);
+        GraphNode* next = pathNodes->at(i+1);
+        Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
+        double len;
+        Vector3::DotProduct(&n, &n, &len);
+        len = sqrt(len);
+        n.Normalize();
+        glPushMatrix();
+        double div = sqrt(n.X * n.X + n.Z * n.Z);
+        if(div==0){
+            div = 0.0000001;
+        }
+        double m[] = {n.Z/div, 0, -n.X/div, 0,
+                     -(n.X*n.Y)/div , div, -(n.Y*n.Z)/div, 0,
+                      n.X, n.Y, n.Z, 0,
+                     curr->x, curr->y, curr->z, 1};
+        glMultMatrixd(m);
+        gluCylinder(quad, 0.05, 0.05, len ,5, 5);
+        glPopMatrix();
+//      glVertex3d(curr->x, curr->y, curr->z);
+//      glVertex3d(next->x, next->y, next->z);
+    }
+//  glEnd();
+
+    glPointSize(8);
+//        glBegin(GL_POINTS);
+    for(int i=0;i<pathNodes->size();i++){
+        if(i==0){
+            glColor3d(0.8,0.2,0);
+        } else if (i == pathNodes->size()-1){
+            glColor3d(0,0.5,0);
+        } else {
+            glColor3d(0,0,1);
+        }
+        GraphNode* curr = pathNodes->at(i);
+        glPushMatrix();
+        glTranslated(curr->x, curr->y, curr->z);
+        gluSphere(quad, 0.1, 6, 6);
+        glPopMatrix();
+//      glVertex3d(curr->x, curr->y, curr->z);
+    }
+//  glEnd();
+}
+
+bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, QVector<double>* Y,
                                     double * length, double *minY, double *maxY){
     std::vector<GraphNode*> pathNodes;
     std::vector<GraphEdge*> pathEdges;
@@ -600,50 +647,7 @@ void PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, Q
         gluQuadricNormals(quad, GLU_SMOOTH);
         gluQuadricOrientation(quad, GLU_OUTSIDE);
 
-//        glBegin(GL_LINES);
-        for(int i=0;i<pathNodes.size()-1;i++){
-            GraphNode* curr = pathNodes[i];
-            GraphNode* next = pathNodes[i+1];
-            Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
-            double len;
-            Vector3::DotProduct(&n, &n, &len);
-            len = sqrt(len);
-            n.Normalize();
-            glPushMatrix();
-            double div = sqrt(n.X * n.X + n.Z * n.Z);
-            if(div==0){
-                div = 0.0000001;
-            }
-            double m[] = {n.Z/div, 0, -n.X/div, 0,
-                         -(n.X*n.Y)/div , div, -(n.Y*n.Z)/div, 0,
-                          n.X, n.Y, n.Z, 0,
-                         curr->x, curr->y, curr->z, 1};
-            glMultMatrixd(m);
-            gluCylinder(quad, 0.05, 0.05, len ,5, 5);
-            glPopMatrix();
-//            glVertex3d(curr->x, curr->y, curr->z);
-//            glVertex3d(next->x, next->y, next->z);
-        }
-//        glEnd();
-
-        glPointSize(8);
-//        glBegin(GL_POINTS);
-        for(int i=0;i<pathNodes.size();i++){
-            if(i==0){
-                glColor3d(0.8,0.2,0);
-            } else if (i == pathNodes.size()-1){
-                glColor3d(0,0.5,0);
-            } else {
-                glColor3d(0,0,1);
-            }
-            GraphNode* curr = pathNodes[i];
-            glPushMatrix();
-            glTranslated(curr->x, curr->y, curr->z);
-            gluSphere(quad, 0.1, 6, 6);
-            glPopMatrix();
-//            glVertex3d(curr->x, curr->y, curr->z);
-        }
-//        glEnd();
+        drawPath(&pathNodes, quad);
 
         glLineWidth(1);
         glPointSize(6);
@@ -651,6 +655,10 @@ void PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, Q
         glDisable(GL_COLOR_MATERIAL);
 
         glEndList();
+
+        return true;
+    }else{
+        return false;
     }
 }
 
@@ -693,42 +701,7 @@ int PowerDiagram::findShortestEscapePaths(int start, int steps,
                 }else{
                     glColor3d(0,1,1);
                 }
-                for(int i=0;i<pathNodes.size()-1;i++){
-                    GraphNode* curr = pathNodes[i];
-                    GraphNode* next = pathNodes[i+1];
-                    Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
-                    double len;
-                    Vector3::DotProduct(&n, &n, &len);
-                    len = sqrt(len);
-                    n.Normalize();
-                    glPushMatrix();
-                    double div = sqrt(n.X * n.X + n.Z * n.Z);
-                    if(div==0){
-                        div = 0.0000001;
-                    }
-                    double m[] = {n.Z/div, 0, -n.X/div, 0,
-                                 -(n.X*n.Y)/div , div, -(n.Y*n.Z)/div, 0,
-                                  n.X, n.Y, n.Z, 0,
-                                 curr->x, curr->y, curr->z, 1};
-                    glMultMatrixd(m);
-                    gluCylinder(quad, 0.05, 0.05, len ,5, 5);
-                    glPopMatrix();
-                }
-
-                for(int i=0;i<pathNodes.size();i++){
-                    if(i==0){
-                        glColor3d(0.8,0.2,0);
-                    } else if (i == pathNodes.size()-1){
-                        glColor3d(0,0.5,0);
-                    } else {
-                        glColor3d(0,0,1);
-                    }
-                    GraphNode* curr = pathNodes[i];
-                    glPushMatrix();
-                    glTranslated(curr->x, curr->y, curr->z);
-                    gluSphere(quad, 0.1, 6, 6);
-                    glPopMatrix();
-                }
+                drawPath(&pathNodes, quad);
             }
             getPathWeights(&pathNodes, &pathEdges, &(Xs->at(k)), &(Ys->at(k)), &(lengths->at(k)),
                            &(minYs->at(k)), &(maxYs->at(k)));
@@ -742,6 +715,42 @@ int PowerDiagram::findShortestEscapePaths(int start, int steps,
         glEndList();
     }
     return shortest;
+}
+
+bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<double>* Y,
+                                          double * length, double *minY, double *maxY){
+    std::vector<GraphNode*> pathNodes;
+    std::vector<GraphEdge*> pathEdges;
+    bool pathFound = currentGraph.runDijkstraEscape(start, &pathNodes, &pathEdges);
+    if(pathFound && !pathNodes.empty()){
+        getPathWeights(&pathNodes, &pathEdges, X, Y, length, minY, maxY);
+
+        if(glIsList(pathListID) == GL_TRUE){
+            glDeleteLists(pathListID, 1);
+        }
+        pathListID = glGenLists(1);
+        glNewList(pathListID, GL_COMPILE);
+
+        glEnable(GL_COLOR_MATERIAL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glLineWidth(3);
+        glColor3d(0,1,1);
+
+        GLUquadric* quad = gluNewQuadric();
+        gluQuadricNormals(quad, GLU_SMOOTH);
+        gluQuadricOrientation(quad, GLU_OUTSIDE);
+
+        drawPath(&pathNodes, quad);
+
+        glLineWidth(1);
+        glPointSize(6);
+
+        glDisable(GL_COLOR_MATERIAL);
+
+        glEndList();
+    }
+    return pathFound;
 }
 
 void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
@@ -778,7 +787,6 @@ void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vect
         while(curr <= edgeLen){
             containedPoint = true;
             if(index == steps){
-                std::cout << "Something which should not have happened has happened... " << i << std::endl;
                 break;  // for safety
             }
             Vector3 pt;
@@ -796,8 +804,6 @@ void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vect
             Vector3::DotProduct(&diff, &diff, &dsq);
             double pd1;
             pd1 = dsq - (t1.Radius*t1.Radius);
-
-            std::cout << pd1 << std::endl;
 
             if(index == 0){
                 *minY = *maxY = pd1;

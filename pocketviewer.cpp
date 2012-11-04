@@ -99,7 +99,7 @@ void PocketViewer::init()
 
 //    powerDiagram->makeDisplayList(m_processor->alcx->delcx, m_processor->vertexList, complementSpacePD);
 
-    help();
+//    help();
 }
 
 QString PocketViewer::helpString() const

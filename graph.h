@@ -68,6 +68,8 @@ public:
                      std::vector<std::vector<GraphEdge*> > *pathsEdges);
     double runDijkstra(int start, int target, std::vector<GraphNode*> *pathNodes,
                        std::vector<GraphEdge*> *pathEdges);
+    bool runDijkstraEscape(int start, std::vector<GraphNode*> *pathNodes,
+                                 std::vector<GraphEdge*> *pathEdges);
     void writeGraph(const char* file);
     void writeGraphCRD(const char* file);
 };

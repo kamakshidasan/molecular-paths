@@ -37,10 +37,10 @@ public:
         Vector3 p1 = pv1.center;
         Vector3 p2 = intersect;
         if (edgeType == INSIDE) useIntersect = false;
-        if (!useIntersect && !(edgeType | INFINITE)){
+        if (!useIntersect && !((edgeType & INFINITE)==INFINITE)){
             p2 = vertices->at(v2).center;
         }
-        if(useIntersect && edgeType == INTERSECTING){
+        if(useIntersect && (edgeType == INTERSECTING)){
             if(!pv1.inside){
                 p1 = vertices->at(v2).center;
             }
@@ -53,10 +53,10 @@ public:
         return len;
     }
 
-    void setLeastPowerDistance(double radius, std::vector <PowerVertex> *vertices, bool useIntersect){
-        leastPowerDistance = radius;
+    void setLeastPowerDistance(double leastPD, std::vector <PowerVertex> *vertices, bool useIntersect){
+        leastPowerDistance = leastPD;
         double length = edgeLength(vertices, useIntersect);
-        weight = leastPowerDistance / length;
+        weight = leastPowerDistance == 0? 9999999 : (length / leastPowerDistance);
     }
 
     int getOtherVertex(int v){
@@ -89,12 +89,14 @@ public:
     int getEdgeTo(int v1, int v2);
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);
-    void findShortestPath(int start, int end, QVector<double>* X, QVector<double>* Y,
+    bool findShortestPath(int start, int end, QVector<double>* X, QVector<double>* Y,
                           double * length, double *minY, double *maxY);
     int findShortestEscapePaths(int start, int steps, std::vector<QVector<double> >* Xs,
                                  std::vector<QVector<double> >* Ys,
                                  std::vector<double> * lengths, std::vector<double> *minYs,
                                  std::vector<double> *maxYs);
+    bool findShortestEscapePath(int start,QVector<double>* X, QVector<double>* Y,
+                                              double * length, double *minY, double *maxY);
     void getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
                         QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY);
     ~PowerDiagram();
