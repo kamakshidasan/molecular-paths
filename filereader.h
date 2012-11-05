@@ -32,7 +32,7 @@ class FileReader
         ~FileReader();
 
         void ReadVertices (const char* filename,std::vector<Vertex> & vertexList, double center[],
-                           double *Scale, double min[], double max[]);
+                           double *Scale, double min[], double max[], bool constantRadius, bool incrementRadius);
 };
 
 #endif // FILEREADER_H

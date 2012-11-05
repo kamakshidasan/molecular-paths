@@ -80,18 +80,23 @@ public:
     DeluanayComplex* delCplx;
     std::vector <Vertex> & vertList;
     Graph currentGraph;
+    std::vector<GraphNode*> pathNodes;
+    std::vector<std::vector<GraphNode*> > pathsNodes;
+
+    bool singlePath;
 
     PowerDiagram(DeluanayComplex* delCplx, std::vector <Vertex> &vertlist,
                  double min[], double max[]);
     void printGraph();
     void makeDisplayList(bool complementSpacePD, bool onlyInsideVerts, bool pruneIsolatedVerts, bool intersectEdges);
-    void render();
+    void render(bool showPath);
     int getEdgeTo(int v1, int v2);
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);
+    void savePathCRD(const char* filename);
     bool findShortestPath(int start, int end, QVector<double>* X, QVector<double>* Y,
                           double * length, double *minY, double *maxY);
-    int findShortestEscapePaths(int start, int steps, std::vector<QVector<double> >* Xs,
+    int findShortestEscapePaths(int start, int steps, bool repeated, int maxIter, std::vector<QVector<double> >* Xs,
                                  std::vector<QVector<double> >* Ys,
                                  std::vector<double> * lengths, std::vector<double> *minYs,
                                  std::vector<double> *maxYs);

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Nov 5 01:21:35 2012
+** Created: Mon Nov 5 23:19:21 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -47,6 +47,9 @@ public:
     QAction *actionChangeFiltration;
     QAction *actionUndoChange;
     QAction *actionSave_Graph;
+    QAction *actionOpen_With_incremented_Radius;
+    QAction *actionOpen_As_Points;
+    QAction *actionSave_Current_Path;
     QWidget *centralWidget;
     QWidget *FirstViewerPlaceHolder;
     QTabWidget *tabWidget_2;
@@ -107,11 +110,18 @@ public:
     QHBoxLayout *horizontalLayout;
     QLabel *startLabel;
     QComboBox *startCombo;
+    QHBoxLayout *horizontalLayout_6;
     QPushButton *buttonShortestEscapePath;
     QPushButton *buttonShortestEscapePathAll;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label;
+    QLineEdit *maxIterDijkstra;
+    QPushButton *buttonShortestEscapePathRepeated;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_2;
     QComboBox *targetCombo;
+    QHBoxLayout *horizontalLayout_8;
+    QCheckBox *checkShowPath;
     QPushButton *buttonShortestSTPath;
     QCustomPlot *graphWidget;
     QWidget *tab_7;
@@ -158,6 +168,12 @@ public:
         actionUndoChange->setObjectName(QString::fromUtf8("actionUndoChange"));
         actionSave_Graph = new QAction(MainWindow);
         actionSave_Graph->setObjectName(QString::fromUtf8("actionSave_Graph"));
+        actionOpen_With_incremented_Radius = new QAction(MainWindow);
+        actionOpen_With_incremented_Radius->setObjectName(QString::fromUtf8("actionOpen_With_incremented_Radius"));
+        actionOpen_As_Points = new QAction(MainWindow);
+        actionOpen_As_Points->setObjectName(QString::fromUtf8("actionOpen_As_Points"));
+        actionSave_Current_Path = new QAction(MainWindow);
+        actionSave_Current_Path->setObjectName(QString::fromUtf8("actionSave_Current_Path"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         FirstViewerPlaceHolder = new QWidget(centralWidget);
@@ -398,7 +414,7 @@ public:
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         groupBox_2 = new QGroupBox(tab_3);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        groupBox_2->setGeometry(QRect(10, 9, 301, 201));
+        groupBox_2->setGeometry(QRect(2, 9, 491, 199));
         verticalLayout_3 = new QVBoxLayout(groupBox_2);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -421,15 +437,42 @@ public:
 
         verticalLayout_3->addLayout(horizontalLayout);
 
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
         buttonShortestEscapePath = new QPushButton(groupBox_2);
         buttonShortestEscapePath->setObjectName(QString::fromUtf8("buttonShortestEscapePath"));
 
-        verticalLayout_3->addWidget(buttonShortestEscapePath);
+        horizontalLayout_6->addWidget(buttonShortestEscapePath);
 
         buttonShortestEscapePathAll = new QPushButton(groupBox_2);
         buttonShortestEscapePathAll->setObjectName(QString::fromUtf8("buttonShortestEscapePathAll"));
 
-        verticalLayout_3->addWidget(buttonShortestEscapePathAll);
+        horizontalLayout_6->addWidget(buttonShortestEscapePathAll);
+
+
+        verticalLayout_3->addLayout(horizontalLayout_6);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setSpacing(6);
+        horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
+        label = new QLabel(groupBox_2);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        horizontalLayout_7->addWidget(label);
+
+        maxIterDijkstra = new QLineEdit(groupBox_2);
+        maxIterDijkstra->setObjectName(QString::fromUtf8("maxIterDijkstra"));
+
+        horizontalLayout_7->addWidget(maxIterDijkstra);
+
+        buttonShortestEscapePathRepeated = new QPushButton(groupBox_2);
+        buttonShortestEscapePathRepeated->setObjectName(QString::fromUtf8("buttonShortestEscapePathRepeated"));
+
+        horizontalLayout_7->addWidget(buttonShortestEscapePathRepeated);
+
+
+        verticalLayout_3->addLayout(horizontalLayout_7);
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
@@ -449,14 +492,26 @@ public:
 
         verticalLayout_3->addLayout(horizontalLayout_2);
 
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setSpacing(6);
+        horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
+        checkShowPath = new QCheckBox(groupBox_2);
+        checkShowPath->setObjectName(QString::fromUtf8("checkShowPath"));
+        checkShowPath->setChecked(true);
+
+        horizontalLayout_8->addWidget(checkShowPath);
+
         buttonShortestSTPath = new QPushButton(groupBox_2);
         buttonShortestSTPath->setObjectName(QString::fromUtf8("buttonShortestSTPath"));
 
-        verticalLayout_3->addWidget(buttonShortestSTPath);
+        horizontalLayout_8->addWidget(buttonShortestSTPath);
+
+
+        verticalLayout_3->addLayout(horizontalLayout_8);
 
         graphWidget = new QCustomPlot(tab_3);
         graphWidget->setObjectName(QString::fromUtf8("graphWidget"));
-        graphWidget->setGeometry(QRect(320, 0, 901, 221));
+        graphWidget->setGeometry(QRect(510, 0, 711, 221));
         tabWidget->addTab(tab_3, QString());
         tabWidget_2->addTab(tab_6, QString());
         tab_7 = new QWidget();
@@ -568,8 +623,13 @@ public:
         menuBar->addAction(menu_Tools->menuAction());
         menuBar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionOpen);
-        menuFile->addAction(actionExit);
+        menuFile->addAction(actionOpen_With_incremented_Radius);
+        menuFile->addAction(actionOpen_As_Points);
+        menuFile->addSeparator();
         menuFile->addAction(actionSave_Graph);
+        menuFile->addAction(actionSave_Current_Path);
+        menuFile->addSeparator();
+        menuFile->addAction(actionExit);
         menuHelp->addAction(actionAbout);
         menu_Tools->addAction(actionAlphaZero);
         menu_Tools->addAction(actionChangeFiltration);
@@ -594,6 +654,9 @@ public:
         actionChangeFiltration->setText(QApplication::translate("MainWindow", "&Change Filtration", 0, QApplication::UnicodeUTF8));
         actionUndoChange->setText(QApplication::translate("MainWindow", "&Undo Change", 0, QApplication::UnicodeUTF8));
         actionSave_Graph->setText(QApplication::translate("MainWindow", "Save Graph", 0, QApplication::UnicodeUTF8));
+        actionOpen_With_incremented_Radius->setText(QApplication::translate("MainWindow", "Open (With incremented Radius)", 0, QApplication::UnicodeUTF8));
+        actionOpen_As_Points->setText(QApplication::translate("MainWindow", "Open As Points", 0, QApplication::UnicodeUTF8));
+        actionSave_Current_Path->setText(QApplication::translate("MainWindow", "Save Current Path(s)", 0, QApplication::UnicodeUTF8));
         groupBoxUserInput->setTitle(QApplication::translate("MainWindow", "Epsilon Input", 0, QApplication::UnicodeUTF8));
         groupBoxAlphaShape->setTitle(QApplication::translate("MainWindow", "AlphaShape", 0, QApplication::UnicodeUTF8));
         checkBoxAlphaShape->setText(QApplication::translate("MainWindow", "AlphaShape", 0, QApplication::UnicodeUTF8));
@@ -634,7 +697,11 @@ public:
         startLabel->setText(QApplication::translate("MainWindow", "Start Node:", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePath->setText(QApplication::translate("MainWindow", "Find Shortest Escape Path", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePathAll->setText(QApplication::translate("MainWindow", "Find Shortest Escape Path (All)", 0, QApplication::UnicodeUTF8));
+        label->setText(QApplication::translate("MainWindow", "Max Iterations:", 0, QApplication::UnicodeUTF8));
+        maxIterDijkstra->setText(QApplication::translate("MainWindow", "10", 0, QApplication::UnicodeUTF8));
+        buttonShortestEscapePathRepeated->setText(QApplication::translate("MainWindow", "Escape paths (Repeated Dijkstra)", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("MainWindow", "Target Node:", 0, QApplication::UnicodeUTF8));
+        checkShowPath->setText(QApplication::translate("MainWindow", "Show Path(s)", 0, QApplication::UnicodeUTF8));
         buttonShortestSTPath->setText(QApplication::translate("MainWindow", "Find Shortest Source-Target path", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Shortest Path", 0, QApplication::UnicodeUTF8));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_6), QApplication::translate("MainWindow", "Power Diagram Controls", 0, QApplication::UnicodeUTF8));

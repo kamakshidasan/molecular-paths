@@ -56,11 +56,14 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
 
     connect(ui->actionExit,SIGNAL(triggered()),this,SLOT(close()));
     connect(ui->actionAbout,SIGNAL(triggered()),this,SLOT(about()));
-    connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(open()));
+    connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(openAsSpheres()));
+    connect(ui->actionOpen_With_incremented_Radius,SIGNAL(triggered()),this,SLOT(openWithIncrementedRadius()));
+    connect(ui->actionOpen_As_Points,SIGNAL(triggered()),this,SLOT(openAsPoints()));
     connect(ui->actionAlphaZero,SIGNAL(triggered()),this,SLOT(onAlphaValueZero()));
     connect(ui->actionChangeFiltration,SIGNAL(triggered()),this,SLOT(onChangeFiltration()));
     connect(ui->actionUndoChange,SIGNAL(triggered()),this,SLOT(onUndoChange()));
     connect(ui->actionSave_Graph,SIGNAL(triggered()),this,SLOT(saveGraph()));
+    connect(ui->actionSave_Current_Path,SIGNAL(triggered()),this,SLOT(savePath()));
 
     connect(ui->lineEditEpsilonInput,SIGNAL(returnPressed()),this,SLOT(onEpsilonTextChanged()));
 
@@ -88,7 +91,9 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
 
     connect(ui->buttonShortestSTPath,SIGNAL(clicked()),this,SLOT(onSTPathClick()));
     connect(ui->buttonShortestEscapePath,SIGNAL(clicked()),this,SLOT(onShortestEscapePathClick()));
-    connect(ui->buttonShortestEscapePathAll,SIGNAL(clicked()),this,SLOT(onEscapePathClick()));
+    connect(ui->buttonShortestEscapePathAll,SIGNAL(clicked()),this,SLOT(onEscapePathClickAll()));
+    connect(ui->buttonShortestEscapePathRepeated,SIGNAL(clicked()),this,SLOT(onEscapePathClickRepeated()));
+    connect(ui->checkShowPath,SIGNAL(toggled(bool)),this,SLOT(onCheckShowPathToggled()));
 
     connect(ui->checkBoxAlphaSkinSolid,SIGNAL(toggled(bool)),this,SLOT(onCheckBoxAlphaSkinSurfaceToggled()));
     connect(ui->checkBoxAlphaSkinWireFrame,SIGNAL(toggled(bool)),this,SLOT(onCheckBoxAlphaSkinWireFrameToggled()));
@@ -129,13 +134,13 @@ void MainWindow::about()
     QMessageBox::about(this,tr("About PocketViewer"),tr("<b>PocketViewer 0.1</b> displays voids and pockets " "in terms of both tetrahedra and " "skin surface." "For help see the help window"));
 }
 
-void MainWindow::open()
+void MainWindow::open(bool constantRadius, bool incrementRadius)
 {
     double center[3],depth;
     QString FileName = QFileDialog::getOpenFileName(this,tr("Open File"),"/home/tbmasood/Desktop/raghavendra/ParsePDB");
     if(!FileName.isEmpty())
     {
-        m_processor->read(FileName.toAscii().constData(),center,&depth);
+        m_processor->read(FileName.toAscii().constData(),center,&depth, constantRadius, incrementRadius);
 
         qglviewer::Vec v1(center[0],center[1],center[2]+1.5*depth);
         qglviewer::Vec v2(center[0],center[1],center[2]);
@@ -155,12 +160,36 @@ void MainWindow::open()
     }
 }
 
+void MainWindow::openAsPoints()
+{
+    open(true, false);
+}
+
+void MainWindow::openAsSpheres()
+{
+    open(false, false);
+}
+
+void MainWindow::openWithIncrementedRadius()
+{
+    open(false, true);
+}
+
 void MainWindow::saveGraph()
 {
     QString FileName = QFileDialog::getSaveFileName(this,tr("Save Graph"),".");
     if(!FileName.isEmpty())
     {
         m_processor->powerDiagram->writeGraph(true, FileName.toAscii().constData());
+    }
+}
+
+void MainWindow::savePath()
+{
+    QString FileName = QFileDialog::getSaveFileName(this,tr("Save Path"),".");
+    if(!FileName.isEmpty())
+    {
+        m_processor->powerDiagram->savePathCRD(FileName.toAscii().constData());
     }
 }
 
@@ -398,11 +427,21 @@ void MainWindow::onShortestEscapePathClick(){
     m_viewer1->updateGL();
 }
 
-void MainWindow::onEscapePathClick(){
+void MainWindow::onEscapePathClickRepeated(){
+    int maxIter = ui->maxIterDijkstra->text().toInt();
+    onEscapePathClick(true, maxIter);
+}
+
+void MainWindow::onEscapePathClickAll(){
+    onEscapePathClick(false, 0);
+}
+
+void MainWindow::onEscapePathClick(bool repeated, int maxIter){
     int startIndex = ui->startCombo->currentText().toInt();
     std::vector<QVector<double> > Xs, Ys;
     std::vector<double> lengths, minYs, maxYs;
-    int shortest = m_processor->powerDiagram->findShortestEscapePaths(startIndex, 100, &Xs, &Ys, &lengths, &minYs, &maxYs);
+    int shortest = m_processor->powerDiagram->
+            findShortestEscapePaths(startIndex, 100, repeated, maxIter, &Xs, &Ys, &lengths, &minYs, &maxYs);
     if(shortest==-1){
         return;
     }
@@ -440,6 +479,10 @@ void MainWindow::onEscapePathClick(){
     ui->graphWidget->replot();
 
     m_viewer1->updateGL();
+}
+
+void MainWindow::onCheckShowPathToggled(){
+    m_viewer1->setShowPath();
 }
 
 void MainWindow::onCheckBoxPocketSkinSurfaceToggled()

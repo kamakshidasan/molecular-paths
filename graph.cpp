@@ -60,9 +60,20 @@ void Graph::initLemonGraph(){
         edgeMap.push_back(edge);
         (*revEdgeMap)[edge] = &edges[i];
         (*weights)[edge] = gEdge.weight;
+        if(i==0 || maxEdgeWeight < gEdge.weight){
+            maxEdgeWeight = gEdge.weight;
+        }
     }
 
     initialized = true;
+}
+
+void Graph::fillWeightMap(ListGraph::EdgeMap<double>* weightMap){
+    for(uint i=0;i<edges.size();i++){
+        GraphEdge gEdge = edges[i];
+        ListGraph::Edge edge = edgeMap[i];
+        (*weightMap)[edge] = gEdge.weight;
+    }
 }
 
 typedef ListGraph::EdgeMap<double> CostMap;
@@ -90,36 +101,18 @@ int Graph::runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNo
             std::vector<GraphNode*> nodeList;
             std::vector<GraphEdge*> edgeList;
             nodeList.push_back(&nodes[start]);
-            double totalCost = 0;
             for (Path<ListGraph>::ArcIt it(p); it != INVALID; ++it) {
                 ListGraph::Arc e = it;
                 ListGraph::Node succ = lemonGraph->target(e);
                 nodeList.push_back((*revNodeMap)[succ]);
                 edgeList.push_back((*revEdgeMap)[e]);
-                double edgeCost = (*revEdgeMap)[e]->weight;
-                totalCost+= edgeCost;
-                if(i==341 || i==402){
-                    PowerEdge* pEdge = (*revEdgeMap)[e]->pEdge;
-                    double lpd = pEdge->leastPowerDistance;
-                    int eType = pEdge->edgeType;
-                    double weight = edgeCost;
-                    weight--;
-                }
-//                if(edgeCost<0){
-//                    std::cout << "Negative weight encountered. " << std::endl;
-//                }
             }
             pathsNodes->push_back(nodeList);
             pathsEdges->push_back(edgeList);
             double cost = dist[nodeMap[i]];
-            std::cout << cost << " (" << totalCost << ")   " << edgeList.size() << "  "<< i <<std::endl;
-            if(index == 0){
+            if(index == 0 || cost<leastCost){
                 leastCost = cost;
                 shortest = index;
-            }else if(cost<leastCost){
-                leastCost = cost;
-                shortest = index;
-//                std::cout << "Least Cost updated.  " << edgeList.size() << std::endl;
             }
             index++;
         }
@@ -129,9 +122,14 @@ int Graph::runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNo
 
 bool Graph::runDijkstraEscape(int start, std::vector<GraphNode*> *pathNodes,
                              std::vector<GraphEdge*> *pathEdges){
+    return runDijkstraEscapeOneIter(start, pathNodes, pathEdges, weights);
+}
+
+bool Graph::runDijkstraEscapeOneIter(int start, std::vector<GraphNode*> *pathNodes,
+                             std::vector<GraphEdge*> *pathEdges, ListGraph::EdgeMap<double>* weightMap){
     ListGraph::NodeMap<double> dist(*lemonGraph);
 
-    Dijkstra<ListGraph, CostMap> dijkstra(*lemonGraph, *weights);
+    Dijkstra<ListGraph, CostMap> dijkstra(*lemonGraph, *weightMap);
     dijkstra.distMap(dist);
     dijkstra.init();
     dijkstra.run(nodeMap[start]);
@@ -169,6 +167,34 @@ bool Graph::runDijkstraEscape(int start, std::vector<GraphNode*> *pathNodes,
         return true;
     }
     return false;
+}
+
+bool Graph::runDijkstraEscapeRepeated(int start, int maxIter, std::vector<std::vector<GraphNode*> > *pathsNodes,
+                        std::vector<std::vector<GraphEdge*> > *pathsEdges){
+    ListGraph::EdgeMap<double> weightMap(*lemonGraph);
+    fillWeightMap(&weightMap);
+
+    pathsNodes->clear();
+    pathsEdges->clear();
+
+    int iter = 0;
+    for(iter=0;iter<maxIter;iter++){
+        std::vector<GraphNode*> nodeList;
+        std::vector<GraphEdge*> edgeList;
+        bool foundPath = runDijkstraEscapeOneIter(start, &nodeList, &edgeList, &weightMap);
+        if(!foundPath){
+            std::cout << "Escape Path not found -- " << iter << std::endl;
+            break;
+        }
+        pathsNodes->push_back(nodeList);
+        pathsEdges->push_back(edgeList);
+        // assign very high weights to already found path edges
+        for(int i=0;i<edgeList.size();i++){
+            GraphEdge* gEdge = edgeList[i];
+            weightMap[edgeMap[gEdge->index]] = maxEdgeWeight;
+        }
+    }
+    return iter>0;
 }
 
 
@@ -255,3 +281,57 @@ void Graph::writeGraphCRD(const char* file){
     }
     fclose(fp);
 }
+
+void Graph::writePathCRD(const char* file, std::vector<GraphNode*> *pathNodes){
+    FILE *fp = fopen(file,"w");
+    fprintf(fp, "  %d\n", pathNodes->size());
+    fprintf(fp, "#   i        X          Y          Z        R         Epsilon     Sigma     Charge      ASP       Atm name    Res name    Chain      Res #\n");
+    for(uint i=0; i<pathNodes->size();i++){
+        GraphNode* node = pathNodes->at(i);
+        double radius = node->radius;
+        fprintf(fp, " \t%d \t%f \t%f \t%f \t%f \t0.000 \t0.000 \t0.000 \t0.000 \t%s \tGLY \tA \t1\n", (i+1),
+                node->x, node->y, node->z, radius, node->boundary?"C":"N");
+    }
+    fprintf(fp, "#TER\n");
+    fprintf(fp, "#  i       Nexclude    Exclude list ...\n");
+    for(uint i=0; i<pathNodes->size()-1;i++){
+        fprintf(fp, " \t%d \t1 \t%d\n", (i+1), (i+2));
+    }
+    if(pathNodes->size()>0){
+        fprintf(fp, " \t%d \t0\n", pathNodes->size());
+    }
+    fclose(fp);
+}
+
+void Graph::writeAllPathsCRD(const char* file, std::vector<std::vector<GraphNode*> > *pathsNodes){
+    FILE *fp = fopen(file,"w");
+    fprintf(fp, "              \n");
+    fprintf(fp, "#   i        X          Y          Z        R         Epsilon     Sigma     Charge      ASP       Atm name    Res name    Chain      Res #\n");
+    int index = 1;
+    for(int i=0;i<pathsNodes->size();i++){
+        for(uint j=0; j<pathsNodes->at(i).size();j++){
+            GraphNode* node = pathsNodes->at(i)[j];
+            double radius = node->radius;
+            fprintf(fp, " \t%d \t%f \t%f \t%f \t%f \t0.000 \t0.000 \t0.000 \t0.000 \t%s \tGLY \tA \t1\n", index,
+                    node->x, node->y, node->z, radius, node->boundary?"C":"N");
+            index++;
+        }
+    }
+    fprintf(fp, "#TER\n");
+    fprintf(fp, "#  i       Nexclude    Exclude list ...\n");
+    index = 1;
+    for(int i=0;i<pathsNodes->size();i++){
+        for(uint j=0; j<pathsNodes->at(i).size();j++){
+            if(j==pathsNodes->at(i).size()-1){
+                fprintf(fp, " \t%d \t0\n", index);
+            }else{
+                fprintf(fp, " \t%d \t1 \t%d\n", index, (index+1));
+            }
+            index++;
+        }
+    }
+    fseek(fp, 1, SEEK_SET);
+    fprintf(fp, "%d", index);
+    fclose(fp);
+}
+

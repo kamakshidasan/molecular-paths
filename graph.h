@@ -27,6 +27,7 @@ public:
     uint index;
     PowerEdge * pEdge;
     double weight;
+    bool selected;
 
     double length(std::vector<GraphNode> * nodes){
         GraphNode n1 = nodes->at(v1);
@@ -59,19 +60,27 @@ public:
     ListGraph* lemonGraph;
 
     bool initialized;
+    double maxEdgeWeight;
 
     Graph();
 
     void clear();
     void initLemonGraph();
+    void fillWeightMap(ListGraph::EdgeMap<double>* weightMap);
     int runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNodes,
                      std::vector<std::vector<GraphEdge*> > *pathsEdges);
     double runDijkstra(int start, int target, std::vector<GraphNode*> *pathNodes,
                        std::vector<GraphEdge*> *pathEdges);
     bool runDijkstraEscape(int start, std::vector<GraphNode*> *pathNodes,
                                  std::vector<GraphEdge*> *pathEdges);
+    bool runDijkstraEscapeOneIter(int start, std::vector<GraphNode*> *pathNodes,
+                                 std::vector<GraphEdge*> *pathEdges, ListGraph::EdgeMap<double>* weightMap);
+    bool runDijkstraEscapeRepeated(int start, int maxIter, std::vector<std::vector<GraphNode*> > *pathsNodes,
+                            std::vector<std::vector<GraphEdge*> > *pathsEdges);
     void writeGraph(const char* file);
     void writeGraphCRD(const char* file);
+    void writePathCRD(const char* file, std::vector<GraphNode*> *pathNodes);
+    void writeAllPathsCRD(const char* file, std::vector<std::vector<GraphNode*> > *pathsNodes);
 };
 
 #endif // GRAPH_H

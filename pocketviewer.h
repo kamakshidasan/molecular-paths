@@ -47,6 +47,8 @@ class PocketViewer : public QGLViewer,public Processor
         void setCHullWF();
         void setCHullNorm();
 
+        void setShowPath();
+
         void setPocketSkinSurface();
         void setPocketSkinWireFrame();
         void setAlphaSkinSurface();
@@ -82,6 +84,8 @@ class PocketViewer : public QGLViewer,public Processor
         bool cHull;
         bool cHullWF;
         bool cHullNorm;
+
+        bool showPath;
 
         bool pocketSkinSurface;
         bool pocketSkinWireFrame;

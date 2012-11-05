@@ -52,6 +52,8 @@ PocketViewer::PocketViewer(Processor* pr,QWidget* parent)
     cHull = false;
     cHullWF = false;
     cHullNorm = false;
+
+    showPath = true;
 }
 
 void PocketViewer::init()
@@ -169,8 +171,9 @@ void PocketViewer::draw()
             m_processor->powerDiagram->makeDisplayList(complementSpacePD, onlyInsideVerts, pruneIsolatedVerts, intersectEdges);
             remakePowerDiagramDL = false;
         }
-        m_processor->Render(persistence,alphaShape,allPockets,onlyPockets,onlyVoids,pocketSkinSurface,mouths,allOrIndivPocs,currentPocNum,rank,wireFrame,alphaSkinSurface,
-                            alphaSkinWireFrame,smoothShading,pocketSkinWireFrame,pocketWireframe, powerDiag, cHull, cHullWF, cHullNorm);
+        m_processor->Render(persistence,alphaShape,allPockets,onlyPockets,onlyVoids,pocketSkinSurface,mouths,allOrIndivPocs,
+                            currentPocNum,rank,wireFrame,alphaSkinSurface,alphaSkinWireFrame,smoothShading,
+                            pocketSkinWireFrame,pocketWireframe, powerDiag, cHull, cHullWF, cHullNorm, showPath);
     }
     glPopMatrix();
 }
@@ -277,6 +280,11 @@ void PocketViewer::setCHullNorm()
     updateGL();
 }
 
+void PocketViewer::setShowPath()
+{
+    showPath = !showPath;
+    updateGL();
+}
 
 void PocketViewer::setPocketSkinSurface()
 {

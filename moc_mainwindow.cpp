@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Mon Nov 5 01:34:49 2012
+** Created: Mon Nov 5 23:23:44 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      39,   14, // methods
+      46,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -32,54 +32,64 @@ static const uint qt_meta_data_MainWindow[] = {
 
  // slots: signature, parameters, type, tag, flags
       12,   11,   11,   11, 0x0a,
-      20,   11,   11,   11, 0x0a,
-      27,   11,   11,   11, 0x0a,
-      39,   11,   11,   11, 0x0a,
-      58,   11,   11,   11, 0x0a,
-      79,   11,   11,   11, 0x0a,
-      94,   11,   11,   11, 0x0a,
-     109,   11,   11,   11, 0x0a,
-     132,   11,   11,   11, 0x0a,
-     152,   11,   11,   11, 0x0a,
-     174,   11,   11,   11, 0x0a,
-     201,   11,   11,   11, 0x0a,
-     231,   11,   11,   11, 0x0a,
-     260,   11,   11,   11, 0x0a,
-     290,   11,   11,   11, 0x0a,
-     316,   11,   11,   11, 0x0a,
-     347,   11,   11,   11, 0x0a,
-     376,   11,   11,   11, 0x0a,
-     402,   11,   11,   11, 0x0a,
-     431,   11,   11,   11, 0x0a,
-     452,   11,   11,   11, 0x0a,
-     480,   11,   11,   11, 0x0a,
-     504,   11,   11,   11, 0x0a,
-     519,   11,   11,   11, 0x0a,
-     536,   11,   11,   11, 0x0a,
-     555,   11,   11,   11, 0x0a,
-     571,   11,   11,   11, 0x0a,
-     591,   11,   11,   11, 0x0a,
-     619,   11,   11,   11, 0x0a,
-     656,   11,   11,   11, 0x0a,
-     695,   11,   11,   11, 0x0a,
-     731,   11,   11,   11, 0x0a,
-     769,   11,   11,   11, 0x0a,
-     796,   11,   11,   11, 0x0a,
-     825,   11,   11,   11, 0x0a,
-     858,   11,   11,   11, 0x0a,
-     893,   11,   11,   11, 0x0a,
-     924,   11,   11,   11, 0x0a,
-     950,   11,   11,   11, 0x0a,
+      51,   20,   11,   11, 0x0a,
+      67,   11,   11,   11, 0x0a,
+      83,   11,   11,   11, 0x0a,
+      98,   11,   11,   11, 0x0a,
+     126,   11,   11,   11, 0x0a,
+     138,   11,   11,   11, 0x0a,
+     149,   11,   11,   11, 0x0a,
+     168,   11,   11,   11, 0x0a,
+     189,   11,   11,   11, 0x0a,
+     204,   11,   11,   11, 0x0a,
+     219,   11,   11,   11, 0x0a,
+     242,   11,   11,   11, 0x0a,
+     262,   11,   11,   11, 0x0a,
+     284,   11,   11,   11, 0x0a,
+     311,   11,   11,   11, 0x0a,
+     341,   11,   11,   11, 0x0a,
+     370,   11,   11,   11, 0x0a,
+     400,   11,   11,   11, 0x0a,
+     426,   11,   11,   11, 0x0a,
+     457,   11,   11,   11, 0x0a,
+     486,   11,   11,   11, 0x0a,
+     512,   11,   11,   11, 0x0a,
+     541,   11,   11,   11, 0x0a,
+     562,   11,   11,   11, 0x0a,
+     590,   11,   11,   11, 0x0a,
+     614,   11,   11,   11, 0x0a,
+     629,   11,   11,   11, 0x0a,
+     646,   11,   11,   11, 0x0a,
+     665,   11,   11,   11, 0x0a,
+     681,   11,   11,   11, 0x0a,
+     709,   11,   11,   11, 0x0a,
+     749,  732,   11,   11, 0x0a,
+     777,   11,   11,   11, 0x0a,
+     805,   11,   11,   11, 0x0a,
+     830,   11,   11,   11, 0x0a,
+     867,   11,   11,   11, 0x0a,
+     906,   11,   11,   11, 0x0a,
+     942,   11,   11,   11, 0x0a,
+     980,   11,   11,   11, 0x0a,
+    1007,   11,   11,   11, 0x0a,
+    1036,   11,   11,   11, 0x0a,
+    1069,   11,   11,   11, 0x0a,
+    1104,   11,   11,   11, 0x0a,
+    1135,   11,   11,   11, 0x0a,
+    1161,   11,   11,   11, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_MainWindow[] = {
-    "MainWindow\0\0about()\0open()\0saveGraph()\0"
-    "onAlphaValueZero()\0onChangeFiltration()\0"
-    "onUndoChange()\0onRankChange()\0"
-    "onEpsilonTextChanged()\0onRankTextChanged()\0"
-    "onPersistenceChange()\0onPersistenceTextChanged()\0"
+    "MainWindow\0\0about()\0constantRadius,incrementRadius\0"
+    "open(bool,bool)\0openAsSpheres()\0"
+    "openAsPoints()\0openWithIncrementedRadius()\0"
+    "saveGraph()\0savePath()\0onAlphaValueZero()\0"
+    "onChangeFiltration()\0onUndoChange()\0"
+    "onRankChange()\0onEpsilonTextChanged()\0"
+    "onRankTextChanged()\0onPersistenceChange()\0"
+    "onPersistenceTextChanged()\0"
     "onCheckBoxAlphaShapeToggled()\0"
     "onCheckBoxWireFrameToggled()\0"
     "onCheckBoxAllPocketsToggled()\0"
@@ -91,8 +101,11 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "onCheckInsideVerts()\0onCheckPruneIsolatedVerts()\0"
     "onCheckIntersectEdges()\0onCheckCHull()\0"
     "onCheckCHullWF()\0onCheckCHullNorm()\0"
-    "onSTPathClick()\0onEscapePathClick()\0"
+    "onSTPathClick()\0onEscapePathClickRepeated()\0"
+    "onEscapePathClickAll()\0repeated,maxIter\0"
+    "onEscapePathClick(bool,int)\0"
     "onShortestEscapePathClick()\0"
+    "onCheckShowPathToggled()\0"
     "onCheckBoxPocketSkinSurfaceToggled()\0"
     "onCheckBoxPocketSkinWireFrameToggled()\0"
     "onCheckBoxAlphaSkinSurfaceToggled()\0"
@@ -113,48 +126,54 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         MainWindow *_t = static_cast<MainWindow *>(_o);
         switch (_id) {
         case 0: _t->about(); break;
-        case 1: _t->open(); break;
-        case 2: _t->saveGraph(); break;
-        case 3: _t->onAlphaValueZero(); break;
-        case 4: _t->onChangeFiltration(); break;
-        case 5: _t->onUndoChange(); break;
-        case 6: _t->onRankChange(); break;
-        case 7: _t->onEpsilonTextChanged(); break;
-        case 8: _t->onRankTextChanged(); break;
-        case 9: _t->onPersistenceChange(); break;
-        case 10: _t->onPersistenceTextChanged(); break;
-        case 11: _t->onCheckBoxAlphaShapeToggled(); break;
-        case 12: _t->onCheckBoxWireFrameToggled(); break;
-        case 13: _t->onCheckBoxAllPocketsToggled(); break;
-        case 14: _t->onCheckBoxMouthsToggled(); break;
-        case 15: _t->onCheckBoxOnlyPocketsToggled(); break;
-        case 16: _t->onCheckBoxOnlyVoidsToggled(); break;
-        case 17: _t->onCheckPowerDiagToggled(); break;
-        case 18: _t->onCheckComplementPDToggled(); break;
-        case 19: _t->onCheckInsideVerts(); break;
-        case 20: _t->onCheckPruneIsolatedVerts(); break;
-        case 21: _t->onCheckIntersectEdges(); break;
-        case 22: _t->onCheckCHull(); break;
-        case 23: _t->onCheckCHullWF(); break;
-        case 24: _t->onCheckCHullNorm(); break;
-        case 25: _t->onSTPathClick(); break;
-        case 26: _t->onEscapePathClick(); break;
-        case 27: _t->onShortestEscapePathClick(); break;
-        case 28: _t->onCheckBoxPocketSkinSurfaceToggled(); break;
-        case 29: _t->onCheckBoxPocketSkinWireFrameToggled(); break;
-        case 30: _t->onCheckBoxAlphaSkinSurfaceToggled(); break;
-        case 31: _t->onCheckBoxAlphaSkinWireFrameToggled(); break;
-        case 32: _t->onRadiobuttonFlatClicked(); break;
-        case 33: _t->onRadioButtonSmoothClicked(); break;
-        case 34: _t->onRadioButtonAllPocketsClicked(); break;
-        case 35: _t->onRadioButtonIndivPocketsClicked(); break;
-        case 36: _t->onSpinBoxPocketsValueChanged(); break;
-        case 37: _t->onCheckBoxVolumeToggled(); break;
-        case 38: _t->onCheckBoxPocketWireFrameToggled(); break;
+        case 1: _t->open((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
+        case 2: _t->openAsSpheres(); break;
+        case 3: _t->openAsPoints(); break;
+        case 4: _t->openWithIncrementedRadius(); break;
+        case 5: _t->saveGraph(); break;
+        case 6: _t->savePath(); break;
+        case 7: _t->onAlphaValueZero(); break;
+        case 8: _t->onChangeFiltration(); break;
+        case 9: _t->onUndoChange(); break;
+        case 10: _t->onRankChange(); break;
+        case 11: _t->onEpsilonTextChanged(); break;
+        case 12: _t->onRankTextChanged(); break;
+        case 13: _t->onPersistenceChange(); break;
+        case 14: _t->onPersistenceTextChanged(); break;
+        case 15: _t->onCheckBoxAlphaShapeToggled(); break;
+        case 16: _t->onCheckBoxWireFrameToggled(); break;
+        case 17: _t->onCheckBoxAllPocketsToggled(); break;
+        case 18: _t->onCheckBoxMouthsToggled(); break;
+        case 19: _t->onCheckBoxOnlyPocketsToggled(); break;
+        case 20: _t->onCheckBoxOnlyVoidsToggled(); break;
+        case 21: _t->onCheckPowerDiagToggled(); break;
+        case 22: _t->onCheckComplementPDToggled(); break;
+        case 23: _t->onCheckInsideVerts(); break;
+        case 24: _t->onCheckPruneIsolatedVerts(); break;
+        case 25: _t->onCheckIntersectEdges(); break;
+        case 26: _t->onCheckCHull(); break;
+        case 27: _t->onCheckCHullWF(); break;
+        case 28: _t->onCheckCHullNorm(); break;
+        case 29: _t->onSTPathClick(); break;
+        case 30: _t->onEscapePathClickRepeated(); break;
+        case 31: _t->onEscapePathClickAll(); break;
+        case 32: _t->onEscapePathClick((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 33: _t->onShortestEscapePathClick(); break;
+        case 34: _t->onCheckShowPathToggled(); break;
+        case 35: _t->onCheckBoxPocketSkinSurfaceToggled(); break;
+        case 36: _t->onCheckBoxPocketSkinWireFrameToggled(); break;
+        case 37: _t->onCheckBoxAlphaSkinSurfaceToggled(); break;
+        case 38: _t->onCheckBoxAlphaSkinWireFrameToggled(); break;
+        case 39: _t->onRadiobuttonFlatClicked(); break;
+        case 40: _t->onRadioButtonSmoothClicked(); break;
+        case 41: _t->onRadioButtonAllPocketsClicked(); break;
+        case 42: _t->onRadioButtonIndivPocketsClicked(); break;
+        case 43: _t->onSpinBoxPocketsValueChanged(); break;
+        case 44: _t->onCheckBoxVolumeToggled(); break;
+        case 45: _t->onCheckBoxPocketWireFrameToggled(); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData MainWindow::staticMetaObjectExtraData = {
@@ -189,9 +208,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 39)
+        if (_id < 46)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 39;
+        _id -= 46;
     }
     return _id;
 }

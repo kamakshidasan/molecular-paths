@@ -44,7 +44,7 @@ FileReader::~FileReader()
     \fn FileReader::ReadVertices(const char* filename,std::vector<Vertex> & vertexList,,double center[],double *Scale)
  */
 void FileReader::ReadVertices(const char* filename,std::vector<Vertex> & vertexList,double center[],
-                              double *Scale, double min[], double max[])
+                              double *Scale, double min[], double max[], bool constantRadius, bool incrementRadius)
 {
         unsigned int n = 0;
         unsigned int i = 0;
@@ -69,7 +69,12 @@ void FileReader::ReadVertices(const char* filename,std::vector<Vertex> & vertexL
                 val=fgets(line, 100, fp);
                 sscanf(line,"%lf %lf %lf %lf",&x, &y, &z, &r);
                 fprintf(fp1,"%d %lf\t",i,r);
-                r += 1.4;
+                if(incrementRadius){
+                    r += 1.4;
+                }
+                if(constantRadius){
+                    r = 0;
+                }
                 fprintf(fp1,"%lf\n",r);
                 Vertex vert(x,y,z,r,i,scale);
                 vertexList.push_back(vert);

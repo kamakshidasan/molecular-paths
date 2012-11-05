@@ -77,7 +77,7 @@ class Processor
 
         bool IsRenderable();
 
-        void read(const char *filename,double centre[],double *size);
+        void read(const char *filename,double centre[],double *size, bool constantRadius, bool incrementRadius);
         int getMaxRank();
         int getMaxPersistence();
         int getRankForAlpha(double alphavalue);
@@ -87,7 +87,7 @@ class Processor
         void CalculateVolumes(int rank);
         void Render(int persistence,bool alphaShape,bool allPockets,bool onlyPockets,bool onlyVoids,bool skinSurface,bool mouths,bool allindflag,int pnum,int rank,bool wireFrame,
                     bool alphaSkinSurface,bool alphaSkinWireFrame,bool smoothShading,bool skinWireFrame,bool pocketWireFrame, bool powerDiag,
-                    bool cHull, bool cHullWF, bool cHullNorm);
+                    bool cHull, bool cHullWF, bool cHullNorm, bool showPath);
 
         void ProcessEpsilonInterval(double epsilon,int lowRank,int highRank);
         void ModifyFiltration();

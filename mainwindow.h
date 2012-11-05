@@ -43,8 +43,12 @@ class MainWindow : public QMainWindow
 
     public slots:
         void about();
-        void open();
+        void open(bool constantRadius, bool incrementRadius);
+        void openAsSpheres();
+        void openAsPoints();
+        void openWithIncrementedRadius();
         void saveGraph();
+        void savePath();
         void onAlphaValueZero();
         void onChangeFiltration();
         void onUndoChange();
@@ -71,8 +75,11 @@ class MainWindow : public QMainWindow
         void onCheckCHullNorm();
 
         void onSTPathClick();
-        void onEscapePathClick();
+        void onEscapePathClickRepeated();
+        void onEscapePathClickAll();
+        void onEscapePathClick(bool repeated, int maxIter);
         void onShortestEscapePathClick();
+        void onCheckShowPathToggled();
 
         void onCheckBoxPocketSkinSurfaceToggled();
         void onCheckBoxPocketSkinWireFrameToggled();

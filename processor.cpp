@@ -31,10 +31,10 @@ Processor::~Processor()
 {
 }
 
-void Processor::read(const char *filename,double centre[],double *size)
+void Processor::read(const char *filename,double centre[],double *size, bool constantRadius, bool incrementRadius)
 {
         double min[3], max[3];
-        fr->ReadVertices(filename,vertexList,centre,&scale, min, max);
+        fr->ReadVertices(filename,vertexList,centre,&scale, min, max, constantRadius, incrementRadius);
         *size = scale;
         //alcx = new AlphaComplex(vertexList,centre,&scale);
         alcx = new AlphaComplex(vertexList);
@@ -199,7 +199,7 @@ GLuint cHullNormId = -1;
  */
 void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool onlyPockets,bool onlyVoids,bool skinSurface,bool mouths,bool allindflag,int pnum,int rank,bool wireFrame,
                        bool alphaSkinSurface,bool alphaSkinWireFrame,bool smoothShading,bool skinWireFrame,bool pocketWireFrame, bool powerDiag,
-                       bool cHull, bool cHullWF, bool cHullNorm)
+                       bool cHull, bool cHullWF, bool cHullNorm, bool showPath)
 {
         glEnable(GL_NORMALIZE);
         if(alcx)
@@ -231,85 +231,85 @@ void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool only
                                 }
                         }
                 }
-        }
 
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, LightMaterial::MatAmb[3]);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, LightMaterial::MatDiff[3]);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, LightMaterial::MatSpec[3]);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[3]);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, LightMaterial::MatAmb[3]);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, LightMaterial::MatDiff[3]);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, LightMaterial::MatSpec[3]);
+            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[3]);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
 
-        if(powerDiag){
-            powerDiagram->render();
-        }
-
-        glEnable(GL_COLOR_MATERIAL);
-        if(cHull){
-            glColor3d(0.2, 0.6, 0.2);
-            if(cHullWF){
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            }else{
-                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            if(powerDiag){
+                powerDiagram->render(showPath);
             }
 
-            if (glIsList(cHullId) == GL_FALSE){
-                cHullId = glGenLists(1);
-                glNewList(cHullId, GL_COMPILE_AND_EXECUTE);
-
-                glBegin(GL_TRIANGLES);
-                for(int i=1; i< alcx->delcx->DeluanayTrigs.size(); i++){
-                    Triangle tri = alcx->delcx->DeluanayTrigs[i];
-                    if(tri.Hull){
-                        glNormal3d(tri.Normal->X, tri.Normal->Y, tri.Normal->Z);
-                        for(int j=1;j<4;j++){
-                            Vector3 v = alcx->vertexList[tri.Corners[j]].getCoordVector();
-                            glVertex3d(v.X, v.Y, v.Z);
-                        }
-                    }
+            glEnable(GL_COLOR_MATERIAL);
+            if(cHull){
+                glColor3d(0.2, 0.6, 0.2);
+                if(cHullWF){
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                }else{
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
-                glEnd();
 
-                glEndList();
-            } else {
-                glCallList(cHullId);
-            }
-            if(cHullNorm){
-                if(glIsList(cHullNormId) == GL_FALSE){
-                    cHullNormId = glGenLists(1);
-                    glNewList(cHullNormId, GL_COMPILE_AND_EXECUTE);
+                if (glIsList(cHullId) == GL_FALSE){
+                    cHullId = glGenLists(1);
+                    glNewList(cHullId, GL_COMPILE_AND_EXECUTE);
 
-                    //======= Drawing Normals of Convex Hull Tris =================
-
-                    glColor3d(1,0,0);
-                    glLineWidth(2);
-                    glBegin(GL_LINES);
+                    glBegin(GL_TRIANGLES);
                     for(int i=1; i< alcx->delcx->DeluanayTrigs.size(); i++){
                         Triangle tri = alcx->delcx->DeluanayTrigs[i];
                         if(tri.Hull){
                             glNormal3d(tri.Normal->X, tri.Normal->Y, tri.Normal->Z);
-                            Vector3 center;
-                            for(int j=1; j<4; j++){
-                                Vertex v = alcx->vertexList[tri.Corners[j]];
-                                Vector3 coord = v.getCoordVector();
-                                Vector3::Sum(&center, &coord, &center);
+                            for(int j=1;j<4;j++){
+                                Vector3 v = alcx->vertexList[tri.Corners[j]].getCoordVector();
+                                glVertex3d(v.X, v.Y, v.Z);
                             }
-                            Vector3::Scale(&center, &center, 1/3.0);
-                            glVertex3d(center.X, center.Y, center.Z);
-                            Vector3::Sum(&center, tri.Normal, &center);
-                            Vector3::Sum(&center, tri.Normal, &center);
-                            glVertex3d(center.X, center.Y, center.Z);
                         }
                     }
                     glEnd();
 
                     glEndList();
                 } else {
-                    glCallList(cHullNormId);
+                    glCallList(cHullId);
+                }
+                if(cHullNorm){
+                    if(glIsList(cHullNormId) == GL_FALSE){
+                        cHullNormId = glGenLists(1);
+                        glNewList(cHullNormId, GL_COMPILE_AND_EXECUTE);
+
+                        //======= Drawing Normals of Convex Hull Tris =================
+
+                        glColor3d(1,0,0);
+                        glLineWidth(2);
+                        glBegin(GL_LINES);
+                        for(int i=1; i< alcx->delcx->DeluanayTrigs.size(); i++){
+                            Triangle tri = alcx->delcx->DeluanayTrigs[i];
+                            if(tri.Hull){
+                                glNormal3d(tri.Normal->X, tri.Normal->Y, tri.Normal->Z);
+                                Vector3 center;
+                                for(int j=1; j<4; j++){
+                                    Vertex v = alcx->vertexList[tri.Corners[j]];
+                                    Vector3 coord = v.getCoordVector();
+                                    Vector3::Sum(&center, &coord, &center);
+                                }
+                                Vector3::Scale(&center, &center, 1/3.0);
+                                glVertex3d(center.X, center.Y, center.Z);
+                                Vector3::Sum(&center, tri.Normal, &center);
+                                Vector3::Sum(&center, tri.Normal, &center);
+                                glVertex3d(center.X, center.Y, center.Z);
+                            }
+                        }
+                        glEnd();
+
+                        glEndList();
+                    } else {
+                        glCallList(cHullNormId);
+                    }
                 }
             }
+            glDisable(GL_COLOR_MATERIAL);
+            glDisable(GL_NORMALIZE);
         }
-        glDisable(GL_COLOR_MATERIAL);
-        glDisable(GL_NORMALIZE);
 }
 
 void Processor::ProcessEpsilonInterval(double epsilon,int lowRank, int highRank)

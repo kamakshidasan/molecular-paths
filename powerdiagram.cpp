@@ -333,7 +333,8 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
         }
     }
 
-//    constructGraph(true);
+    constructGraph(true);
+    singlePath = true;
 
 /*
     for(int i=0;i<edges.size();i++){
@@ -347,11 +348,11 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
 
 GLuint listID = -1, pathListID = -1;
 
-void PowerDiagram::render(){
+void PowerDiagram::render(bool showPath){
     if(glIsList(listID) == GL_TRUE){
         glCallList(listID);
     }
-    if(glIsList(pathListID) == GL_TRUE){
+    if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
     }
 }
@@ -481,6 +482,14 @@ void PowerDiagram::writeGraph(bool considerAlpha, const char* filename){
     currentGraph.writeGraphCRD(filename);
 }
 
+void PowerDiagram::savePathCRD(const char* filename){
+    if(singlePath && !pathNodes.empty()){
+        currentGraph.writePathCRD(filename, &pathNodes);
+    }else if(!singlePath && !pathsNodes.empty()){
+        currentGraph.writeAllPathsCRD(filename, &pathsNodes);
+    }
+}
+
 void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.clear();
     std::vector<int> map;
@@ -495,7 +504,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
             node.x = vert->center.X;
             node.y = vert->center.Y;
             node.z = vert->center.Z;
-            node.radius = sqrt(vert->powerDistance);
+            node.radius = vert->powerDistance <= 0 ? 0 : sqrt(vert->powerDistance);
             node.pVert = vert;
             currentGraph.nodes.push_back(node);
             map.push_back(index);
@@ -534,7 +543,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 node.x = pEdge->intersect.X;
                 node.y = pEdge->intersect.Y;
                 node.z = pEdge->intersect.Z;
-                node.radius = sqrt(pEdge->leastPowerDistance);
+                node.radius = pEdge->leastPowerDistance <= 0 ? 0 : sqrt(pEdge->leastPowerDistance);
                 node.pVert = &vertices[pEdge->v2];
                 node.edges.push_back(edgeIndex);
                 currentGraph.nodes.push_back(node);
@@ -558,7 +567,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 node.x = pEdge->intersect.X;
                 node.y = pEdge->intersect.Y;
                 node.z = pEdge->intersect.Z;
-                node.radius = sqrt(pEdge->leastPowerDistance);
+                node.radius = pEdge->leastPowerDistance <= 0 ? 0 : sqrt(pEdge->leastPowerDistance);
                 node.edges.push_back(edgeIndex);
                 currentGraph.nodes.push_back(node);
                 edge.v2 = index;
@@ -575,9 +584,17 @@ void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.initLemonGraph();
 }
 
-void drawPath(std::vector<GraphNode*> *pathNodes, GLUquadric* quad){
+void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathEdges,
+              GLUquadric* quad, bool useSelected){
 //  glBegin(GL_LINES);
     for(int i=0;i<pathNodes->size()-1;i++){
+        if(useSelected){
+            if(pathEdges->at(i)->selected){
+                glColor3d(1, 0, 1);
+            }else{
+                glColor3d(0, 1, 1);
+            }
+        }
         GraphNode* curr = pathNodes->at(i);
         GraphNode* next = pathNodes->at(i+1);
         Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
@@ -624,7 +641,6 @@ void drawPath(std::vector<GraphNode*> *pathNodes, GLUquadric* quad){
 
 bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, QVector<double>* Y,
                                     double * length, double *minY, double *maxY){
-    std::vector<GraphNode*> pathNodes;
     std::vector<GraphEdge*> pathEdges;
     double cost = currentGraph.runDijkstra(start, target, &pathNodes, &pathEdges);
     std::cout << cost << std::endl;
@@ -641,13 +657,13 @@ bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, Q
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glLineWidth(3);
-        glColor3d(0,1,1);
+        glColor3d(1,0,1);
 
         GLUquadric* quad = gluNewQuadric();
         gluQuadricNormals(quad, GLU_SMOOTH);
         gluQuadricOrientation(quad, GLU_OUTSIDE);
 
-        drawPath(&pathNodes, quad);
+        drawPath(&pathNodes, &pathEdges, quad, false);
 
         glLineWidth(1);
         glPointSize(6);
@@ -656,19 +672,42 @@ bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, Q
 
         glEndList();
 
+        singlePath = true;
+
         return true;
     }else{
         return false;
     }
 }
 
-int PowerDiagram::findShortestEscapePaths(int start, int steps,
+int PowerDiagram::findShortestEscapePaths(int start, int steps, bool repeated, int maxIter,
                                     std::vector<QVector<double> >* Xs, std::vector<QVector<double> >* Ys,
                                     std::vector<double> * lengths, std::vector<double> *minYs,
                                     std::vector<double> *maxYs){
-    std::vector<std::vector<GraphNode*> > pathsNodes;
     std::vector<std::vector<GraphEdge*> > pathsEdges;
-    int shortest = currentGraph.runDijkstra(start, &pathsNodes, &pathsEdges);
+
+    int shortest = -1;
+    if(repeated){
+        bool found = currentGraph.runDijkstraEscapeRepeated(start, maxIter, &pathsNodes, &pathsEdges);
+        if(found){
+           shortest = 0;
+        }
+    } else {
+        shortest = currentGraph.runDijkstra(start, &pathsNodes, &pathsEdges);
+    }
+
+    for(int k=0;k < pathsEdges.size();k++){
+        std::vector<GraphEdge*> pathEdges = pathsEdges[k];
+        for(int j=0;j<pathEdges.size();j++){
+            pathEdges[j]->selected = false;
+        }
+    }
+    if(shortest!=-1){
+        for(int j=0;j<pathsEdges[shortest].size();j++){
+            pathsEdges[shortest][j]->selected = true;
+        }
+    }
+
     for(int k=0;k < pathsNodes.size();k++){
         QVector<double> X(steps), Y(steps);
         Xs->push_back(X);
@@ -701,7 +740,7 @@ int PowerDiagram::findShortestEscapePaths(int start, int steps,
                 }else{
                     glColor3d(0,1,1);
                 }
-                drawPath(&pathNodes, quad);
+                drawPath(&pathNodes, &pathEdges, quad, true);
             }
             getPathWeights(&pathNodes, &pathEdges, &(Xs->at(k)), &(Ys->at(k)), &(lengths->at(k)),
                            &(minYs->at(k)), &(maxYs->at(k)));
@@ -713,13 +752,14 @@ int PowerDiagram::findShortestEscapePaths(int start, int steps,
         glDisable(GL_COLOR_MATERIAL);
 
         glEndList();
+
+        singlePath = false;
     }
     return shortest;
 }
 
 bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<double>* Y,
                                           double * length, double *minY, double *maxY){
-    std::vector<GraphNode*> pathNodes;
     std::vector<GraphEdge*> pathEdges;
     bool pathFound = currentGraph.runDijkstraEscape(start, &pathNodes, &pathEdges);
     if(pathFound && !pathNodes.empty()){
@@ -735,13 +775,13 @@ bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glLineWidth(3);
-        glColor3d(0,1,1);
+        glColor3d(1,0,1);
 
         GLUquadric* quad = gluNewQuadric();
         gluQuadricNormals(quad, GLU_SMOOTH);
         gluQuadricOrientation(quad, GLU_OUTSIDE);
 
-        drawPath(&pathNodes, quad);
+        drawPath(&pathNodes, &pathEdges, quad, false);
 
         glLineWidth(1);
         glPointSize(6);
@@ -749,6 +789,8 @@ bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<
         glDisable(GL_COLOR_MATERIAL);
 
         glEndList();
+
+        singlePath = true;
     }
     return pathFound;
 }
