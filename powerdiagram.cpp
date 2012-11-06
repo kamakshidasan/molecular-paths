@@ -3,6 +3,7 @@
 #include "metric.h"
 #include <list>
 #include <GL/glu.h>
+#include <skinsurface.h>
 
 bool inside(Vertex v, double min[], double max[], double pad){
     double x = v.NormCoordinates[1];
@@ -355,11 +356,11 @@ void PowerDiagram::render(bool showPath){
     if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
     }
-//    if(showPath && glIsList(pathSpheresListID) == GL_TRUE){
-////        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//        glCallList(pathSpheresListID);
-////        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//    }
+    if(showPath && glIsList(pathSpheresListID) == GL_TRUE){
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glCallList(pathSpheresListID);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 }
 
 void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
@@ -644,6 +645,92 @@ void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathE
 //  glEnd();
 }
 
+void initPathList(std::vector<GraphNode*> *pathNodes){
+    if(glIsList(pathSpheresListID) == GL_TRUE){
+        glDeleteLists(pathSpheresListID, 1);
+    }
+    pathSpheresListID = glGenLists(1);
+    glNewList(pathSpheresListID, GL_COMPILE);
+
+    glEnable(GL_COLOR_MATERIAL);
+
+//        glColor3d(1,0,1);
+
+//        for(int i=0;i<pathNodes.size();i++){
+//            GraphNode* curr = pathNodes[i];
+//            glPushMatrix();
+//            glTranslated(curr->x, curr->y, curr->z);
+//            gluSphere(quad, sqrt(curr->pVert->powerDistance), 8, 8);
+//            glPopMatrix();
+//        }
+
+    FILE *fp = fopen("pathskin","w");
+    fprintf(fp,"%d\n",pathNodes->size());
+    fprintf(fp,"#junk\n");
+    for(int i=0;i<pathNodes->size();i++){
+        GraphNode* curr = pathNodes->at(i);
+        fprintf(fp,"%d %f %f %f %f\n",i+1,curr->x, curr->y, curr->z,
+                curr->radius);
+    }
+    fclose(fp);
+    system("./smesh pathskin -s skin.off -t skin.tet");
+
+    double center[] = {0,0,0};
+    SkinSurface skin(center, 1, 1);
+    skin.Read("skin_lev0.off",0);
+    skin.Process();
+    skin.Draw(true, true);
+
+    glDisable(GL_COLOR_MATERIAL);
+
+    glEndList();
+}
+
+#include<set>
+void initMultiplePathList(std::vector<std::vector<GraphNode*> > *pathsNodes){
+    if(glIsList(pathSpheresListID) == GL_TRUE){
+        glDeleteLists(pathSpheresListID, 1);
+    }
+    pathSpheresListID = glGenLists(1);
+    glNewList(pathSpheresListID, GL_COMPILE);
+
+    glEnable(GL_COLOR_MATERIAL);
+    std::vector<GraphNode*> pathNodes;
+    std::set<int> unique;
+
+    for(int i=0;i<pathsNodes->size();i++){
+        uint size = pathsNodes->at(i).size();
+        for(uint j=0; j<size; j++){
+            GraphNode* node = pathsNodes->at(i)[j];
+            if(unique.find(node->index) == unique.end()){
+                unique.insert(node->index);
+                pathNodes.push_back(node);
+            }
+        }
+    }
+
+    FILE *fp = fopen("pathskin","w");
+    fprintf(fp,"%d\n",pathNodes.size());
+    fprintf(fp,"#junk\n");
+    for(int i=0;i<pathNodes.size();i++){
+        GraphNode* curr = pathNodes.at(i);
+        fprintf(fp,"%d %f %f %f %f\n",i+1,curr->x, curr->y, curr->z,
+                curr->radius);
+    }
+    fclose(fp);
+    system("./smesh pathskin -s skin.off -t skin.tet");
+
+    double center[] = {0,0,0};
+    SkinSurface skin(center, 1, 1);
+    skin.Read("skin_lev0.off",0);
+    skin.Process();
+    skin.Draw(true, true);
+
+    glDisable(GL_COLOR_MATERIAL);
+
+    glEndList();
+}
+
 bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, QVector<double>* Y,
                                     double * length, double *minY, double *maxY){
     std::vector<GraphEdge*> pathEdges;
@@ -677,6 +764,7 @@ bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, Q
 
         glEndList();
 
+        initPathList(&pathNodes);
         singlePath = true;
 
         return true;
@@ -758,6 +846,7 @@ int PowerDiagram::findShortestEscapePaths(int start, int steps, bool repeated, i
 
         glEndList();
 
+        initMultiplePathList(&pathsNodes);
         singlePath = false;
     }
     return shortest;
@@ -795,30 +884,7 @@ bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<
 
         glEndList();
 
-
-
-        if(glIsList(pathSpheresListID) == GL_TRUE){
-            glDeleteLists(pathSpheresListID, 1);
-        }
-        pathSpheresListID = glGenLists(1);
-        glNewList(pathSpheresListID, GL_COMPILE);
-
-        glEnable(GL_COLOR_MATERIAL);
-
-        glColor3d(1,0,1);
-
-        for(int i=0;i<pathNodes.size();i++){
-            GraphNode* curr = pathNodes[i];
-            glPushMatrix();
-            glTranslated(curr->x, curr->y, curr->z);
-            gluSphere(quad, sqrt(curr->pVert->powerDistance), 8, 8);
-            glPopMatrix();
-        }
-
-        glDisable(GL_COLOR_MATERIAL);
-
-        glEndList();
-
+        initPathList(&pathNodes);
         singlePath = true;
     }
     return pathFound;
