@@ -48,6 +48,7 @@ class Tetrahedron
         int Repeats;
         int MainRepeats;
         int Persistence;
+        double AlphaPersistence;
 
         bool isValid;
 

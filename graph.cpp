@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <powerdiagram.h>
+#include <set>
 
 using namespace lemon;
 
@@ -307,31 +308,42 @@ void Graph::writeAllPathsCRD(const char* file, std::vector<std::vector<GraphNode
     FILE *fp = fopen(file,"w");
     fprintf(fp, "              \n");
     fprintf(fp, "#   i        X          Y          Z        R         Epsilon     Sigma     Charge      ASP       Atm name    Res name    Chain      Res #\n");
+    std::vector<std::set<int> > edges;
+    std::vector<int> map;
+    for(int i=0;i<nodes.size();i++){
+        map.push_back(-1);
+    }
     int index = 1;
     for(int i=0;i<pathsNodes->size();i++){
-        for(uint j=0; j<pathsNodes->at(i).size();j++){
+        uint size = pathsNodes->at(i).size();
+        for(uint j=0; j<size; j++){
             GraphNode* node = pathsNodes->at(i)[j];
-            double radius = node->radius;
-            fprintf(fp, " \t%d \t%f \t%f \t%f \t%f \t0.000 \t0.000 \t0.000 \t0.000 \t%s \tGLY \tA \t1\n", index,
-                    node->x, node->y, node->z, radius, node->boundary?"C":"N");
-            index++;
+            if(map[node->index]==-1){
+                double radius = node->radius;
+                fprintf(fp, " \t%d \t%f \t%f \t%f \t%f \t0.000 \t0.000 \t0.000 \t0.000 \t%s \tGLY \tA \t1\n", index,
+                        node->x, node->y, node->z, radius, j==0? "O": (node->boundary?"C":"N"));
+                map[node->index] = index-1;
+                std::set<int> edgeIndices;
+                edges.push_back(edgeIndices);
+                index++;
+            }
+            if(j!=0){
+                GraphNode* prev = pathsNodes->at(i)[j-1];
+                edges[map[prev->index]].insert(map[node->index]);
+            }
         }
     }
     fprintf(fp, "#TER\n");
     fprintf(fp, "#  i       Nexclude    Exclude list ...\n");
-    index = 1;
-    for(int i=0;i<pathsNodes->size();i++){
-        for(uint j=0; j<pathsNodes->at(i).size();j++){
-            if(j==pathsNodes->at(i).size()-1){
-                fprintf(fp, " \t%d \t0\n", index);
-            }else{
-                fprintf(fp, " \t%d \t1 \t%d\n", index, (index+1));
-            }
-            index++;
+    for(int i=0;i<edges.size();i++){
+        fprintf(fp, " \t%d \t%d", (i+1), edges[i].size());
+        for (std::set<int>::iterator it=edges[i].begin() ; it != edges[i].end(); it++){
+            fprintf(fp, " \t%d", (*it)+1);
         }
+        fprintf(fp, "\n");
     }
     fseek(fp, 1, SEEK_SET);
-    fprintf(fp, "%d", index);
+    fprintf(fp, "%d", edges.size());
     fclose(fp);
 }
 

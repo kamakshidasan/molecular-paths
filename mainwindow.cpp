@@ -197,7 +197,7 @@ void MainWindow::onAlphaValueZero()
 {
     int rank = m_processor->getRankForAlpha(0.0);
     float alpvalue;
-
+    int persistence = ui->persistenceSlider->value ();
     ui->alphaSlider->setValue(rank);
 
     QString r1,r2;
@@ -209,10 +209,10 @@ void MainWindow::onAlphaValueZero()
     QString& ran2 = r2.setNum(alpvalue,'f',6);
     ui->lineEditAlphaValue->setText(ran2);
 
-    m_processor->CalculateRelevant(rank);
+    m_processor->CalculateRelevant(rank,persistence);
     if(ui->checkBoxVolumeEnabled->isChecked())
     {
-        m_processor->CalculateVolumes(rank);
+        m_processor->CalculateVolumes(rank,persistence);
     }
 
     m_viewer1->setRank(rank);
@@ -223,6 +223,7 @@ void MainWindow::onRankChange()
 {
     int rank = ui->alphaSlider->value();
     float alpvalue;
+    int persistence = ui->persistenceSlider->value ();
 
     QString r1,r2;
 
@@ -234,10 +235,10 @@ void MainWindow::onRankChange()
     ui->lineEditAlphaValue->setText(ran2);
 
     //m_processor->CalculateEverythingFor(rank);
-    m_processor->CalculateRelevant(rank);
+    m_processor->CalculateRelevant(rank,persistence);
     if(ui->checkBoxVolumeEnabled->isChecked())
     {
-        m_processor->CalculateVolumes(rank);
+        m_processor->CalculateVolumes(rank,persistence);
     }
 
     m_viewer1->setRank(rank);
@@ -248,6 +249,7 @@ void MainWindow::onRankTextChanged()
 {
     QString r;
     int rank = atoi(ui->lineEditAlphaRank->text().toAscii().data());
+    int persistence = ui->persistenceSlider->value ();
 
     ui->alphaSlider->setValue(rank);
     float alpvalue = m_processor->getAlphaValue(rank);
@@ -255,10 +257,10 @@ void MainWindow::onRankTextChanged()
     ui->lineEditAlphaValue->setText(ran);
 
     //m_processor->CalculateEverythingFor(rank);
-    m_processor->CalculateRelevant(rank);
+    m_processor->CalculateRelevant(rank,persistence);
     if(ui->checkBoxVolumeEnabled->isChecked())
     {
-        m_processor->CalculateVolumes(rank);
+        m_processor->CalculateVolumes(rank,persistence);
     }
 
     m_viewer1->setRank(rank);
@@ -269,10 +271,17 @@ void MainWindow::onPersistenceChange()
 {
     int persistence;
     QString r1;
+    int rank = atoi(ui->lineEditAlphaRank->text().toAscii().data());
 
     persistence = ui->persistenceSlider->value();
     QString& ran1 = r1.setNum(persistence);
     ui->lineEditPersistenceRank->setText(ran1);
+
+    m_processor->CalculateRelevant(rank,persistence);
+    if(ui->checkBoxVolumeEnabled->isChecked())
+    {
+        m_processor->CalculateVolumes(rank,persistence);
+    }
 
     m_viewer1->setPersistence(persistence);
 //    m_viewer2->setPersistence(persistence);
@@ -421,7 +430,7 @@ void MainWindow::onShortestEscapePathClick(){
     ui->graphWidget->yAxis->setLabel("Power Distance");
     // set axes ranges, so we see all data:
     ui->graphWidget->xAxis->setRange(0, length);
-    ui->graphWidget->yAxis->setRange(minY, maxY);
+    ui->graphWidget->yAxis->setRange(minY<0?minY:0, maxY);
     ui->graphWidget->replot();
 
     m_viewer1->updateGL();
@@ -474,7 +483,7 @@ void MainWindow::onEscapePathClick(bool repeated, int maxIter){
         ui->graphWidget->yAxis->setLabel("Power Distance");
         // set axes ranges, so we see all data:
         ui->graphWidget->xAxis->setRange(0, maxLength);
-        ui->graphWidget->yAxis->setRange(minY, maxY);
+        ui->graphWidget->yAxis->setRange(minY<0 ? minY : 0, maxY);
     }
     ui->graphWidget->replot();
 
@@ -558,6 +567,7 @@ void MainWindow::onCheckBoxVolumeToggled()
     if(ui->checkBoxVolumeEnabled->isChecked())
     {
         int rank = ui->alphaSlider->value();
+        int persistence = ui->persistenceSlider->value ();
 
         ui->labelMolTotalSurfaceArea->show();
         ui->labelMolTotalVolume->show();
@@ -574,7 +584,7 @@ void MainWindow::onCheckBoxVolumeToggled()
         ui->tableWidgetMouth->show();
         ui->tableWidgetPocket->show();
 
-        m_processor->CalculateVolumes(rank);
+        m_processor->CalculateVolumes(rank,persistence);
     }
     else
     {
@@ -603,14 +613,25 @@ void MainWindow::onCheckBoxPocketWireFrameToggled()
 
 void MainWindow::onChangeFiltration()
 {
+    struct timeval timeval_start, timeval_end;
+    gettimeofday(&timeval_start, NULL);
+
     int rank = ui->alphaSlider->value();
+    int persistence = ui->persistenceSlider->value ();
 
     m_processor->ModifyFiltration();
 
-    m_processor->CalculateRelevant(rank);
+    gettimeofday(&timeval_end, NULL);
+    double time_start = timeval_start.tv_sec + (double)
+    timeval_start.tv_usec/1000000;
+    double time_end= timeval_end.tv_sec + (double) timeval_end.tv_usec/1000000;
+
+    printf("Time: %f\n", time_end - time_start);
+
+    m_processor->CalculateRelevant(rank,persistence);
     if(ui->checkBoxVolumeEnabled->isChecked())
     {
-        m_processor->CalculateVolumes(rank);
+        m_processor->CalculateVolumes(rank,persistence);
     }
 
     m_viewer1->setRank(rank);
@@ -620,13 +641,14 @@ void MainWindow::onChangeFiltration()
 void MainWindow::onUndoChange()
 {
     int rank = ui->alphaSlider->value();
+    int persistence = ui->persistenceSlider->value ();
 
     m_processor->UndoModify();
 
-    m_processor->CalculateRelevant(rank);
+    m_processor->CalculateRelevant(rank,persistence);
     if(ui->checkBoxVolumeEnabled->isChecked())
     {
-        m_processor->CalculateVolumes(rank);
+        m_processor->CalculateVolumes(rank,persistence);
     }
 
     m_viewer1->setRank(rank);

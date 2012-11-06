@@ -51,32 +51,23 @@ void Pocket::FindPockets(DeluanayComplex *delcx, std::vector <int> &sortedTet)
 {
         int i, j, k, itrig;
         unionFind->Clear();
-        FILE *fp = fopen("pocket union find.txt","w");
+        //FILE *fp = fopen("pocket union find.txt","w");
         uint TetSize = delcx->DeluanayTet.size() - delcx->redundantCount;
+        pocPersistence.clear ();
 
-        fprintf(fp,"Tetsize = %d\n",TetSize);
+        //fprintf(fp,"Tetsize = %d\n",TetSize);
 
         for (i = TetSize - 1; i > 0; i--)
         {
                 if (delcx->DeluanayTet[sortedTet[i]].Depth == delcx->DeluanayTet.size()) continue;
-                //if (delcx->DeluanayTet[sortedTet[i]].AlphaStatus != -1) continue;
-                /*if (delcx->DeluanayTet[sortedTet[i]].AlphaStatus != -1 || delcx->DeluanayTet[sortedTet[i]].isValid != false) continue;          //TODO: this is the dodgy condition*/
-                fprintf(fp," %d %d %d %d ",i,sortedTet[i],delcx->DeluanayTet[sortedTet[i]].AlphaStatus,delcx->DeluanayTet[sortedTet[i]].isValid);
-                /*if(delcx->DeluanayTet[sortedTet[i]].AlphaStatus != -1)
-                {
-                    if(delcx->DeluanayTet[sortedTet[i]].isValid != false)
-                    {
-                        fprintf(fp,"i = %d cond1 fail\n",i);
-                        continue;
-                    }
-                }*/
-                //if (delcx->DeluanayTet[sortedTet[i]].isValid != false || delcx->DeluanayTet[sortedTet[i]].AlphaStatus != -1 )
+          //      fprintf(fp," %d %d %d %d ",i,sortedTet[i],delcx->DeluanayTet[sortedTet[i]].AlphaStatus,delcx->DeluanayTet[sortedTet[i]].isValid);
+
                 if (delcx->DeluanayTet[sortedTet[i]].AlphaStatus != -1)
                 {
-                    fprintf(fp,"i = %d sortedTet[i] = %d cond1 fail\n",i,sortedTet[i]);
+            //        fprintf(fp,"i = %d sortedTet[i] = %d cond1 fail\n",i,sortedTet[i]);
                     continue;
                 }
-                fprintf(fp,"\n");
+              //  fprintf(fp,"\n");
                 delcx->DeluanayTet[sortedTet[i]].ufKey = unionFind->ElementCount();
                 unionFind->Add(sortedTet[i]);
         }
@@ -92,54 +83,95 @@ void Pocket::FindPockets(DeluanayComplex *delcx, std::vector <int> &sortedTet)
 
                         itrig = delcx->DeluanayTet[sortedTet[i]].TetLink[j];
 
-                        /*if (delcx->DeluanayTrigs[itrig].AlphaStatus == 1) continue; //common triangle in current alpha complex                  //TODO:this and the next condition are dodgy
-
                         if (delcx->DeluanayTrigs[itrig].isValid == true) continue;  //useful during the modified filtration*/
                         if (delcx->DeluanayTrigs[itrig].AlphaStatus == 1)
                         {
                             //if (delcx->DeluanayTrigs[itrig].isValid == true)
                             //{
-                                fprintf(fp,"sortedTet[i] = %d k = %d itrig = %d cond2 fail\n",sortedTet[i],k,itrig);
+                //                fprintf(fp,"sortedTet[i] = %d k = %d itrig = %d cond2 fail\n",sortedTet[i],k,itrig);
                                 continue;
                             //}
                         }
-                        fprintf(fp,"sortedTet[i] = %d k = %d itrig = %d\n",sortedTet[i],k,itrig);
+                  //      fprintf(fp,"sortedTet[i] = %d k = %d itrig = %d\n",sortedTet[i],k,itrig);
                         unionFind->Union(unionFind->FindSet(delcx->DeluanayTet[sortedTet[i]].ufKey), unionFind->FindSet(delcx->DeluanayTet[k].ufKey));
                 }
         }
-        //fclose(fp);
+
         AllPockets = unionFind->Consolidate();
         npockets = AllPockets.size();
         for (i = 0; i < AllPockets.size(); i++)
                 {
-                        fprintf(fp,"Pocket No %d =",i);
+                    //    fprintf(fp,"Pocket No %d =",i);
                         for (j = 0; j < AllPockets[i].size(); j++)
                         {
                                 int pindex = AllPockets[i][j];
                                 delcx->DeluanayTet[pindex].ufKey = -1;
                                 delcx->DeluanayTet[pindex].PocIndex = i;
-                                fprintf(fp," %d",pindex);
+                      //          fprintf(fp," tet = %d persistence = %d alpha persistence = %lf\n",pindex,delcx->DeluanayTet[pindex].Persistence,delcx->DeluanayTet[pindex].AlphaPersistence);
                         }
-                        fprintf(fp,"\n");
+                        //fprintf(fp,"\n");
                 }
-        fclose(fp);
-//        pocPersistence.clear();
-//        for (i = 0; i < AllPockets.size(); i++)
-//        {
-//            int per = 0;
-//            for (j = 0; j < AllPockets[i].size(); j++)
-//            {
-//
-//                    int pindex = AllPockets[i][j];
-//                    delcx->DeluanayTet[pindex].ufKey = -1;
-//                    delcx->DeluanayTet[pindex].PocIndex = i;
-//                    if(delcx->DeluanayTet[pindex].Persistence > per)
-//                    {
-//                        per = delcx->DeluanayTet[pindex].Persistence;
-//                    }
-//            }
-//            pocPersistence.push_back(per);
-//        }
+        //fclose(fp);
+
+        //now calculate persistence or extended persistence of each pocket here.
+        for(i = 0; i < AllPockets.size (); i++)
+        {
+            int persistence;
+            if(AllPockets[i].size() == 1)                   //tet persistence is enough
+            {
+                int tindex = AllPockets[i][0];
+                persistence = delcx->DeluanayTet[tindex].Persistence;
+                pocPersistence.push_back (persistence);
+            }
+            else
+            {   /*
+                A tetrahedron is part of the pocket means it is not present in the alpha complex also only we need to check Rho.
+                Also InComplex doesn't always work as we have not taken care of filtration modifcation in that function.
+                */
+                int youngestTrig = 0;
+                int oldestTet = 0;
+                for(j = 0; j < AllPockets[i].size(); j++)
+                {
+                    int trindex, tindex;
+                    tindex = AllPockets[i][j];
+                    if(oldestTet < delcx->DeluanayTet[tindex].Rho)
+                    {
+                        oldestTet = delcx->DeluanayTet[tindex].Rho;
+                    }
+                    for(k = 1; k < 5; k++)
+                    {
+                        trindex = delcx->DeluanayTet[tindex].TetLink[k];
+                        if(delcx->DeluanayTrigs[trindex].AlphaStatus != 0)         //belongs to alpha complex
+                        {
+                            if(delcx->DeluanayTrigs[trindex].Rho)
+                            {
+                                if(youngestTrig < delcx->DeluanayTrigs[trindex].Rho)
+                                {
+                                    youngestTrig = delcx->DeluanayTrigs[trindex].Rho;
+                                }
+                            }
+                            else
+                            {
+                                if(youngestTrig < delcx->DeluanayTrigs[trindex].Mu1)
+                                {
+                                    youngestTrig = delcx->DeluanayTrigs[trindex].Mu1;
+                                }
+                            }
+                        }
+                    }
+                }
+                assert(youngestTrig <= oldestTet);
+                persistence = oldestTet - youngestTrig;
+                pocPersistence.push_back (persistence);
+            }
+        }
+
+        /*FILE *fp1 = fopen("pocpersist.txt","w");
+        for(i = 0; i < pocPersistence.size (); i++)
+        {
+            fprintf(fp1,"pocket id = %d persistence = %d\n",i,pocPersistence[i]);
+        }
+        fclose(fp1);*/
 }
 
 /*!
@@ -372,14 +404,14 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
             VolPocket[i] = 0.0;
         }
 
-        FILE *fp = fopen("pocvol.txt","w");
+       // FILE *fp = fopen("pocvol.txt","w");
 
         for (ipocket = 0; ipocket < npockets; ipocket++)
         {
                 for (id = 0; id < AllPockets[ipocket].size(); id++)
                 {
                         idx = AllPockets[ipocket][id];
-                        fprintf(fp,"tetindex = %d\n",idx);
+                        //fprintf(fp,"tetindex = %d\n",idx);
                         i = delcx->DeluanayTet[idx].Corners[1];
                         j = delcx->DeluanayTet[idx].Corners[2];
                         k = delcx->DeluanayTet[idx].Corners[3];
@@ -424,10 +456,10 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
 
                         tetra_volume = spm->TetraVolume(a, b, c, d);
 
-                        fprintf(fp,"tetravolume = %f\n",tetra_volume);
+                        //fprintf(fp,"tetravolume = %f\n",tetra_volume);
                         VolPocket[ipocket] += tetra_volume;
-                        fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                        fprintf(fp,"\n");
+                        //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                        //fprintf(fp,"\n");
                         //check all vertices of the tetrahedron
                         if (vertexList[i].AlphaStatus == 0)
                         {
@@ -438,11 +470,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += surfa;
                                 VolPocket[ipocket] -= vola;
 
-                                fprintf(fp,"corner1 volume = %lf\n",vola);
-                                fprintf(fp,"corner1 surface =%lf\n",surfa);
-                                fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"corner1 volume = %lf\n",vola);
+                                //fprintf(fp,"corner1 surface =%lf\n",surfa);
+                                //fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (vertexList[j].AlphaStatus == 0)
@@ -454,11 +486,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += surfa;
                                 VolPocket[ipocket] -= vola;
 
-                                fprintf(fp,"corner2 volume = %lf\n",vola);
-                                fprintf(fp,"corner2 surface =%lf\n",surfa);
-                                fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"corner2 volume = %lf\n",vola);
+                                //fprintf(fp,"corner2 surface =%lf\n",surfa);
+                                //fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (vertexList[k].AlphaStatus == 0)
@@ -470,11 +502,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += surfa;
                                 VolPocket[ipocket] -= vola;
 
-                                fprintf(fp,"corner3 volume = %lf\n",vola);
-                                fprintf(fp,"corner3 surface =%lf\n",surfa);
-                                fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"corner3 volume = %lf\n",vola);
+                                //fprintf(fp,"corner3 surface =%lf\n",surfa);
+                                //fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (vertexList[l].AlphaStatus == 0)
@@ -486,11 +518,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += surfa;
                                 VolPocket[ipocket] -= vola;
 
-                                fprintf(fp,"corner4 volume = %lf\n",vola);
-                                fprintf(fp,"corner4 surface =%lf\n",surfa);
-                                fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"corner4 volume = %lf\n",vola);
+                                //fprintf(fp,"corner4 surface =%lf\n",surfa);
+                                //fprintf(fp,"pocketvolume = %lf\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %lf\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         //check all edges
@@ -504,11 +536,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] -= ang1 * (surfa + surfb);
                                 VolPocket[ipocket] += ang1 * (vola + volb);
 
-                                fprintf(fp,"angle1 = %f\n",ang1);
-                                fprintf(fp,"edge1 volume = %f\n",vola + volb);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"angle1 = %f\n",ang1);
+                                //fprintf(fp,"edge1 volume = %f\n",vola + volb);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayEdges[pair2].AlphaStatus == 1)
@@ -521,11 +553,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] -= ang2 * (surfa + surfb);
                                 VolPocket[ipocket] += ang2 * (vola + volb);
 
-                                fprintf(fp,"angle2 = %f\n",ang2);
-                                fprintf(fp,"edge2 volume = %f\n",vola + volb);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"angle2 = %f\n",ang2);
+                                //fprintf(fp,"edge2 volume = %f\n",vola + volb);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayEdges[pair3].AlphaStatus == 1)
@@ -538,11 +570,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] -= ang3 * (surfa + surfb);
                                 VolPocket[ipocket] += ang3 * (vola + volb);
 
-                                fprintf(fp,"angle3 = %f\n",ang3);
-                                fprintf(fp,"edge3 volume = %f\n",vola + volb);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"angle3 = %f\n",ang3);
+                                //fprintf(fp,"edge3 volume = %f\n",vola + volb);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayEdges[pair4].AlphaStatus == 1)
@@ -555,11 +587,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] -= ang4 * (surfa + surfb);
                                 VolPocket[ipocket] += ang4 * (vola + volb);
 
-                                fprintf(fp,"angle4 = %f\n",ang4);
-                                fprintf(fp,"edge4 volume = %f\n",vola + volb);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"angle4 = %f\n",ang4);
+                                //fprintf(fp,"edge4 volume = %f\n",vola + volb);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayEdges[pair5].AlphaStatus == 1)
@@ -572,11 +604,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] -= ang5 * (surfa + surfb);
                                 VolPocket[ipocket] += ang5 * (vola + volb);
 
-                                fprintf(fp,"angle5 = %f\n",ang5);
-                                fprintf(fp,"edge5 volume = %f\n",vola + volb);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"angle5 = %f\n",ang5);
+                                //fprintf(fp,"edge5 volume = %f\n",vola + volb);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayEdges[pair6].AlphaStatus == 1)
@@ -589,11 +621,11 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] -= ang6 * (surfa + surfb);
                                 VolPocket[ipocket] += ang6 * (vola + volb);
 
-                                fprintf(fp,"angle6 = %f\n",ang6);
-                                fprintf(fp,"edge6 volume = %f\n",vola + volb);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"angle6 = %f\n",ang6);
+                                //fprintf(fp,"edge6 volume = %f\n",vola + volb);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         //Finally check faces
@@ -606,10 +638,10 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 VolPocket[ipocket] -= 0.5 * (vola + volb + volc);
 
 
-                                fprintf(fp,"trig1 volume = %f\n",vola + volb + volc);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"trig1 volume = %f\n",vola + volb + volc);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayTrigs[trig2].AlphaStatus == 1)
@@ -620,10 +652,10 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += 0.5 * (surfa + surfb + surfc);
                                 VolPocket[ipocket] -= 0.5 * (vola + volb + volc);
 
-                                fprintf(fp,"trig2 volume = %f\n",vola + volb + volc);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"trig2 volume = %f\n",vola + volb + volc);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayTrigs[trig3].AlphaStatus == 1)
@@ -634,10 +666,10 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += 0.5 * (surfa + surfb + surfc);
                                 VolPocket[ipocket] -= 0.5 * (vola + volb + volc);
 
-                                fprintf(fp,"trig3 volume = %f\n",vola + volb + volc);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"trig3 volume = %f\n",vola + volb + volc);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
 
                         if (delcx->DeluanayTrigs[trig4].AlphaStatus == 1)
@@ -648,15 +680,15 @@ void Pocket::MeasurePockets(DeluanayComplex *delcx, std::vector<Vertex> & vertex
                                 SurfPocket[ipocket] += 0.5 * (surfa + surfb + surfc);
                                 VolPocket[ipocket] -= 0.5 * (vola + volb + volc);
 
-                                fprintf(fp,"trig4 volume = %f\n",vola + volb + volc);
-                                fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
-                                fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
-                                fprintf(fp,"\n");
+                                //fprintf(fp,"trig4 volume = %f\n",vola + volb + volc);
+                                //fprintf(fp,"pocketvolume = %f\n",VolPocket[ipocket]);
+                                //fprintf(fp,"pocarea = %f\n",SurfPocket[ipocket]);
+                                //fprintf(fp,"\n");
                         }
                 }
-                fprintf(fp,"----------------------------------\n----------------------------------\n");
+                //fprintf(fp,"----------------------------------\n----------------------------------\n");
         }
-        fclose(fp);
+        //fclose(fp);
         for (i = 0; i < npockets; i++)
         {
                 if (SurfPocket[i] < 0) SurfPocket[i] = 0;
@@ -672,8 +704,11 @@ void Pocket::FillTable(QTableWidget *table,std::vector<int> & PocketNMouths,QLin
         QString insertionString;
         QTableWidgetItem *insertionItem;
         TotVolume = 0;
+        double TotPocVolume = 0.0;
+        double TotVoidVolume = 0.0;
         TotSurfArea = 0;
         table->setRowCount(npockets);
+        FILE *fp = fopen("pocvolgraph.txt","w");
         for(int i = 0;i<npockets;i++)
         {
                 QString &tempstr = insertionString.setNum(i+1);
@@ -696,8 +731,17 @@ void Pocket::FillTable(QTableWidget *table,std::vector<int> & PocketNMouths,QLin
                 insertionItem = new QTableWidgetItem(tempstr);
                 table->setItem(i,4,insertionItem);
 
-                TotVolume+=VolPocket[i];
-                TotSurfArea+=SurfPocket[i];
+                if(PocketNMouths[i] == 0)               //voids
+                {
+                    TotVoidVolume += VolPocket[i];
+                }
+                else                                    //pockets
+                {
+                    TotPocVolume += VolPocket[i];
+                }
+
+                TotVolume += VolPocket[i];
+                TotSurfArea += SurfPocket[i];
         }
 
         QString &ran = insertionString.setNum(TotVolume,'f',5);
@@ -705,6 +749,8 @@ void Pocket::FillTable(QTableWidget *table,std::vector<int> & PocketNMouths,QLin
 
         ran = insertionString.setNum(TotSurfArea,'f',5);
         pocSurf->setText(ran);
+        //fprintf(fp,"%lf %lf %lf",TotVolume,TotPocVolume,TotVoidVolume);
+        //fclose(fp);
 }
 
 /*!
@@ -856,60 +902,7 @@ void Pocket::RenderSingle(DeluanayComplex *delcx,std::vector<Vertex> & vertexLis
                 InitMaterial(i);
                 for (int j = 0; j < AllPockets[i].size(); j++)
                 {
-                    if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))//(pocPersistence[i]<persistence))//
-                    {
-                            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                    }
-                    else
-                    {
-                            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                    }
-                    DrawTet(delcx, vertexList, AllPockets[i][j],mouth);
-                }
-            }
-        }
-        else
-        {
-            skin->Draw(smoothShading,skinWireFrame,i);
-        }
-}
-
-void Pocket::RenderTwo(DeluanayComplex *delcx,std::vector<Vertex> & vertexList,std::vector<int> & PocketNMouths,bool allPockets,bool onlyPockets,bool onlyVoids,bool skinSurface,int persistence,int rank,int pocIndex,bool smoothShading,bool skinWireFrame,bool mouth,bool pocketWireFrame)
-{
-        int i = pocIndex-1;
-
-        if(!skinSurface)
-        {
-            if(allPockets)
-            {
-                InitMaterial(i);
-                for (int j = 0; j < AllPockets[i].size(); j++)
-                {
                     if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))
-                    {
-                            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                    }
-                    else
-                    {
-                            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                    }
-                    DrawTet(delcx, vertexList, AllPockets[i][j],mouth);
-                }
-            }
-            else
-            {
-                if (onlyVoids && !onlyPockets)
-                {
-                        if (PocketNMouths[i] != 0) return;
-                }
-                else if (onlyPockets && !onlyVoids)
-                {
-                        if (PocketNMouths[i] == 0) return;
-                }
-                InitMaterial(i);
-                for (int j = 0; j < AllPockets[i].size(); j++)
-                {
-                    if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))//(pocPersistence[i]<persistence))//
                     {
                             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                     }
@@ -946,7 +939,7 @@ void Pocket::Render(DeluanayComplex *delcx,std::vector<Vertex> & vertexList,std:
                         InitMaterial(i);
                         for (j = 0; j < AllPockets[i].size(); j++)
                         {
-                            if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))//(pocPersistence[i]<persistence))//(delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)
+                            if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))
                             {
                                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                             }
@@ -973,7 +966,7 @@ void Pocket::Render(DeluanayComplex *delcx,std::vector<Vertex> & vertexList,std:
                         InitMaterial(i);
                         for (j = 0; j < AllPockets[i].size(); j++)
                         {
-                                if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))//(pocPersistence[i]<persistence))//(delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)
+                                if((pocketWireFrame) || ((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)))
                                 {
                                         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                                 }
@@ -988,33 +981,6 @@ void Pocket::Render(DeluanayComplex *delcx,std::vector<Vertex> & vertexList,std:
         }
         else
         {
-                /*if(rank!= Rank)
-                {
-                        for (int i = 0; i < npockets; i++)
-                        {
-                                for (j = 0; j < AllPockets[i].size(); j++)
-                                {
-                                        if((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence >= persistence))
-                                        {
-                                                delcx->DeluanayTet[AllPockets[i][j]].center4(vertexList,skinList);
-                                        }
-                                }
-                        }
-                }
-                glPointSize(5.0);
-                glBegin(GL_POINTS);
-                for(int _i=0; _i < skinList.size();_i++)
-                {
-                        //skinList[_i].Coordinates[1] -= pcenter[0];
-                        //skinList[_i].Coordinates[2] -= pcenter[1];
-                        //skinList[_i].Coordinates[3] -= pcenter[2];
-                        //skinList[_i].Coordinates[1] *= pscale;
-                        //skinList[_i].Coordinates[2] *= pscale;
-                        //skinList[_i].Coordinates[3] *= pscale;
-                        glVertex3d(skinList[_i].Coordinates[1],skinList[_i].Coordinates[2],skinList[_i].Coordinates[3]);
-                }
-                glEnd();
-                glPointSize(1.0);*/
                 if(rank != Rank)
                 {
                         system("rm -f skin_lev0.off");
@@ -1025,7 +991,7 @@ void Pocket::Render(DeluanayComplex *delcx,std::vector<Vertex> & vertexList,std:
                         {
                                 for (j = 0; j < AllPockets[i].size(); j++)
                                 {
-                                        if((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence >= persistence))//(pocPersistence[i]<persistence))//(delcx->DeluanayTet[AllPockets[i][j]].Persistence < persistence)
+                                        if((delcx->DeluanayTet[AllPockets[i][j]].Persistence!=-1) && (delcx->DeluanayTet[AllPockets[i][j]].Persistence >= persistence))
                                         {
                                                 delcx->DeluanayTet[AllPockets[i][j]].center4(vertexList,skinList);
                                         }

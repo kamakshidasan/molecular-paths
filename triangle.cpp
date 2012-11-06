@@ -46,6 +46,7 @@ Triangle::Triangle()
         this->Repeats = -1;
         this->MainRepeats = -1;
         this->Persistence = -1;
+        this->AlphaPersistence = 0.0;
         this->Normal = new Vector3(0.0,0.0,0.0);
 }
 
@@ -75,6 +76,7 @@ Triangle::Triangle(unsigned int n[3])
         this->Repeats = -1;
         this->MainRepeats = -1;
         this->Persistence = -1;
+        this->AlphaPersistence = 0.0;
         this->Normal = new Vector3(0.0,0.0,0.0);
 }
 

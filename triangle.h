@@ -49,6 +49,7 @@ class Triangle
         int Repeats;
         int MainRepeats;
         int Persistence;
+        double AlphaPersistence;
         Vector3 *Normal;
         std::vector<int> BoundarySimplices;
 

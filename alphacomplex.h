@@ -133,6 +133,7 @@ class AlphaComplex
         std::vector <MHeapNode> mHeapNode;
         std::vector <Vertex> vertexList;
         std::vector <int> sortedTet;
+        std::vector <int> sortedTrigs;
 
         DeluanayComplex *delcx;
         Size *size;

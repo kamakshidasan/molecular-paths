@@ -346,7 +346,7 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
 */
 }
 
-GLuint listID = -1, pathListID = -1;
+GLuint listID = -1, pathListID = -1, pathSpheresListID = -1;
 
 void PowerDiagram::render(bool showPath){
     if(glIsList(listID) == GL_TRUE){
@@ -355,6 +355,11 @@ void PowerDiagram::render(bool showPath){
     if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
     }
+//    if(showPath && glIsList(pathSpheresListID) == GL_TRUE){
+////        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//        glCallList(pathSpheresListID);
+////        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//    }
 }
 
 void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
@@ -485,7 +490,7 @@ void PowerDiagram::writeGraph(bool considerAlpha, const char* filename){
 void PowerDiagram::savePathCRD(const char* filename){
     if(singlePath && !pathNodes.empty()){
         currentGraph.writePathCRD(filename, &pathNodes);
-    }else if(!singlePath && !pathsNodes.empty()){
+    } else if(!singlePath && !pathsNodes.empty()){
         currentGraph.writeAllPathsCRD(filename, &pathsNodes);
     }
 }
@@ -765,6 +770,10 @@ bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<
     if(pathFound && !pathNodes.empty()){
         getPathWeights(&pathNodes, &pathEdges, X, Y, length, minY, maxY);
 
+        GLUquadric* quad = gluNewQuadric();
+        gluQuadricNormals(quad, GLU_SMOOTH);
+        gluQuadricOrientation(quad, GLU_OUTSIDE);
+
         if(glIsList(pathListID) == GL_TRUE){
             glDeleteLists(pathListID, 1);
         }
@@ -777,14 +786,34 @@ bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<
         glLineWidth(3);
         glColor3d(1,0,1);
 
-        GLUquadric* quad = gluNewQuadric();
-        gluQuadricNormals(quad, GLU_SMOOTH);
-        gluQuadricOrientation(quad, GLU_OUTSIDE);
-
         drawPath(&pathNodes, &pathEdges, quad, false);
 
         glLineWidth(1);
         glPointSize(6);
+
+        glDisable(GL_COLOR_MATERIAL);
+
+        glEndList();
+
+
+
+        if(glIsList(pathSpheresListID) == GL_TRUE){
+            glDeleteLists(pathSpheresListID, 1);
+        }
+        pathSpheresListID = glGenLists(1);
+        glNewList(pathSpheresListID, GL_COMPILE);
+
+        glEnable(GL_COLOR_MATERIAL);
+
+        glColor3d(1,0,1);
+
+        for(int i=0;i<pathNodes.size();i++){
+            GraphNode* curr = pathNodes[i];
+            glPushMatrix();
+            glTranslated(curr->x, curr->y, curr->z);
+            gluSphere(quad, sqrt(curr->pVert->powerDistance), 8, 8);
+            glPopMatrix();
+        }
 
         glDisable(GL_COLOR_MATERIAL);
 
@@ -846,6 +875,7 @@ void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vect
             Vector3::DotProduct(&diff, &diff, &dsq);
             double pd1;
             pd1 = dsq - (t1.Radius*t1.Radius);
+//            pd1 = pd1<0? 0 : sqrt(pd1);
 
             if(index == 0){
                 *minY = *maxY = pd1;

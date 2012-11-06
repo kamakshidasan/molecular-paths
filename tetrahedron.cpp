@@ -70,6 +70,7 @@ Tetrahedron::Tetrahedron()
         this->Repeats = -1;
         this->MainRepeats = -1;
         this->Persistence = -1;
+        this->AlphaPersistence = 0.0;
         this->isValid = false;
 }
 

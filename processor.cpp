@@ -81,7 +81,7 @@ double Processor::getAlphaValue(int rank)
 /*!
     \fn Processor::CalculateEverythingFor(int rank)
  */
-void Processor::CalculateEverythingFor(int rank)
+void Processor::CalculateEverythingFor(int rank, int persistence)
 {
         double real_alpha;
         if(alcx->MaximumRank!=0)
@@ -112,7 +112,7 @@ void Processor::CalculateEverythingFor(int rank)
 /*!
     \fn Processor::CalculateRelevant(int rank)
  */
-void Processor::CalculateRelevant(int rank)
+void Processor::CalculateRelevant(int rank, int persistence)
 {
         double real_alpha;
         if(alcx->MaximumRank!=0)
@@ -137,7 +137,7 @@ void Processor::CalculateRelevant(int rank)
 /*!
     \fn Processor::CalculateVolumes(int rank)
  */
-void Processor::CalculateVolumes(int rank)
+void Processor::CalculateVolumes(int rank, int persistence)
 {
         //double real_alpha;
         if(alcx->MaximumRank!=0)
@@ -351,27 +351,27 @@ void Processor::ProcessEpsilonInterval(double epsilon,int lowRank, int highRank)
 
             if(i == candidateTrigs[j].rank)//ranks match
             {
-                FILE *fp2 = fopen("tetcheck.txt","w");
+                //FILE *fp2 = fopen("tetcheck.txt","w");
                 int tet1 = alcx->delcx->DeluanayTrigs[candidateTrigs[j].simplex].ReverseLink1;
                 int tet2 = alcx->delcx->DeluanayTrigs[candidateTrigs[j].simplex].ReverseLink2;
-                        
+
                 for(uint _i = 0;_i<pockets.size();_i++)
                 {
                     for(uint _j = 0;_j<pockets[_i].size();_j++)
                     {
                         if(tet1 == pockets[_i][_j])
                         {
-                            fprintf(fp2,"trig = %d tet1 = %d candidate poc1 = %d",candidateTrigs[j].simplex,tet1,_i);
+                            //fprintf(fp2,"trig = %d tet1 = %d candidate poc1 = %d",candidateTrigs[j].simplex,tet1,_i);
                             candidatePoc1 = _i;
                         }
                         if(tet2 == pockets[_i][_j])
                         {
-                            fprintf(fp2,"trig = %d tet2 = %d candidate poc2 = %d",candidateTrigs[j].simplex,tet2,_i);
+                            //fprintf(fp2,"trig = %d tet2 = %d candidate poc2 = %d",candidateTrigs[j].simplex,tet2,_i);
                             candidatePoc2 = _i;
                         }
                     }
                 }
-                fclose (fp2);
+                //fclose (fp2);
             }
 
             if((candidatePoc1 != candidatePoc2)  && (candidatePoc1 != -1) && (candidatePoc2 != -1))//two tets are indeed in different pockets
@@ -388,9 +388,9 @@ void Processor::ProcessEpsilonInterval(double epsilon,int lowRank, int highRank)
                 if(!flag)
                 {
                     if(candidateTrigs[j].simplex == 2707){
-                        FILE *fp1 = fopen("trial","w");
-                        fprintf(fp1,"%d",candidateTrigs[j].rank);
-                        fclose(fp1);
+                        //FILE *fp1 = fopen("trial","w");
+                        //fprintf(fp1,"%d",candidateTrigs[j].rank);
+                        //fclose(fp1);
                     }
                     SimplexMasterListMap smlm(candidateTrigs[j].simplex,candidateTrigs[j].mlIndex);
                     refinedCandidateTrigs.push_back(smlm);
@@ -417,21 +417,21 @@ void Processor::ProcessEpsilonInterval(double epsilon,int lowRank, int highRank)
         }
     }
 
-    FILE* fp = fopen("candidates","w");
-    for(uint i = 0;i<refinedCandidateTrigs.size();i++)
+    //FILE* fp = fopen("candidates","w");
+    /*for(uint i = 0;i<refinedCandidateTrigs.size();i++)
     {
         int tet1 = alcx->delcx->DeluanayTrigs[refinedCandidateTrigs[i].simplex].ReverseLink1;
         int tet2 = alcx->delcx->DeluanayTrigs[refinedCandidateTrigs[i].simplex].ReverseLink2;
-        fprintf(fp,"trig = %d tet1 = %d tet2 = %d\n",refinedCandidateTrigs[i].simplex,tet1,tet2);
-        fprintf(fp,"tet1 = %d n1 = %d n2 = %d n3 = %d n4 = %d\n",tet1,alcx->delcx->DeluanayTet[tet1].Neighbours[1],alcx->delcx->DeluanayTet[tet1].Neighbours[2],alcx->delcx->DeluanayTet[tet1].Neighbours[3],alcx->delcx->DeluanayTet[tet1].Neighbours[4]);
-        fprintf(fp,"tet2 = %d n1 = %d n2 = %d n3 = %d n4 = %d\n\n",tet2,alcx->delcx->DeluanayTet[tet2].Neighbours[1],alcx->delcx->DeluanayTet[tet2].Neighbours[2],alcx->delcx->DeluanayTet[tet2].Neighbours[3],alcx->delcx->DeluanayTet[tet2].Neighbours[4]);
-    }
-    fprintf(fp,"\n");
+        //fprintf(fp,"trig = %d tet1 = %d tet2 = %d\n",refinedCandidateTrigs[i].simplex,tet1,tet2);
+        //fprintf(fp,"tet1 = %d n1 = %d n2 = %d n3 = %d n4 = %d\n",tet1,alcx->delcx->DeluanayTet[tet1].Neighbours[1],alcx->delcx->DeluanayTet[tet1].Neighbours[2],alcx->delcx->DeluanayTet[tet1].Neighbours[3],alcx->delcx->DeluanayTet[tet1].Neighbours[4]);
+        //fprintf(fp,"tet2 = %d n1 = %d n2 = %d n3 = %d n4 = %d\n\n",tet2,alcx->delcx->DeluanayTet[tet2].Neighbours[1],alcx->delcx->DeluanayTet[tet2].Neighbours[2],alcx->delcx->DeluanayTet[tet2].Neighbours[3],alcx->delcx->DeluanayTet[tet2].Neighbours[4]);
+    }*/
+    //fprintf(fp,"\n");
     /*for(uint i = 0;i<refinedCandidateTets.size();i++)
     {
         fprintf(fp,"%d\n",refinedCandidateTets[i].simplex);
     }*/
-    fclose(fp);
+    //fclose(fp);
 }
 
 void Processor::ModifyFiltration()
@@ -442,4 +442,14 @@ void Processor::ModifyFiltration()
 void Processor::UndoModify()
 {
     alcx->UndoModifyFiltration(refinedCandidateTrigs,refinedCandidateTets);
+}
+
+int Processor::getNumberOfAtoms ()
+{
+    return vertexList.size ();
+}
+
+int Processor::getNumberOfSimplices ()
+{
+    return (vertexList.size () + alcx->delcx->DeluanayEdges.size () + alcx->delcx->DeluanayTrigs.size () + alcx->delcx->DeluanayTet.size ());
 }

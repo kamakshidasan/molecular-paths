@@ -115,10 +115,11 @@ AlphaComplex::AlphaComplex(std::vector <Vertex> &vertlist)
     delcx->DefineTriangles();
     delcx->DefineEdges(vertexList);
     delcx->CalculateNormals(vertexList);
-//    delcx->CorrectNormals(vertexList);
+    //delcx->CorrectNormals(vertexList);
     MaximumRank = currentRank = vals = MaximumPersistence = 0;
     dflow->CalculateDF(delcx,vertexList);
     sortedTet.reserve(delcx->DeluanayTet.size()-delcx->redundantCount);
+    sortedTrigs.reserve (delcx->DeluanayTrigs.size ());
     alphaSkin = new SkinSurface(center,0.0,0);
     unionFind = new DisJointSet();
     volume = new Volume(vertexList,vertexList.size(),delcx->DeluanayTrigs.size(),delcx->DeluanayEdges.size());
@@ -143,6 +144,7 @@ AlphaComplex::AlphaComplex(std::vector <Vertex> &vertlist,double center[],double
     MaximumRank = currentRank = vals = MaximumPersistence = 0;
     dflow->CalculateDF(delcx,vertexList);
     sortedTet.reserve(delcx->DeluanayTet.size()-delcx->redundantCount);
+    sortedTrigs.reserve (delcx->DeluanayTrigs.size ());
     alphaSkin = new SkinSurface(center,*scale,0);
     unionFind = new DisJointSet();
     volume = new Volume(vertexList,vertexList.size(),delcx->DeluanayTrigs.size(),delcx->DeluanayEdges.size());
@@ -816,7 +818,7 @@ void AlphaComplex::CollectMaster()
     }
     assert(hn == 0);
     /*
-    sort sublists w/ insertion sort, because they're already nearly sorted
+    sort sublists with insertion sort, because they're already nearly sorted
     */
     hi = entries;
     for (r = ranks; r > 1; r--)
@@ -1077,7 +1079,7 @@ void AlphaComplex::TriangleMus()
  */
 void AlphaComplex::SpectrumClose()
 {
-    int i, j, k;
+    int i, j, k, l;
     Spectrum.reserve(vals + 2 + 1);
     MasterList.reserve(vals + 2 + 1);
     auxi.reserve(vals + 2 + 1);
@@ -1087,37 +1089,42 @@ void AlphaComplex::SpectrumClose()
         auxi[i] = 0;
     }
 
-    FILE *fp = fopen("unsorted.txt","w");
+    //FILE *fp = fopen("unsorted.txt","w");
     for (i = 1; i < vals + 1; i++)
     {
         //fprintf(fp,"%d:%d %d %lf\n",i,tListNode[i].ix,tListNode[i].ftype,RealValue(&tListNode[i].a,&tListNode[i].b)/1E16);
     }
-    fclose(fp);
+    //fclose(fp);
 
     std::vector <TlistNode> sortedTListNode(tListNode.begin(),tListNode.begin()+vals+1);
     tListNode.clear();
 
     std::sort(sortedTListNode.begin()+1,sortedTListNode.end());
 
-    k = 0;
-    fp = fopen("sortedtet.txt","w");
+    k = l = 0;
+    //fp = fopen("sortedtet.txt","w");
     for (i = 1; i < vals + 1; i++)
     {
         if (sortedTListNode[i].ftype == ALF_TETRA)
         {
             k++;
             sortedTet[k] = sortedTListNode[i].ix;
-            fprintf(fp,"%d\n",sortedTet[k]);
+            //fprintf(fp,"%d\n",sortedTet[k]);
+        }
+        else if(sortedTListNode[i].ftype == ALF_TRIANGLE)
+        {
+            l++;
+            sortedTrigs[l] = sortedTListNode[i].ix;
         }
     }
-    fclose(fp);
+    //fclose(fp);
 
-    fp = fopen("sorted.txt","w");
+    //fp = fopen("sorted.txt","w");
     for (i = 1; i < vals + 1; i++)
     {
         //fprintf(fp,"%d:%d %d %lf\n",sortedTListNode[i].si,sortedTListNode[i].ix,sortedTListNode[i].ftype,RealValue(&sortedTListNode[i].a,&sortedTListNode[i].b)/1E16);
     }
-    fclose(fp);
+    //fclose(fp);
 
     hn = entries = ranks = 0;
 
@@ -1175,7 +1182,7 @@ void AlphaComplex::BuildSpectrum()
     Edges();
     Vertices();
     SpectrumClose();
-    PrintML();
+    //PrintML();
     depth->CalculateDepth(delcx,sortedTet);
     CalculatePersistence();
 }
@@ -1196,17 +1203,48 @@ void AlphaComplex::BuildComplex(int Rank,std::vector <Vertex> &vertlist)
     {
         delcx->DeluanayEdges[i].AlphaStatus = 0;
     }
-    for (i = 1; i < delcx->DeluanayTrigs.size(); i++)
+
+    if(isFiltrationModified == false)
     {
-        delcx->DeluanayTrigs[i].AlphaStatus = 0;
-        delcx->DeluanayTrigs[i].isValid = false;
-        delcx->DeluanayTrigs[i].trigCoef = 0;
+        for (i = 1; i < delcx->DeluanayTrigs.size(); i++)
+        {
+            delcx->DeluanayTrigs[i].AlphaStatus = 0;
+            //delcx->DeluanayTrigs[i].isValid = false;
+            delcx->DeluanayTrigs[i].trigCoef = 0;
+        }
+        for (i = 1; i < delcx->DeluanayTet.size(); i++)
+        {
+            delcx->DeluanayTet[i].AlphaStatus = 0;
+            //delcx->DeluanayTet[i].isValid = false;
+        }
     }
-    for (i = 1; i < delcx->DeluanayTet.size(); i++)
+    else
     {
-        delcx->DeluanayTet[i].AlphaStatus = 0;
-        delcx->DeluanayTet[i].isValid = false;
+        /*FILE *fp2 = fopen("modaftervertices1.txt","w");
+        for(uint _i = 0; _i < vertexList.size (); _i++)
+        {
+            fprintf(fp2,"vertex id = %d valid = %d radius = %lf\n",_i,vertexList[_i].valid,vertexList[_i].Radius);
+        }
+        fclose(fp2);*/
+        for (i = 1; i < delcx->DeluanayTrigs.size(); i++)
+        {
+            if(delcx->DeluanayTrigs[i].isValid != false)
+            {
+                delcx->DeluanayTrigs[i].AlphaStatus = 0;
+                //delcx->DeluanayTrigs[i].isValid = false;
+                delcx->DeluanayTrigs[i].trigCoef = 0;
+            }
+        }
+        for (i = 1; i < delcx->DeluanayTet.size(); i++)
+        {
+            if(delcx->DeluanayTet[i].isValid != false)
+            {
+                delcx->DeluanayTet[i].AlphaStatus = 0;
+                //delcx->DeluanayTet[i].isValid = false;
+            }
+        }
     }
+
 
     assert (Rank < MaximumRank);
 
@@ -1239,92 +1277,52 @@ void AlphaComplex::BuildComplex(int Rank,std::vector <Vertex> &vertlist)
 
                             break;
                             case ALF_TRIANGLE:  {
-                                                    delcx->DeluanayTrigs[mlNode->ix].AlphaStatus = 1;
-                                                    delcx->DeluanayTrigs[mlNode->ix].isValid = true;
-                                                    int e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[1];
-                                                    delcx->DeluanayEdges[e].RenderFlag = 2;
-                                                    e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[2];
-                                                    delcx->DeluanayEdges[e].RenderFlag = 2;
-                                                    e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[3];
-                                                    delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                    if(isFiltrationModified == false)
+                                                    {
+                                                        delcx->DeluanayTrigs[mlNode->ix].AlphaStatus = 1;
+                                                        delcx->DeluanayTrigs[mlNode->ix].isValid = true;
+                                                        int e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[1];
+                                                        delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                        e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[2];
+                                                        delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                        e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[3];
+                                                        delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                    }
+                                                    else
+                                                    {
+                                                        if(delcx->DeluanayTrigs[mlNode->ix].isValid != false)
+                                                        {
+                                                            delcx->DeluanayTrigs[mlNode->ix].AlphaStatus = 1;
+                                                            delcx->DeluanayTrigs[mlNode->ix].isValid = true;
+                                                            int e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[1];
+                                                            delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                            e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[2];
+                                                            delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                            e = delcx->DeluanayTrigs[mlNode->ix].TrigLink[3];
+                                                            delcx->DeluanayEdges[e].RenderFlag = 2;
+                                                        }
+                                                    }
                                                 }
                             break;
                         case ALF_TETRA:         {
-                                                    delcx->DeluanayTet[mlNode->ix].AlphaStatus = 1;
-                                                    delcx->DeluanayTet[mlNode->ix].isValid = true;
+                                                    if(isFiltrationModified == false)
+                                                    {
+                                                        delcx->DeluanayTet[mlNode->ix].AlphaStatus = 1;
+                                                        delcx->DeluanayTet[mlNode->ix].isValid = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        if(delcx->DeluanayTet[mlNode->ix].isValid != false)
+                                                        {
+                                                            delcx->DeluanayTet[mlNode->ix].AlphaStatus = 1;
+                                                            delcx->DeluanayTet[mlNode->ix].isValid = true;
+                                                        }
+                                                    }
                                                 }
                             break;
                             default:            break;
                         }
                     }
-                    /*else
-                    {
-                        switch (MlFType())
-                        {
-                           case ALF_TRIANGLE:  {
-                                                    for(uint _i = 1; _i <= 3; _i++)
-                                                    {
-                                                        int vert = delcx->DeluanayTrigs[mlNode->ix].Corners[_i];
-                                                        vertexList[vert].valid = false;
-                                                    }
-                                               }
-                            break;
-                            case ALF_TETRA:     {
-                                                    for(uint _i = 1; _i <= 4; _i++)
-                                                    {
-                                                        int vert = delcx->DeluanayTet[mlNode->ix].Corners[_i];
-                                                        vertexList[vert].valid = false;
-                                                    }
-                                                }
-                            break;
-                            default:            break;
-                        }
-                    }*/
-                    /*AlfMasterNode * tempNode = mlNode->next;
-                    while(tempNode)
-                    {
-                        switch (tempNode->ftype)
-                        {
-                            case ALF_VERTEX:    {
-                                                    vertexList[tempNode->ix].AlphaStatus = 0;
-                                                    vertlist[tempNode->ix].AlphaStatus = 0;
-                                                }
-                            break;
-                            case ALF_EDGE:      {
-                                                    delcx->DeluanayEdges[tempNode->ix].AlphaStatus = 1;
-                                                    delcx->DeluanayEdges[tempNode->ix].RenderFlag = 1;
-                                                }
-
-                            break;
-                            case ALF_TRIANGLE:  {
-                                                    delcx->DeluanayTrigs[tempNode->ix].AlphaStatus = 1;
-                                                    int e = delcx->DeluanayTrigs[tempNode->ix].TrigLink[1];
-                                                    delcx->DeluanayEdges[e].RenderFlag = 2;
-                                                    e = delcx->DeluanayTrigs[tempNode->ix].TrigLink[2];
-                                                    delcx->DeluanayEdges[e].RenderFlag = 2;
-                                                    e = delcx->DeluanayTrigs[tempNode->ix].TrigLink[3];
-                                                    delcx->DeluanayEdges[e].RenderFlag = 2;
-
-                                                    for(uint _i = 1; _i <= 3; _i++)
-                                                    {
-                                                        int vert = delcx->DeluanayTrigs[mlNode->ix].Corners[_i];
-                                                        vertexList[vert].valid = true;
-                                                    }
-                                                }
-                            break;
-                            case ALF_TETRA:     {
-                                                    delcx->DeluanayTet[tempNode->ix].AlphaStatus = 1;
-
-                                                    for(uint _i = 1; _i <= 4; _i++)
-                                                    {
-                                                        int vert = delcx->DeluanayTet[mlNode->ix].Corners[_i];
-                                                        vertexList[vert].valid = true;
-                                                    }
-                                                }
-                            break;
-                            default:            break;
-                        }
-                    }*/
                 }
             }
             while ((MlNext() != 0));
@@ -1580,6 +1578,10 @@ void AlphaComplex::PairSimplices()
     int i,j,k,kk,jj,maxIndex;
     AlfMasterNode * tempNode;
 
+    /*
+    this algorithm does the cycle search and pair simplices
+    */
+
     for(int r=1;r<MaximumRank;r++)
     {
         if(MlSublist(r))
@@ -1589,40 +1591,66 @@ void AlphaComplex::PairSimplices()
                 mlix++;
                 if((mlmarks[mlix]!=0) || (MlFType()!=ALF_TETRA))
                 {
+                    //considering only tetrahedra for our purposes, also avoiding repeats.
                     continue;
                 }
                 else
                 {
                     jj = mlix;
+                    //consider the set of boundary simplices for the tetrahedron.
                     int size1 = delcx->DeluanayTet[mlNode->ix].BoundarySimplices.size();
                     for(i=0;i<size1;i++)
                     {
+                        //add the boundaries to a temporary list for processing
                         ptemp1.push_back(delcx->DeluanayTet[mlNode->ix].BoundarySimplices[i]);
                     }
                     maxIndex = size1 - 1;
 
                     jj = ptemp1[maxIndex];
 
+                    /*
+                    jj temporarily represents index of the last i.e.youngest simplex.
+                    because the boundaries list is filled according to the sorted order
+                    in the function UpdateBoundaries ()
+                    */
+
                     while(jj>=0)
                     {
+                        //find the present youngest simplex.
                         tempNode = &MasterNode[jj];
 
-                        if(delcx->DeluanayTrigs[tempNode->ix].Entry == -1)
+                        if(delcx->DeluanayTrigs[tempNode->ix].Entry == -1)  //simple case
                         {
+                            /*
+                            the present youngest boundary simplex remains unpaired
+                            so pair it with the tetrahedron represented by mlnode->ix = mlix
+                            also update the tet so as to track the creator.
+                            */
                             delcx->DeluanayTrigs[tempNode->ix].Entry = mlix;
                             delcx->DeluanayTet[mlNode->ix].posIndex = jj;
                             size1 = ptemp1.size();
+                            /*
+                            add the boundary simplices to the creator so as to enalbe further processing for
+                            the case where youngest boundary simplex is paired and hence there is a collision
+                            */
                             for(i=0;i<size1;i++)
                             {
                                     delcx->DeluanayTrigs[tempNode->ix].BoundarySimplices.push_back(ptemp1[i]);
                             }
                             break;
                         }
-                        else
+                        else                            //not so simple case.
                         {
+                            /*
+                            the present youngest boundary simplex is paired which means there is collision.
+                            now we have two lists one is boundary list of the tetrahedron which is the contents of
+                            ptemp1 and the other is the boundary list which is present with the conflicted boundary
+                            simplex (triangle) now we have to add these two lists by applying symmetric difference.
+                            */
                             size1 = ptemp1.size();
                             int size2 = delcx->DeluanayTrigs[tempNode->ix].BoundarySimplices.size();
                             i = j = kk = 0;
+                            //combine ptemp1 and boundary simplices
                             for(k=0;k<size1+size2;k++)
                             {
                                 if(i == size1)
@@ -1645,17 +1673,19 @@ void AlphaComplex::PairSimplices()
                                 }
                                 if (ptemp1[i] < delcx->DeluanayTrigs[tempNode->ix].BoundarySimplices[j])
                                 {
+                                    //add element of ptemp
                                     ptemp2.push_back(ptemp1[i]);
                                     kk++;
                                     i++;
                                 }
                                 else if (ptemp1[i] > delcx->DeluanayTrigs[tempNode->ix].BoundarySimplices[j])
                                 {
+                                    //add element of boundary simplices
                                     ptemp2.push_back(delcx->DeluanayTrigs[tempNode->ix].BoundarySimplices[j]);
                                     j++;
                                     kk++;
                                 }
-                                else
+                                else        //same simplices are removed as it is symmetric difference.
                                 {
                                     i++;
                                     j++;
@@ -1702,6 +1732,8 @@ void AlphaComplex::UpdatePersistenceInfo()
                     {
                         j = delcx->DeluanayTrigs[mlNode->ix].Entry;
                         tempNode = &MasterNode[j];
+                        int r_tet = delcx->DeluanayTet[tempNode->ix].Rho;
+                        delcx->DeluanayTrigs[mlNode->ix].AlphaPersistence = delcx->DeluanayTet[tempNode->ix].AlphaPersistence = Spectrum[r_tet] - Spectrum[r];
                         int mainRepeats = mlrepeats[j] - mlrepeats[mlix];
                         delcx->DeluanayTrigs[mlNode->ix].MainRepeats = delcx->DeluanayTet[tempNode->ix].MainRepeats = mainRepeats;
                         delcx->DeluanayTrigs[mlNode->ix].Persistence = delcx->DeluanayTet[tempNode->ix].Persistence = j - mlix - mainRepeats;
@@ -1737,11 +1769,11 @@ void AlphaComplex::WritePersistence()
                     {
                         if(delcx->DeluanayTrigs[mlNode->ix].Persistence == -1)
                         {
-                            fprintf(fp,"Rank = %d Dimension = %d, Positive = %d, Negative = Infinity, Repeats = Invalid, Persistence = Infinity\n",r,2,mlNode->ix);
+                            fprintf(fp,"Rank = %d Dimension = %d, Positive = %d, Negative = Infinity, Repeats = Invalid, Persistence = Infinity AlphaPersistence = Infinity\n",r,2,mlNode->ix);
                         }
                         else
                         {
-                            fprintf(fp,"Rank = %d Dimension = %d, Positive = %d, Negative = %d, Repeats = %d, Persistence = %d\n",r,2,mlix,delcx->DeluanayTrigs[mlNode->ix].Entry,delcx->DeluanayTrigs[mlNode->ix].MainRepeats,delcx->DeluanayTrigs[mlNode->ix].Persistence);
+                            fprintf(fp,"Rank = %d Dimension = %d, Positive = %d, Negative = %d, Repeats = %d, Persistence = %d, AlphaPersistence = %lf\n",r,2,mlix,delcx->DeluanayTrigs[mlNode->ix].Entry,delcx->DeluanayTrigs[mlNode->ix].MainRepeats,delcx->DeluanayTrigs[mlNode->ix].Persistence,delcx->DeluanayTrigs[mlNode->ix].AlphaPersistence);
                         }
                     }
                 }
@@ -1762,7 +1794,7 @@ void AlphaComplex::CalculatePersistence()
     UpdateBoundaries();
     PairSimplices();
     UpdatePersistenceInfo();
-    WritePersistence();
+    //WritePersistence();
 }
 
 /*!
@@ -1830,6 +1862,25 @@ void AlphaComplex::Adjust(double real_alpha,std::vector <Vertex> &vertlist)
             vertlist[i].Coef = vertexList[i].Coef = 1;
         }
     }
+    if(isFiltrationModified == true)
+    {
+        /*FILE *fp2 = fopen("modaftervertices3.txt","w");
+        for(uint _i = 0; _i < vertexList.size (); _i++)
+        {
+            fprintf(fp2,"vertex id = %d valid = %d radius = %lf\n",_i,vertexList[_i].valid,vertexList[_i].Radius);
+        }
+        fclose(fp2);*/
+        FILE *fp3 = fopen("modified.crd","w");
+        fprintf(fp3,"%d\n\n",vertexList.size () - 1);
+        double temp_rad = 0.0;
+        for(uint _i = 1; _i < vertexList.size (); _i++)
+        {
+            temp_rad = vertlist[_i].Radius - 1.4;
+            fprintf(fp3,"%lf %lf %lf %lf\n",vertexList[_i].Coordinates[1],vertexList[_i].Coordinates[2],vertexList[_i].Coordinates[3],temp_rad);
+        }
+        fprintf(fp3,"#TER");
+        fclose(fp3);
+    }
 }
 /*!
     \fn AlphaComplex::RenderUnModified(int rank,bool al,bool wf,bool skin,bool ss,bool swf)
@@ -1882,7 +1933,6 @@ void AlphaComplex::RenderUnModified (int rank, bool al, bool wf, bool skin, bool
                     glVertex3dv(a);
                     glVertex3dv(b);
                     glVertex3dv(c);
-
                 }
             }
             glEnd();
@@ -1897,10 +1947,8 @@ void AlphaComplex::RenderUnModified (int rank, bool al, bool wf, bool skin, bool
                         a[j] = vertexList[delcx->DeluanayEdges[i].Corners[1]].NormCoordinates[j+1];
                         b[j] = vertexList[delcx->DeluanayEdges[i].Corners[2]].NormCoordinates[j+1];
                     }
-
                     glVertex3dv(a);
                     glVertex3dv(b);
-
                 }
             }
             glEnd();
@@ -1914,9 +1962,7 @@ void AlphaComplex::RenderUnModified (int rank, bool al, bool wf, bool skin, bool
                     {
                         a[j] = vertexList[i].NormCoordinates[j+1];
                     }
-
                     glVertex3dv(a);
-
                 }
             }
             glEnd();
@@ -2341,7 +2387,13 @@ void AlphaComplex::MarkRelevantSimplices(double epsilon,int lowRank, int highRan
 void AlphaComplex::ModifyFiltration(std::vector<SimplexMasterListMap> &refinedCandidateTrigs, std::vector<SimplexMasterListMap> &refinedCandidateTets)
 {
     isFiltrationModified = true;
-    FILE *fp = fopen("modified.txt","w");
+    /*FILE *fp1 = fopen("modbeforevertices.txt","w");
+    for(uint _i = 0; _i < vertexList.size (); _i++)
+    {
+        fprintf(fp1,"vertex id = %d valid = %d radius = %lf\n",_i,vertexList[_i].valid,vertexList[_i].Radius);
+    }
+    fclose(fp1);*/
+    //FILE *fp = fopen("modified.txt","w");
     for(uint i =0;i<refinedCandidateTrigs.size();i++)
     {
         //find the triangle in the filtration
@@ -2352,9 +2404,9 @@ void AlphaComplex::ModifyFiltration(std::vector<SimplexMasterListMap> &refinedCa
         MasterNode[mlIndex].isValid = false;
 
         //also mark it invalid for rendering
-        //delcx->DeluanayTrigs[simplex].isValid = false;
+        delcx->DeluanayTrigs[simplex].isValid = false;
         delcx->DeluanayTrigs[simplex].AlphaStatus = 0;
-        fprintf(fp,"simplex = %d validity = %d\n",simplex,delcx->DeluanayTrigs[simplex].isValid);
+        //fprintf(fp,"simplex = %d validity = %d\n",simplex,delcx->DeluanayTrigs[simplex].isValid);
 
         //important: mark the corners of this triangle so as to update its radius and weight later
         for(uint _i = 1; _i <= 3; _i++)
@@ -2373,15 +2425,15 @@ void AlphaComplex::ModifyFiltration(std::vector<SimplexMasterListMap> &refinedCa
         //mark them also as invalid so as to not violate the filtration
         int nextIndex = MasterList[tetrank1];
         MasterNode[nextIndex].isValid = false;
-        //delcx->DeluanayTet[tet1].isValid = false;
+        delcx->DeluanayTet[tet1].isValid = false;
         delcx->DeluanayTet[tet1].AlphaStatus = -1;
-        fprintf(fp,"tet1 = %d validity = %d\n",tet1,delcx->DeluanayTet[tet1].isValid);
+        //fprintf(fp,"tet1 = %d validity = %d status = %d\n",tet1,delcx->DeluanayTet[tet1].isValid,delcx->DeluanayTet[tet1].AlphaStatus);
 
         nextIndex = MasterList[tetrank2];
         MasterNode[nextIndex].isValid = false;
-        //delcx->DeluanayTet[tet2].isValid = false;
+        delcx->DeluanayTet[tet2].isValid = false;
         delcx->DeluanayTet[tet2].AlphaStatus = -1;
-        fprintf(fp,"tet2 = %d validity = %d\n",tet2,delcx->DeluanayTet[tet2].isValid);
+        //fprintf(fp,"tet2 = %d validity = %d  status = %d\n",tet2,delcx->DeluanayTet[tet2].isValid,delcx->DeluanayTet[tet2].AlphaStatus);
 
         //important:mark the corners of this tet so as to update its radius and weight after this loop
         for(uint _i = 1; _i <= 4; _i++)
@@ -2407,7 +2459,13 @@ void AlphaComplex::ModifyFiltration(std::vector<SimplexMasterListMap> &refinedCa
             vertexList[vert].valid = false;
         }
     }*/
-    fclose(fp);
+    //fclose(fp);
+    /*FILE *fp2 = fopen("modaftervertices.txt","w");
+    for(uint _i = 0; _i < vertexList.size (); _i++)
+    {
+        fprintf(fp2,"vertex id = %d valid = %d radius = %lf\n",_i,vertexList[_i].valid,vertexList[_i].Radius);
+    }
+    fclose(fp2);*/
 }
 
 void AlphaComplex::UndoModifyFiltration(std::vector<SimplexMasterListMap> &refinedCandidateTrigs, std::vector<SimplexMasterListMap> &refinedCandidateTets)
@@ -2420,7 +2478,7 @@ void AlphaComplex::UndoModifyFiltration(std::vector<SimplexMasterListMap> &refin
 
         MasterNode[mlIndex].isValid = true;
 
-        //delcx->DeluanayTrigs[simplex].isValid = true;
+        delcx->DeluanayTrigs[simplex].isValid = true;
         delcx->DeluanayTrigs[simplex].AlphaStatus = 1;
         for(uint _i = 1; _i <= 3; _i++)
         {
@@ -2436,12 +2494,12 @@ void AlphaComplex::UndoModifyFiltration(std::vector<SimplexMasterListMap> &refin
 
         int nextIndex = MasterList[tetrank1];
         MasterNode[nextIndex].isValid = true;
-        //delcx->DeluanayTet[tet1].isValid = true;
+        delcx->DeluanayTet[tet1].isValid = true;
         delcx->DeluanayTet[tet1].AlphaStatus = 1;
 
         nextIndex = MasterList[tetrank2];
         MasterNode[nextIndex].isValid = true;
-        //delcx->DeluanayTet[tet2].isValid = true;
+        delcx->DeluanayTet[tet2].isValid = true;
         delcx->DeluanayTet[tet2].AlphaStatus = 1;
 
         //important:mark the corners of this tet so as to update its radius and weight after this loop
@@ -2481,66 +2539,144 @@ void AlphaComplex::FindProperties (std::vector<Vertex> &vertexList,QLineEdit *to
 
     double TotSurfaceArea = 0.0,TotVolume = 0.0;
 
-     FILE *fp1 = fopen("totvolume.txt","w");
+    // FILE *fp1 = fopen("totvolume.txt","w");
+     if(!isFiltrationModified)
+     {
+         for(r = 1;r<=Rank;r++)
+         {
+             if(MlSublist (r))
+             {
+                 do
+                 {
+                     mlix++;
+                     if(MlFType () == ALF_VERTEX)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
+                             volume->VertexProperties (vertexList,idx,fp1);
+                         }
+                     }
+                     else if(MlFType () == ALF_EDGE)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
 
-    for(r = 1;r<=Rank;r++)
-    {
-        if(MlSublist (r))
-        {
-            do
-            {
-                mlix++;
-                if(MlFType () == ALF_VERTEX)
-                {
-                    if(MlIsFirst ())
-                    {
-                        idx = mlNode->ix;
-                        volume->VertexProperties (vertexList,idx,fp1);
-                    }
-                }
-                else if(MlFType () == ALF_EDGE)
-                {
-                    if(MlIsFirst ())
-                    {
-                        idx = mlNode->ix;
+                             //fprintf(fp1,"edge = %d\n",idx);
+                             int i = delcx->DeluanayEdges[idx].Corners[1];
+                             int j = delcx->DeluanayEdges[idx].Corners[2];
+                             //fprintf(fp1,"i = %d | j = %d\n",i,j);
+                             volume->EdgeProperties (vertexList,i,j,fp1);
+                         }
+                     }
+                     else if(MlFType () == ALF_TRIANGLE)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
+                             //fprintf(fp1,"trig = %d\n",idx);
+                             int i = delcx->DeluanayTrigs[idx].Corners[1];
+                             int j = delcx->DeluanayTrigs[idx].Corners[2];
+                             int k = delcx->DeluanayTrigs[idx].Corners[3];
+                             //fprintf(fp1,"i = %d | j = %d | k =%d\n",i,j,k);
+                             volume->TriangleProperties (vertexList,i,j,k,fp1);
+                         }
+                     }
+                     else if(MlFType () == ALF_TETRA)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
+                             //fprintf(fp1,"tet = %d\n",idx);
+                             int i = delcx->DeluanayTet[idx].Corners[1];
+                             int j = delcx->DeluanayTet[idx].Corners[2];
+                             int k = delcx->DeluanayTet[idx].Corners[3];
+                             int l = delcx->DeluanayTet[idx].Corners[4];
+                             //fprintf(fp1,"i = %d | j = %d | k =%d | l = %d\n",i,j,k,l);
+                             volume->TetProperties (vertexList,i,j,k,l,fp1);
+                         }
+                     }
+                 }while(MlNext ());
+             }
+         }
+     }
+    else
+     {
+         for(r = 1;r<=Rank;r++)
+         {
+             if(MlSublist (r))
+             {
+                 do
+                 {
+                     mlix++;
+                     if(MlFType () == ALF_VERTEX)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
+                             volume->VertexProperties (vertexList,idx,fp1);
+                         }
+                     }
+                     else if(MlFType () == ALF_EDGE)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
 
-                        fprintf(fp1,"edge = %d\n",idx);
-                        int i = delcx->DeluanayEdges[idx].Corners[1];
-                        int j = delcx->DeluanayEdges[idx].Corners[2];
-                        fprintf(fp1,"i = %d | j = %d\n",i,j);
-                        volume->EdgeProperties (vertexList,i,j,fp1);
-                    }
-                }
-                else if(MlFType () == ALF_TRIANGLE)
-                {
-                    if(MlIsFirst ())
-                    {
-                        idx = mlNode->ix;
-                        fprintf(fp1,"trig = %d\n",idx);
-                        int i = delcx->DeluanayTrigs[idx].Corners[1];
-                        int j = delcx->DeluanayTrigs[idx].Corners[2];
-                        int k = delcx->DeluanayTrigs[idx].Corners[3];
-                        fprintf(fp1,"i = %d | j = %d | k =%d\n",i,j,k);
-                        volume->TriangleProperties (vertexList,i,j,k,fp1);
-                    }
-                }
-                else if(MlFType () == ALF_TETRA)
-                {
-                    if(MlIsFirst ())
-                    {
-                        idx = mlNode->ix;
-                        fprintf(fp1,"tet = %d\n",idx);
-                        int i = delcx->DeluanayTet[idx].Corners[1];
-                        int j = delcx->DeluanayTet[idx].Corners[2];
-                        int k = delcx->DeluanayTet[idx].Corners[3];
-                        int l = delcx->DeluanayTet[idx].Corners[4];
-                        fprintf(fp1,"i = %d | j = %d | k =%d | l = %d\n",i,j,k,l);
-                        volume->TetProperties (vertexList,i,j,k,l,fp1);
-                    }
-                }
-            }while(MlNext ());
-        }
-    }
+                             //fprintf(fp1,"edge = %d\n",idx);
+                             int i = delcx->DeluanayEdges[idx].Corners[1];
+                             int j = delcx->DeluanayEdges[idx].Corners[2];
+                             //fprintf(fp1,"i = %d | j = %d\n",i,j);
+                             volume->EdgeProperties (vertexList,i,j,fp1);
+                         }
+                     }
+                     else if(MlFType () == ALF_TRIANGLE)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
+                             //fprintf(fp1,"trig = %d\n",idx);
+                             int i = delcx->DeluanayTrigs[idx].Corners[1];
+                             int j = delcx->DeluanayTrigs[idx].Corners[2];
+                             int k = delcx->DeluanayTrigs[idx].Corners[3];
+                             //fprintf(fp1,"i = %d | j = %d | k =%d\n",i,j,k);
+                             if(delcx->DeluanayTrigs[idx].isValid)
+                             {
+                                 volume->TriangleProperties (vertexList,i,j,k,fp1);
+                             }
+                             else
+                             {
+                                 //fprintf(fp1,"trig %d is out of the complex after modification\n",idx);
+                             }
+                         }
+                     }
+                     else if(MlFType () == ALF_TETRA)
+                     {
+                         if(MlIsFirst ())
+                         {
+                             idx = mlNode->ix;
+                             //fprintf(fp1,"tet = %d\n",idx);
+                             int i = delcx->DeluanayTet[idx].Corners[1];
+                             int j = delcx->DeluanayTet[idx].Corners[2];
+                             int k = delcx->DeluanayTet[idx].Corners[3];
+                             int l = delcx->DeluanayTet[idx].Corners[4];
+                             //fprintf(fp1,"i = %d | j = %d | k =%d | l = %d\n",i,j,k,l);
+                             if(delcx->DeluanayTet[idx].isValid)
+                             {
+                                 volume->TetProperties (vertexList,i,j,k,l,fp1);
+                             }
+                             else
+                             {
+                               //  fprintf(fp1,"tet %d is out of the complex after modification\n",idx);
+                             }
+                         }
+                     }
+                 }while(MlNext ());
+             }
+         }
+     }
+
 
     volume->FindTotal (vertexList,&TotVolume,&TotSurfaceArea);
 
@@ -2553,4 +2689,3 @@ void AlphaComplex::FindProperties (std::vector<Vertex> &vertexList,QLineEdit *to
     ran = insertionString.setNum(TotSurfaceArea,'f',5);
     totSurf->setText(ran);
 }
-

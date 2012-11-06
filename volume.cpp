@@ -103,11 +103,11 @@ void Volume::VertexProperties(std::vector<Vertex> &vertexList,int idx,FILE *fp1)
     IndSurfArea[idx] = ball_area;
     IndVolume[idx] = ball_volume;
 
-    fprintf(fp1,"point = %d\n",idx);
+    /*fprintf(fp1,"point = %d\n",idx);
     fprintf(fp1,"radius2 = %lf\n",Radius2[idx]);
     fprintf(fp1,"surf =  %lf\n",IndSurfArea[idx]);
     fprintf(fp1,"vol =  %lf\n",IndVolume[idx]);
-    fprintf(fp1,"\n");
+    fprintf(fp1,"\n");*/
 }
 
 void Volume::EdgeProperties(std::vector<Vertex> &vertexList,int i,int j,FILE *fp1)
@@ -120,10 +120,10 @@ void Volume::EdgeProperties(std::vector<Vertex> &vertexList,int i,int j,FILE *fp
     vol_i = met->CapVolume (vertexList,i,j);
     vol_j = met->CapVolume (vertexList,j,i);
 
-    fprintf(fp1,"surfi before = %lf\n",IndSurfArea[i]);
-    fprintf(fp1,"surfj before = %lf\n",IndSurfArea[j]);
-    fprintf(fp1,"voli before = %lf\n",IndVolume[i]);
-    fprintf(fp1,"volj before = %lf\n",IndVolume[j]);
+    //fprintf(fp1,"surfi before = %lf\n",IndSurfArea[i]);
+    //fprintf(fp1,"surfj before = %lf\n",IndSurfArea[j]);
+    //fprintf(fp1,"voli before = %lf\n",IndVolume[i]);
+    //fprintf(fp1,"volj before = %lf\n",IndVolume[j]);
 
     IndSurfArea[i] -= aux_i;
     IndSurfArea[j] -= aux_j;
@@ -131,13 +131,13 @@ void Volume::EdgeProperties(std::vector<Vertex> &vertexList,int i,int j,FILE *fp
     IndVolume[i] -= vol_i;
     IndVolume[j] -= vol_j;
 
-    fprintf(fp1,"------------\n");
+    //fprintf(fp1,"------------\n");
 
-    fprintf(fp1,"surfi after = %lf\n",IndSurfArea[i]);
-    fprintf(fp1,"surfj after = %lf\n",IndSurfArea[j]);
-    fprintf(fp1,"voli after = %lf\n",IndVolume[i]);
-    fprintf(fp1,"volj after = %lf\n",IndVolume[j]);
-    fprintf(fp1,"\n");
+    //fprintf(fp1,"surfi after = %lf\n",IndSurfArea[i]);
+    //fprintf(fp1,"surfj after = %lf\n",IndSurfArea[j]);
+    //fprintf(fp1,"voli after = %lf\n",IndVolume[i]);
+    //fprintf(fp1,"volj after = %lf\n",IndVolume[j]);
+    //fprintf(fp1,"\n");
 
 }
 
@@ -153,12 +153,12 @@ void Volume::TriangleProperties(std::vector<Vertex> &vertexList,int i,int j,int 
     vol_j = met->Cap2Volume (vertexList,j,i,k);
     vol_k = met->Cap2Volume (vertexList,k,i,j);
 
-    fprintf(fp1,"surfi before = %lf\n",IndSurfArea[i]);
-    fprintf(fp1,"surfj before = %lf\n",IndSurfArea[j]);
-    fprintf(fp1,"surfk before = %lf\n",IndSurfArea[k]);
-    fprintf(fp1,"voli before = %lf\n",IndVolume[i]);
-    fprintf(fp1,"volj before = %lf\n",IndVolume[j]);
-    fprintf(fp1,"volk before = %lf\n",IndVolume[k]);
+    //fprintf(fp1,"surfi before = %lf\n",IndSurfArea[i]);
+    //fprintf(fp1,"surfj before = %lf\n",IndSurfArea[j]);
+    //fprintf(fp1,"surfk before = %lf\n",IndSurfArea[k]);
+    //fprintf(fp1,"voli before = %lf\n",IndVolume[i]);
+    //fprintf(fp1,"volj before = %lf\n",IndVolume[j]);
+    //fprintf(fp1,"volk before = %lf\n",IndVolume[k]);
 
     IndSurfArea[i] += aux_i;
     IndSurfArea[j] += aux_j;
@@ -168,15 +168,15 @@ void Volume::TriangleProperties(std::vector<Vertex> &vertexList,int i,int j,int 
     IndVolume[j] += vol_j;
     IndVolume[k] += vol_k;
 
-    fprintf(fp1,"------------\n");
+    //fprintf(fp1,"------------\n");
 
-    fprintf(fp1,"surfi after = %lf\n",IndSurfArea[i]);
-    fprintf(fp1,"surfj after = %lf\n",IndSurfArea[j]);
-    fprintf(fp1,"surfk after = %lf\n",IndSurfArea[k]);
-    fprintf(fp1,"voli after = %lf\n",IndVolume[i]);
-    fprintf(fp1,"volj after = %lf\n",IndVolume[j]);
-    fprintf(fp1,"volk after = %lf\n",IndVolume[k]);
-    fprintf(fp1,"\n");
+    //fprintf(fp1,"surfi after = %lf\n",IndSurfArea[i]);
+    //fprintf(fp1,"surfj after = %lf\n",IndSurfArea[j]);
+    //fprintf(fp1,"surfk after = %lf\n",IndSurfArea[k]);
+    //fprintf(fp1,"voli after = %lf\n",IndVolume[i]);
+    //fprintf(fp1,"volj after = %lf\n",IndVolume[j]);
+    //fprintf(fp1,"volk after = %lf\n",IndVolume[k]);
+    //fprintf(fp1,"\n");
 }
 
 void Volume::TetProperties (std::vector<Vertex> &vertexList, int i, int j, int k, int l,FILE *fp1)
@@ -193,14 +193,14 @@ void Volume::TetProperties (std::vector<Vertex> &vertexList, int i, int j, int k
     vol_k = met->Cap3Volume (vertexList,k,i,j,l);
     vol_l = met->Cap3Volume (vertexList,l,i,j,k);
 
-    fprintf(fp1,"surfi before = %lf\n",IndSurfArea[i]);
-    fprintf(fp1,"surfj before = %lf\n",IndSurfArea[j]);
-    fprintf(fp1,"surfk before = %lf\n",IndSurfArea[k]);
-    fprintf(fp1,"surfl before = %lf\n",IndSurfArea[l]);
-    fprintf(fp1,"voli before = %lf\n",IndVolume[i]);
-    fprintf(fp1,"volj before = %lf\n",IndVolume[j]);
-    fprintf(fp1,"volk before = %lf\n",IndVolume[k]);
-    fprintf(fp1,"voll before = %lf\n",IndVolume[l]);
+    //fprintf(fp1,"surfi before = %lf\n",IndSurfArea[i]);
+    //fprintf(fp1,"surfj before = %lf\n",IndSurfArea[j]);
+    //fprintf(fp1,"surfk before = %lf\n",IndSurfArea[k]);
+    //fprintf(fp1,"surfl before = %lf\n",IndSurfArea[l]);
+    //fprintf(fp1,"voli before = %lf\n",IndVolume[i]);
+    //fprintf(fp1,"volj before = %lf\n",IndVolume[j]);
+    //fprintf(fp1,"volk before = %lf\n",IndVolume[k]);
+    //fprintf(fp1,"voll before = %lf\n",IndVolume[l]);
 
     IndSurfArea[i] -= aux_i;
     IndSurfArea[j] -= aux_j;
@@ -212,17 +212,17 @@ void Volume::TetProperties (std::vector<Vertex> &vertexList, int i, int j, int k
     IndVolume[k] -= vol_k;
     IndVolume[l] -= vol_l;
 
-    fprintf(fp1,"------------\n");
+    //fprintf(fp1,"------------\n");
 
-    fprintf(fp1,"surfi after = %lf\n",IndSurfArea[i]);
-    fprintf(fp1,"surfj after = %lf\n",IndSurfArea[j]);
-    fprintf(fp1,"surfk after = %lf\n",IndSurfArea[k]);
-    fprintf(fp1,"surfl after = %lf\n",IndSurfArea[l]);
-    fprintf(fp1,"voli after = %lf\n",IndVolume[i]);
-    fprintf(fp1,"volj after = %lf\n",IndVolume[j]);
-    fprintf(fp1,"volk after = %lf\n",IndVolume[k]);
-    fprintf(fp1,"voll after = %lf\n",IndVolume[l]);
-    fprintf(fp1,"\n");
+    //fprintf(fp1,"surfi after = %lf\n",IndSurfArea[i]);
+    //fprintf(fp1,"surfj after = %lf\n",IndSurfArea[j]);
+    //fprintf(fp1,"surfk after = %lf\n",IndSurfArea[k]);
+    //fprintf(fp1,"surfl after = %lf\n",IndSurfArea[l]);
+    //fprintf(fp1,"voli after = %lf\n",IndVolume[i]);
+    //fprintf(fp1,"volj after = %lf\n",IndVolume[j]);
+    //fprintf(fp1,"volk after = %lf\n",IndVolume[k]);
+    //fprintf(fp1,"voll after = %lf\n",IndVolume[l]);
+    //fprintf(fp1,"\n");
 }
 
 void Volume::FindTotal(std::vector<Vertex> &vertexList,double *TotVol, double *TotSurf)
@@ -230,8 +230,8 @@ void Volume::FindTotal(std::vector<Vertex> &vertexList,double *TotVol, double *T
     FILE * fp = fopen("IndivVolume.txt","w");
     for (unsigned int i = 1; i < vertexList.size(); i++)
     {
-        fprintf(fp,"IndSurfArea[%d] = %lf\n",i,IndSurfArea[i]);
-        fprintf(fp,"IndVolume[%d] = %lf\n",i,IndVolume[i]);
+        //fprintf(fp,"IndSurfArea[%d] = %lf\n",i,IndSurfArea[i]);
+        //fprintf(fp,"IndVolume[%d] = %lf\n",i,IndVolume[i]);
         *TotSurf = *TotSurf + IndSurfArea[i];
         *TotVol = *TotVol + IndVolume[i];
      }
@@ -416,32 +416,32 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                 }
         }
 
-        FILE *fp1 = fopen("status.txt","w");
+//        FILE *fp1 = fopen("status.txt","w");
 
         for (i = 1; i < vertexList.size(); i++)
         {
-                fprintf(fp1,"%d %d\n",i,vertexList[i].AlphaStatus);
+                //fprintf(fp1,"%d %d\n",i,vertexList[i].AlphaStatus);
         }
-        fprintf(fp1,"\n");
+        //fprintf(fp1,"\n");
         for (i = 1; i < delcx->DeluanayEdges.size(); i++)
         {
-                fprintf(fp1,"%d %d\n",i,delcx->DeluanayEdges[i].AlphaStatus);
+                //fprintf(fp1,"%d %d\n",i,delcx->DeluanayEdges[i].AlphaStatus);
         }
-        fprintf(fp1,"\n");
+        //fprintf(fp1,"\n");
         for (i = 1; i < delcx->DeluanayTrigs.size(); i++)
         {
-                fprintf(fp1,"%d %d\n",i,delcx->DeluanayTrigs[i].AlphaStatus);
+                //fprintf(fp1,"%d %d\n",i,delcx->DeluanayTrigs[i].AlphaStatus);
         }
-        fprintf(fp1,"\n");
+        //fprintf(fp1,"\n");
         for (i = 1; i < delcx->DeluanayTet.size(); i++)
         {
-                fprintf(fp1,"%d %d\n",i,delcx->DeluanayTet[i].AlphaStatus);
+                //fprintf(fp1,"%d %d\n",i,delcx->DeluanayTet[i].AlphaStatus);
         }
-        fclose(fp1);
+//        fclose(fp1);
 
 
-        FILE *fp;
-        fp = fopen("volume.txt","w");
+//        FILE *fp;R
+//        fp = fopen("volume.txt","w");
 
         for (idx = 1; idx < vertexList.size(); idx++)
         {
@@ -450,23 +450,23 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                 IndSurfArea[idx] = 4.0 * PI * Radius2[idx];
                 IndVolume[idx] = IndSurfArea[idx] * vertexList[idx].Radius / 3.0;
 
-                fprintf(fp,"point = %d\n",idx);
-                fprintf(fp,"radius2 = %lf\n",Radius2[idx]);
-                fprintf(fp,"surf =  %lf\n",IndSurfArea[idx]);
-                fprintf(fp,"vol =  %lf\n",IndVolume[idx]);
-                fprintf(fp,"\n");
+                //fprintf(fp,"point = %d\n",idx);
+                //fprintf(fp,"radius2 = %lf\n",Radius2[idx]);
+                //fprintf(fp,"surf =  %lf\n",IndSurfArea[idx]);
+                //fprintf(fp,"vol =  %lf\n",IndVolume[idx]);
+                //fprintf(fp,"\n");
         }
 
         for (idx = 1; idx < delcx->DeluanayEdges.size(); idx++)
         {
                 if (delcx->DeluanayEdges[idx].AlphaStatus == 0) continue;
 
-                fprintf(fp,"edge = %d\n",idx);
+                //fprintf(fp,"edge = %d\n",idx);
 
                 i = delcx->DeluanayEdges[idx].Corners[1];
                 j = delcx->DeluanayEdges[idx].Corners[2];
 
-                fprintf(fp,"i = %d  | j = %d\n",i,j);
+                //fprintf(fp,"i = %d  | j = %d\n",i,j);
 
                 if(i == 534 && j == 541)
                 {
@@ -497,20 +497,20 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                 spm->TwoSphereVol(a, b, ra, ra2, rb, rb2, distij, distij2, &surfa, &surfb, &vola, &volb, dsurfa3, dsurfb3, dvola3, dvolb3, option);
 
 
-                fprintf(fp,"surfi before = %lf\n",IndSurfArea[i]);
-                fprintf(fp,"surfj before = %lf\n",IndSurfArea[j]);
-                fprintf(fp,"voli before = %lf\n",IndVolume[i]);
-                fprintf(fp,"volj before = %lf\n",IndVolume[j]);
+                //fprintf(fp,"surfi before = %lf\n",IndSurfArea[i]);
+                //fprintf(fp,"surfj before = %lf\n",IndSurfArea[j]);
+                //fprintf(fp,"voli before = %lf\n",IndVolume[i]);
+                //fprintf(fp,"volj before = %lf\n",IndVolume[j]);
                 IndSurfArea[i] = IndSurfArea[i] - surfa;
                 IndSurfArea[j] = IndSurfArea[j] - surfb;
-                fprintf(fp,"------------\n");
+                //fprintf(fp,"------------\n");
                 IndVolume[i] = IndVolume[i] - vola;
                 IndVolume[j] = IndVolume[j] - volb;
-                fprintf(fp,"surfi after = %lf\n",IndSurfArea[i]);
-                fprintf(fp,"surfj after = %lf\n",IndSurfArea[j]);
-                fprintf(fp,"voli after = %lf\n",IndVolume[i]);
-                fprintf(fp,"volj after = %lf\n",IndVolume[j]);
-                fprintf(fp,"\n");
+                //fprintf(fp,"surfi after = %lf\n",IndSurfArea[i]);
+                //fprintf(fp,"surfj after = %lf\n",IndSurfArea[j]);
+                //fprintf(fp,"voli after = %lf\n",IndVolume[i]);
+                //fprintf(fp,"volj after = %lf\n",IndVolume[j]);
+                //fprintf(fp,"\n");
 
                 if (option == 0) continue;
 
@@ -533,13 +533,13 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                         idx = 2577;
                 }
 
-                fprintf(fp,"trig = %d\n",idx);
+                //fprintf(fp,"trig = %d\n",idx);
 
                 i = delcx->DeluanayTrigs[idx].Corners[1];
                 j = delcx->DeluanayTrigs[idx].Corners[2];
                 k = delcx->DeluanayTrigs[idx].Corners[3];
 
-                fprintf(fp,"i = %d  | j = %d | k = %d\n",i,j,k);
+                //fprintf(fp,"i = %d  | j = %d | k = %d\n",i,j,k);
 
                 coefa = CoefAsp[i];
                 coefb = CoefAsp[j];
@@ -581,17 +581,17 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                 {
                         spm->ThreeVolDir(a, b, c, ra, rb, rc, ra2, rb2, rc2, wa, wb, wc, dist1, dist2, dist3, d2_1, d2_2, d2_3, dvola4, dvolb4, dvolc4, angles, pabc, pacb, &eps, &sh_abc, &sh_acb, &sh_bca, option);
 
-                        fprintf(fp,"angles = %lf\n%lfn%lf\n",angles[1],angles[2],angles[3]);
-                        fprintf(fp,"sh = %lf\n%lf\n%lf\n",sh_abc,sh_acb,sh_bca);
+                        //fprintf(fp,"angles = %lf\n%lfn%lf\n",angles[1],angles[2],angles[3]);
+                        //fprintf(fp,"sh = %lf\n%lf\n%lf\n",sh_abc,sh_acb,sh_bca);
 
-                        fprintf(fp,"pabc[1] = %lf\n",pabc[1]);
-                        fprintf(fp,"pabc[2] = %lf\n",pabc[2]);
-                        fprintf(fp,"pabc[3] = %lf\n",pabc[3]);
+                        //fprintf(fp,"pabc[1] = %lf\n",pabc[1]);
+                        //fprintf(fp,"pabc[2] = %lf\n",pabc[2]);
+                        //fprintf(fp,"pabc[3] = %lf\n",pabc[3]);
 
-                        fprintf(fp,"pacb[1] = %lf\n",pacb[1]);
-                        fprintf(fp,"pacb[2] = %lf\n",pacb[2]);
-                        fprintf(fp,"pacb[3] = %lf\n",pacb[3]);
-                        fprintf(fp,"\n");
+                        //fprintf(fp,"pacb[1] = %lf\n",pacb[1]);
+                        //fprintf(fp,"pacb[2] = %lf\n",pacb[2]);
+                        //fprintf(fp,"pacb[3] = %lf\n",pacb[3]);
+                        //fprintf(fp,"\n");
 
                         trig_ang[idx].a[1] = angles[1];
                         trig_ang[idx].a[2] = angles[2];
@@ -622,37 +622,37 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                         //ivol = 1;
                         spm->ThreeVolDist(a, b, c, ra, rb, rc, ra2, rb2, rc2, wa, wb, wc, dist1, dist2, dist3, d2_1, d2_2, d2_3, &surfa, &surfb, &surfc, &vola, &volb, &volc, dsurfa4, dsurfb4, dsurfc4, dvola4, dvolb4, dvolc4, dvolda4, dvoldb4, dvoldc4, &eps, pabc, pacb, angles, &sh_abc, &sh_acb, &sh_bca, option);
 
-                        fprintf(fp,"angles = %lf\n%lf\n%lf\n",angles[1],angles[2],angles[3]);
-                        fprintf(fp,"sh = %lf\n%lf\n%lf\n",sh_abc,sh_acb,sh_bca);
+                        //fprintf(fp,"angles = %lf\n%lf\n%lf\n",angles[1],angles[2],angles[3]);
+                        //fprintf(fp,"sh = %lf\n%lf\n%lf\n",sh_abc,sh_acb,sh_bca);
 
-                        fprintf(fp,"pabc[1] = %lf\n",pabc[1]);
-                        fprintf(fp,"pabc[2] = %lf\n",pabc[2]);
-                        fprintf(fp,"pabc[3] = %lf\n",pabc[3]);
+                        //fprintf(fp,"pabc[1] = %lf\n",pabc[1]);
+                        //fprintf(fp,"pabc[2] = %lf\n",pabc[2]);
+                        //fprintf(fp,"pabc[3] = %lf\n",pabc[3]);
 
-                        fprintf(fp,"pacb[1] = %lf\n",pacb[1]);
-                        fprintf(fp,"pacb[2] = %lf\n",pacb[2]);
-                        fprintf(fp,"pacb[3] = %lf\n",pacb[3]);
+                        //fprintf(fp,"pacb[1] = %lf\n",pacb[1]);
+                        //fprintf(fp,"pacb[2] = %lf\n",pacb[2]);
+                        //fprintf(fp,"pacb[3] = %lf\n",pacb[3]);
 
-                        fprintf(fp,"surfi before = %lf\n",IndSurfArea[i]);
-                        fprintf(fp,"surfj before = %lf\n",IndSurfArea[j]);
-                        fprintf(fp,"surfk before = %lf\n",IndSurfArea[k]);
-                        fprintf(fp,"voli before = %lf\n",IndVolume[i]);
-                        fprintf(fp,"volj before = %lf\n",IndVolume[j]);
-                        fprintf(fp,"volk before = %lf\n",IndVolume[k]);
+                        //fprintf(fp,"surfi before = %lf\n",IndSurfArea[i]);
+                        //fprintf(fp,"surfj before = %lf\n",IndSurfArea[j]);
+                        //fprintf(fp,"surfk before = %lf\n",IndSurfArea[k]);
+                        //fprintf(fp,"voli before = %lf\n",IndVolume[i]);
+                        //fprintf(fp,"volj before = %lf\n",IndVolume[j]);
+                        //fprintf(fp,"volk before = %lf\n",IndVolume[k]);
                         IndSurfArea[i] = IndSurfArea[i] + 0.5 * surfa * delcx->DeluanayTrigs[idx].trigCoef;
                         IndSurfArea[j] = IndSurfArea[j] + 0.5 * surfb * delcx->DeluanayTrigs[idx].trigCoef;
                         IndSurfArea[k] = IndSurfArea[k] + 0.5 * surfc * delcx->DeluanayTrigs[idx].trigCoef;
-                        fprintf(fp,"------------\n");
+                        //fprintf(fp,"------------\n");
                         IndVolume[i] = IndVolume[i] + 0.5 * vola * delcx->DeluanayTrigs[idx].trigCoef;
                         IndVolume[j] = IndVolume[j] + 0.5 * volb * delcx->DeluanayTrigs[idx].trigCoef;
                         IndVolume[k] = IndVolume[k] + 0.5 * volc * delcx->DeluanayTrigs[idx].trigCoef;
-                        fprintf(fp,"surfi after = %lf\n",IndSurfArea[i]);
-                        fprintf(fp,"surfj after = %lf\n",IndSurfArea[j]);
-                        fprintf(fp,"surfk after = %lf\n",IndSurfArea[k]);
-                        fprintf(fp,"voli after = %lf\n",IndVolume[i]);
-                        fprintf(fp,"volj after = %lf\n",IndVolume[j]);
-                        fprintf(fp,"volk after = %lf\n",IndVolume[k]);
-                        fprintf(fp,"\n");
+                        //fprintf(fp,"surfi after = %lf\n",IndSurfArea[i]);
+                        //fprintf(fp,"surfj after = %lf\n",IndSurfArea[j]);
+                        //fprintf(fp,"surfk after = %lf\n",IndSurfArea[k]);
+                        //fprintf(fp,"voli after = %lf\n",IndVolume[i]);
+                        //fprintf(fp,"volj after = %lf\n",IndVolume[j]);
+                        //fprintf(fp,"volk after = %lf\n",IndVolume[k]);
+                        //fprintf(fp,"\n");
 
 
                         trig_ang[idx].a[1] = angles[1];
@@ -740,8 +740,8 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
 
         for (idx = 1; idx < delcx->DeluanayTet.size(); idx++)
         {
-                fprintf(fp,"tet = %d\n",idx);
-                fprintf(fp,"orient = %d\n",delcx->DeluanayTet[idx].Orient);
+                //fprintf(fp,"tet = %d\n",idx);
+                //fprintf(fp,"orient = %d\n",delcx->DeluanayTet[idx].Orient);
 
                 if (delcx->DeluanayTet[idx].AlphaStatus != 1) continue;
 
@@ -752,7 +752,7 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                 k = delcx->DeluanayTet[idx].Corners[3];
                 l = delcx->DeluanayTet[idx].Corners[4];
 
-                fprintf(fp,"i = %d  | j = %d | k = %d | l = %d\n",i,j,k,l);
+                //fprintf(fp,"i = %d  | j = %d | k = %d | l = %d\n",i,j,k,l);
 
                 ra = vertexList[i].Radius;
                 rb = vertexList[j].Radius;
@@ -787,10 +787,10 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                 trig3 = delcx->DeluanayTet[idx].TetLink[2];
                 trig4 = delcx->DeluanayTet[idx].TetLink[1];
 
-                fprintf(fp,"trig1 = %d\n",trig1);
-                fprintf(fp,"trig2 = %d\n",trig2);
-                fprintf(fp,"trig3 = %d\n",trig3);
-                fprintf(fp,"trig4 = %d\n",trig4);
+                //fprintf(fp,"trig1 = %d\n",trig1);
+                //fprintf(fp,"trig2 = %d\n",trig2);
+                //fprintf(fp,"trig3 = %d\n",trig3);
+                //fprintf(fp,"trig4 = %d\n",trig4);
 
                 pair1 = delcx->DeluanayTrigs[trig1].TrigLink[3];
                 pair2 = delcx->DeluanayTrigs[trig1].TrigLink[2];
@@ -877,33 +877,33 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                         spm->FourSphereVol(i,j,k,l,a, b, d, c, ra, rb, rd, rc, ra2, rb2, rd2, rc2, dist1, dist3, dist2, dist5, dist4, dist6, d2_1, d2_3, d2_2, d2_5, d2_4, d2_6, wa, wb, wd, wc, eps2, eps1, eps3, eps4, sh_abd, sh_adb, sh_bda, sh_abc, sh_acb, sh_bca,sh_adc, sh_acd, sh_cda, sh_bdc, sh_bcd, sh_cdb, padb, pabc, pacd, pbdc, ang_abd, ang_abc, ang_acd, ang_bcd, &surfa, &surfb, &surfd, &surfc, &vola, &volb, &vold, &volc, dsurfa5, dsurfb5, dsurfd5, dsurfc5, dvola5, dvolb5, dvold5, dvolc5, option);
                 }
 
-                fprintf(fp,"test = %d\n",test);
-                fprintf(fp,"surfi before = %lf\n",IndSurfArea[i]);
-                fprintf(fp,"surfj before = %lf\n",IndSurfArea[j]);
-                fprintf(fp,"surfk before = %lf\n",IndSurfArea[k]);
-                fprintf(fp,"surfl before = %lf\n",IndSurfArea[l]);
-                fprintf(fp,"voli before = %lf\n",IndVolume[i]);
-                fprintf(fp,"volj before = %lf\n",IndVolume[j]);
-                fprintf(fp,"volk before = %lf\n",IndVolume[k]);
-                fprintf(fp,"voll before = %lf\n",IndVolume[l]);
+                //fprintf(fp,"test = %d\n",test);
+                //fprintf(fp,"surfi before = %lf\n",IndSurfArea[i]);
+                //fprintf(fp,"surfj before = %lf\n",IndSurfArea[j]);
+                //fprintf(fp,"surfk before = %lf\n",IndSurfArea[k]);
+                //fprintf(fp,"surfl before = %lf\n",IndSurfArea[l]);
+                //fprintf(fp,"voli before = %lf\n",IndVolume[i]);
+                //fprintf(fp,"volj before = %lf\n",IndVolume[j]);
+                //fprintf(fp,"volk before = %lf\n",IndVolume[k]);
+                //fprintf(fp,"voll before = %lf\n",IndVolume[l]);
                 IndSurfArea[i] = IndSurfArea[i] - surfa;
                 IndSurfArea[j] = IndSurfArea[j] - surfb;
                 IndSurfArea[k] = IndSurfArea[k] - surfc;
                 IndSurfArea[l] = IndSurfArea[l] - surfd;
-                fprintf(fp,"------------\n");
+                //fprintf(fp,"------------\n");
                 IndVolume[i] = IndVolume[i] - vola;
                 IndVolume[j] = IndVolume[j] - volb;
                 IndVolume[k] = IndVolume[k] - volc;
                 IndVolume[l] = IndVolume[l] - vold;
-                fprintf(fp,"surfi after = %lf\n",IndSurfArea[i]);
-                fprintf(fp,"surfj after = %lf\n",IndSurfArea[j]);
-                fprintf(fp,"surfk after = %lf\n",IndSurfArea[k]);
-                fprintf(fp,"surfl after = %lf\n",IndSurfArea[l]);
-                fprintf(fp,"voli after = %lf\n",IndVolume[i]);
-                fprintf(fp,"volj after = %lf\n",IndVolume[j]);
-                fprintf(fp,"volk after = %lf\n",IndVolume[k]);
-                fprintf(fp,"voll after = %lf\n",IndVolume[l]);
-                fprintf(fp,"\n");
+                //fprintf(fp,"surfi after = %lf\n",IndSurfArea[i]);
+                //fprintf(fp,"surfj after = %lf\n",IndSurfArea[j]);
+                //fprintf(fp,"surfk after = %lf\n",IndSurfArea[k]);
+                //fprintf(fp,"surfl after = %lf\n",IndSurfArea[l]);
+                //fprintf(fp,"voli after = %lf\n",IndVolume[i]);
+                //fprintf(fp,"volj after = %lf\n",IndVolume[j]);
+                //fprintf(fp,"volk after = %lf\n",IndVolume[k]);
+                //fprintf(fp,"voll after = %lf\n",IndVolume[l]);
+                //fprintf(fp,"\n");
 
                 if (option == 0) continue;
 
@@ -933,30 +933,30 @@ void Volume::MeasureVolume(DeluanayComplex *delcx,std::vector<Vertex> & vertexLi
                         }
                 }
         }
-        fclose(fp);
+//        fclose(fp);
 
         TotSurfaceArea = 0.0;
         TotVolume = 0.0;
         Ssolv = 0.0;
         Vsolv = 0.0;
 
-        FILE * fp2 = fopen("anothervolume.txt","w");
+//        FILE * fp2 = fopen("anothervolume.txt","w");
 
         for (i = 1; i < vertexList.size(); i++)
         {
-                fprintf(fp2,"surf[%d] = %lf\n",i,IndSurfArea[i]);
-                fprintf(fp2,"vol[%d] = %lf\n",i,IndVolume[i]);
-                fprintf(fp2,"\n");
+                //fprintf(fp2,"surf[%d] = %lf\n",i,IndSurfArea[i]);
+                //fprintf(fp2,"vol[%d] = %lf\n",i,IndVolume[i]);
+                //fprintf(fp2,"\n");
                 TotSurfaceArea = TotSurfaceArea + IndSurfArea[i];
                 TotVolume = TotVolume + IndVolume[i];
                 Ssolv = Ssolv + CoefAsp[i] * IndSurfArea[i];
                 Vsolv = Vsolv + CoefAsp[i] * IndVolume[i];
         }
 
-        fprintf(fp2,"total surf = %lf\n",TotSurfaceArea);
-        fprintf(fp2,"total vol = %lf\n",TotVolume);
+        //fprintf(fp2,"total surf = %lf\n",TotSurfaceArea);
+        //fprintf(fp2,"total vol = %lf\n",TotVolume);
 
-        fclose(fp2);
+//        fclose(fp2);
         QString insertionString;
         QString &ran = insertionString.setNum(TotVolume,'f',5);
         totVol->setText(ran);

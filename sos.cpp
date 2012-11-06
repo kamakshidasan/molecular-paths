@@ -104,31 +104,6 @@ void Sos::Deter5(mpz_t deter, mpz_t b11, mpz_t b12, mpz_t b13, mpz_t b14,mpz_t b
         mpz_t d1,d2,d3,e1,e2,e3,f1,f2,f3,g1,g2,g3;
         mpz_t tmp1,tmp2,tmp3;
 
-        /*FILE * fp = fopen("gmp","w");
-
-        gmp_fprintf(fp,"b11 = %Zd\n",b11);
-        gmp_fprintf(fp,"b12 = %Zd\n",b12);
-        gmp_fprintf(fp,"b13 = %Zd\n",b13);
-        gmp_fprintf(fp,"b14 = %Zd\n",b14);
-        gmp_fprintf(fp,"b21 = %Zd\n",b21);
-        gmp_fprintf(fp,"b22 = %Zd\n",b22);
-        gmp_fprintf(fp,"b23 = %Zd\n",b23);
-        gmp_fprintf(fp,"b24 = %Zd\n",b24);
-        gmp_fprintf(fp,"b31 = %Zd\n",b31);
-        gmp_fprintf(fp,"b32 = %Zd\n",b32);
-        gmp_fprintf(fp,"b33 = %Zd\n",b33);
-        gmp_fprintf(fp,"b34 = %Zd\n",b34);
-        gmp_fprintf(fp,"b41 = %Zd\n",b41);
-        gmp_fprintf(fp,"b42 = %Zd\n",b42);
-        gmp_fprintf(fp,"b43 = %Zd\n",b43);
-        gmp_fprintf(fp,"b44 = %Zd\n",b44);
-        gmp_fprintf(fp,"b51 = %Zd\n",b51);
-        gmp_fprintf(fp,"b52 = %Zd\n",b52);
-        gmp_fprintf(fp,"b53 = %Zd\n",b53);
-        gmp_fprintf(fp,"b54 = %Zd\n",b54);
-
-        fclose(fp);*/
-
         mpz_init(c11); mpz_init(c12); mpz_init(c13); mpz_init(c14);
         mpz_init(c21); mpz_init(c22); mpz_init(c23); mpz_init(c24);
         mpz_init(c31); mpz_init(c32); mpz_init(c33); mpz_init(c34);

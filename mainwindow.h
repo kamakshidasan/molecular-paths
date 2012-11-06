@@ -27,6 +27,7 @@
 #include <pocketviewer.h>
 #include <processor.h>
 #include <iostream>
+#include <sys/time.h>
 
 
 namespace Ui

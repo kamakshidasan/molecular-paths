@@ -263,7 +263,8 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
         double s2_2, s2;
         double s3_2, s3;
         double s4_2, s4, sum_s_2;
-/*
+
+        /*
         Volume of the tetrahedron, based on all edge lengths (in fact, this is the square of the volume, multiplied by 288)
         The derivative are really (derivative/vol) and are computed from the fact that
 
@@ -272,11 +273,13 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
           val_ac*(val_ab*val_bc + 2*rb2*val_ac)
 
         where vol2 = 288*vol^2
-*/
-        FILE *fp = fopen("tetnoder","w");
+        */
+
+        //FILE *fp = fopen("tetnoder","w");
         vol = TetraVolume(a, b, c, p);
-        fprintf(fp,"vol = %f\n",vol);
-/*
+        //fprintf(fp,"vol = %f\n",vol);
+
+        /*
         Surfaces s1,s2,s3,s4 of the four faces of the tetrahedron,
         (We use the fact that for a triangle T with side lengths a,b,c, then
 
@@ -291,13 +294,14 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
         T2 : ACP	s2
         T3 : ABP	s3
         T4 : ABC	s4
-*/
-        fprintf(fp,"ra = %f\n",ra);
-        fprintf(fp,"rb = %f\n",rb);
-        fprintf(fp,"rc = %f\n",rc);
-        fprintf(fp,"rab = %f\n",rab);
-        fprintf(fp,"rbc = %f\n",rbc);
-        fprintf(fp,"rac = %f\n",rac);
+        */
+
+        //fprintf(fp,"ra = %f\n",ra);
+        //fprintf(fp,"rb = %f\n",rb);
+        //fprintf(fp,"rc = %f\n",rc);
+        //fprintf(fp,"rab = %f\n",rab);
+        //fprintf(fp,"rbc = %f\n",rbc);
+        //fprintf(fp,"rac = %f\n",rac);
         sum = (rb + rc + rbc) / 2.0;
         s1_2 = sum * (sum - rb) * (sum - rc) * (sum - rbc);
         s1 = sqrt(s1_2);
@@ -315,17 +319,8 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
         s4 = sqrt(s4_2);
 
         sum_s_2 = s1_2 + s2_2 + s3_2 + s4_2;
-        fprintf(fp,"sum_s_2 = %f\n",sum_s_2);
-/*
-        Get all six dihedral angles
+        //fprintf(fp,"sum_s_2 = %f\n",sum_s_2);
 
-        ang1 = angle_dihed(a,b,c,p) = angle_dihed(T3,T4)
-        ang2 = angle_dihed(a,c,b,p) = angle_dihed(T2,T4)
-        ang3 = angle_dihed(b,c,a,p) = angle_dihed(T1,T4)
-        ang4 = angle_dihed(a,p,b,c) = angle_dihed(T2,T3)
-        ang5 = angle_dihed(b,p,a,c) = angle_dihed(T1,T3)
-        ang6 = angle_dihed(c,p,a,b) = angle_dihed(T1,T2)
-*/
         AngleDihed(a, b, c, p, ang1, &cos_ang1);
         AngleDihed(a, c, b, p, ang2, &cos_ang2);
         AngleDihed(b, c, a, p, ang3, &cos_ang3);
@@ -333,17 +328,18 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
         AngleDihed(b, p, a, c, ang5, &cos_ang5);
         AngleDihed(c, p, a, b, ang6, &cos_ang6);
 
-        fprintf(fp,"ang1 = %f\n",*ang1);
-        fprintf(fp,"ang2 = %f\n",*ang2);
-        fprintf(fp,"ang3 = %f\n",*ang3);
-        fprintf(fp,"ang4 = %f\n",*ang4);
-        fprintf(fp,"ang5 = %f\n",*ang5);
-        fprintf(fp,"ang6 = %f\n",*ang6);
+        //fprintf(fp,"ang1 = %f\n",*ang1);
+        //fprintf(fp,"ang2 = %f\n",*ang2);
+        //fprintf(fp,"ang3 = %f\n",*ang3);
+        //fprintf(fp,"ang4 = %f\n",*ang4);
+        //fprintf(fp,"ang5 = %f\n",*ang5);
+        //fprintf(fp,"ang6 = %f\n",*ang6);
 
 
         //Get 4 other dihedral angle using cosine rule ----> doesnt work
 
-        /*val1 = 2.0 * s1 * s3 * cos_ang5;
+        /*
+        val1 = 2.0 * s1 * s3 * cos_ang5;
         val2 = 2.0 * s1 * s2 * cos_ang6;
 
         c1 = sum_s_2 - 2 * s1_2;
@@ -360,11 +356,7 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
         *ang2 = acos(cos_ang2) / (2.0 * PI);
         *ang3 = acos(cos_ang3) / (2.0 * PI);
         *ang4 = acos(cos_ang4) / (2.0 * PI);
-
-        fprintf(fp,"ang1 = %f\n",*ang1);
-        fprintf(fp,"ang2 = %f\n",*ang2);
-        fprintf(fp,"ang3 = %f\n",*ang3);
-        fprintf(fp,"ang4 = %f\n",*ang4);*/
+        */
 
         sin_ang1 = 1.5 * rab * vol / (s3 * s4);
         sin_ang2 = 1.5 * rac * vol / (s2 * s4);
@@ -377,7 +369,7 @@ void SpaceFillMeasure::Tetra3Noder(double a[], double b[], double c[], double p[
         sine[2] = sin_ang2;
         sine[3] = sin_ang3;
 
-        fclose(fp);
+        //fclose(fp);
 }
 
 
@@ -973,7 +965,7 @@ void SpaceFillMeasure::ThreeVolDist(double a[], double b[], double c[], double r
         angles[2] = seg_ang_acb;
         angles[3] = seg_ang_bca;
 
-        FILE *fp = fopen("threevoldist.txt","w");
+        /*FILE *fp = fopen("threevoldist.txt","w");
 
         fprintf(fp,"a(1) = %lf\n",a[1]);
         fprintf(fp,"a(2) = %lf\n",a[2]);
@@ -1006,7 +998,7 @@ void SpaceFillMeasure::ThreeVolDist(double a[], double b[], double c[], double r
 
         fprintf(fp,"eps = %lf\n",*eps);
 
-        fclose(fp);
+        fclose(fp);*/
 
         a1 = ra * (1.0 - 2.0 * ang_dih_abc);
         a2 = 2.0 * seg_ang_abc * val1b;
@@ -1230,7 +1222,7 @@ void SpaceFillMeasure::ThreeVolDir(double a[], double b[], double c[], double ra
         *sh_acb = *eps * cos_acb / sin_acb;
         *sh_bca = *eps * cos_bca / sin_bca;
 
-        FILE *fp = fopen("threevoldir.txt","w");
+        /*FILE *fp = fopen("threevoldir.txt","w");
         fprintf(fp,"angles(1) = %lf\n",angles[1]);
         fprintf(fp,"angles(2) = %lf\n",angles[2]);
         fprintf(fp,"angles(3) = %lf\n",angles[3]);
@@ -1247,7 +1239,7 @@ void SpaceFillMeasure::ThreeVolDir(double a[], double b[], double c[], double ra
 
         fprintf(fp,"eps = %lf\n",*eps);
 
-        fclose(fp);
+        fclose(fp);*/
 
         if (option == 0) return;
 
@@ -1805,7 +1797,7 @@ void SpaceFillMeasure::FourSphereVol(int a_index,int b_index,int c_index,int d_i
 
         cap_cd = s1 - t1 - t2;
 
-        FILE *fp = fopen("fourvol.txt","w");
+        /*FILE *fp = fopen("fourvol.txt","w");
 
         fprintf(fp,"i = %d\n",a_index);
         fprintf(fp,"j = %d\n",b_index);
@@ -1872,7 +1864,7 @@ void SpaceFillMeasure::FourSphereVol(int a_index,int b_index,int c_index,int d_i
         fprintf(fp,"cap_bd = %lf\n",cap_bd);
         fprintf(fp,"cap_cd = %lf\n",cap_cd);
 
-        fclose(fp);
+        fclose(fp);*/
 
         *vola = 2.0 * ra * (*surfa) - val2_ab * cap_ab - val2_ac * cap_ac - val2_ad * cap_ad;
         *vola = *vola / 6.0;
@@ -2103,4 +2095,3 @@ void SpaceFillMeasure::FourSphereVol(int a_index,int b_index,int c_index,int d_i
                 dvold[i][4] = dvold[i][4] + cof_ad[i] + cof_bd[i] + cof_cd[i];
         }
 }
-

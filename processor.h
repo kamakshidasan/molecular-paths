@@ -82,9 +82,9 @@ class Processor
         int getMaxPersistence();
         int getRankForAlpha(double alphavalue);
         double getAlphaValue(int rank);
-        void CalculateEverythingFor(int rank);
-        void CalculateRelevant(int rank);
-        void CalculateVolumes(int rank);
+        void CalculateEverythingFor(int rank, int persistence);
+        void CalculateRelevant(int rank, int persistence);
+        void CalculateVolumes(int rank, int persistence);
         void Render(int persistence,bool alphaShape,bool allPockets,bool onlyPockets,bool onlyVoids,bool skinSurface,bool mouths,bool allindflag,int pnum,int rank,bool wireFrame,
                     bool alphaSkinSurface,bool alphaSkinWireFrame,bool smoothShading,bool skinWireFrame,bool pocketWireFrame, bool powerDiag,
                     bool cHull, bool cHullWF, bool cHullNorm, bool showPath);
@@ -92,6 +92,8 @@ class Processor
         void ProcessEpsilonInterval(double epsilon,int lowRank,int highRank);
         void ModifyFiltration();
         void UndoModify();
+        int getNumberOfAtoms();
+        int getNumberOfSimplices();
 };
 
 #endif // PROCESSOR_H

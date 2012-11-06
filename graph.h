@@ -42,6 +42,10 @@ public:
         vec.Normalize();
         return vec;
     }
+
+    uint getOtherVertex(int v){
+        return v==v1? v2: v1;
+    }
 };
 
 using namespace lemon;
