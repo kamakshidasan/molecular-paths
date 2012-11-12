@@ -517,9 +517,26 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="startCombo">
-             <property name="editable">
-              <bool>true</bool>
+            <widget class="QLabel" name="startIndexLabel">
+             <property name="text">
+              <string>-1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Target Node:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="targetIndexLabel">
+             <property name="text">
+              <string>-1</string>
              </property>
             </widget>
            </item>
@@ -563,27 +580,6 @@
             <widget class="QPushButton" name="buttonShortestEscapePathRepeated">
              <property name="text">
               <string>Escape paths (Repeated Dijkstra)</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Target Node:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="targetCombo">
-             <property name="editable">
-              <bool>true</bool>
              </property>
             </widget>
            </item>

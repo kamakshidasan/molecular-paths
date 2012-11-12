@@ -58,10 +58,14 @@ class PocketViewer : public QGLViewer,public Processor
         void setCurrentPocNum(int num);
         void setPocketWireFrame();
 
+        QLabel* startLabel;
+        QLabel* targetLabel;
+
     protected :
         virtual void draw();
         virtual void init();
         virtual QString helpString() const;
+        void mousePressEvent(QMouseEvent *e);
 
     private:
         Processor *m_processor;

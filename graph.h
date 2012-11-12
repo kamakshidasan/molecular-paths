@@ -83,6 +83,8 @@ public:
                             std::vector<std::vector<GraphEdge*> > *pathsEdges);
     void writeGraph(const char* file);
     void writeGraphCRD(const char* file);
+    void writeGraphOFF(const char* file);
+    void writePathOFF(const char* file, std::vector<GraphNode*> *pathNodes);
     void writePathCRD(const char* file, std::vector<GraphNode*> *pathNodes);
     void writeAllPathsCRD(const char* file, std::vector<std::vector<GraphNode*> > *pathsNodes);
 };

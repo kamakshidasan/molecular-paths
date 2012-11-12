@@ -238,9 +238,13 @@ void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool only
             glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[3]);
             glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
 
-            if(powerDiag){
-                powerDiagram->render(showPath);
-            }
+            powerDiagram->render(powerDiag, showPath);
+
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, LightMaterial::MatAmb[3]);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, LightMaterial::MatDiff[3]);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, LightMaterial::MatSpec[3]);
+            glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[3]);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
 
             glEnable(GL_COLOR_MATERIAL);
             if(cHull){

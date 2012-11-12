@@ -165,7 +165,7 @@ void SkinSurface::Draw(bool smoothShading,bool skinWireFrame)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, LightMaterial::MatAmb[1]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, LightMaterial::MatDiff[1]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, LightMaterial::MatSpec[1]);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[1]);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[1]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
 
         if(skinWireFrame)

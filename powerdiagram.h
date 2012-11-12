@@ -8,6 +8,28 @@
 #include "triangle.h"
 #include "graph.h"
 #include <iostream>
+#include <qglviewer.h>
+
+using namespace qglviewer;
+
+/*
+class VertexMouseGrabber : public MouseGrabber{
+public:
+    Vector3 center;
+    int index;
+protected:
+    void checkIfGrabsMouse(int x, int y, const Camera* const camera){
+        Vec c(center.X, center.Y, center.Z);
+        Vec proj = camera->projectedCoordinatesOf(c);
+        setGrabsMouse((fabs(x-proj.x) < 10) && (fabs(y-proj.y) < 10));
+//        std::cout << "Checked" << x << "  " << y << std::endl;
+    }
+
+    void mousePressEvent(QMouseEvent* const, qglviewer::Camera* const camera) {
+        std::cout << index << std::endl;
+    }
+};
+*/
 
 class PowerVertex{
 public:
@@ -16,6 +38,36 @@ public:
     double powerDistance;
     std::vector<int> neigbours;
     bool inside;
+
+    /*
+    VertexMouseGrabber mouseGrabber;
+
+    PowerVertex(){
+    }
+
+    PowerVertex(const PowerVertex &vert){
+        tetIndex = vert.tetIndex;
+        center = vert.center;
+        powerDistance =vert.powerDistance;
+        neigbours = vert.neigbours;
+        inside = vert.inside;
+    }
+
+    PowerVertex& operator= (const PowerVertex &vert){
+        tetIndex = vert.tetIndex;
+        center = vert.center;
+        powerDistance =vert.powerDistance;
+        neigbours = vert.neigbours;
+        inside = vert.inside;
+        return *this;
+    }
+
+    void setCenter(Vector3 c){
+        center = c;
+        mouseGrabber.center = c;
+        mouseGrabber.index = tetIndex;
+    }
+    */
 };
 
 const uint INSIDE = 1;
@@ -31,6 +83,7 @@ public:
     Vector3 intersect, triIntersect;
     double leastPowerDistance;
     double weight;
+    double length;
 
     double edgeLength(std::vector <PowerVertex> *vertices, bool useIntersect){
         PowerVertex pv1 = vertices->at(v1);
@@ -55,8 +108,8 @@ public:
 
     void setLeastPowerDistance(double leastPD, std::vector <PowerVertex> *vertices, bool useIntersect){
         leastPowerDistance = leastPD;
-        double length = edgeLength(vertices, useIntersect);
-        weight = leastPowerDistance == 0? 9999999 : (length / leastPowerDistance);
+        length = edgeLength(vertices, useIntersect);
+        weight = leastPowerDistance <= 0 ? 9999999 : (length / leastPowerDistance);
     }
 
     int getOtherVertex(int v){
@@ -82,26 +135,30 @@ public:
     Graph currentGraph;
     std::vector<GraphNode*> pathNodes;
     std::vector<std::vector<GraphNode*> > pathsNodes;
+    std::vector<int> vertexMap;
 
     bool singlePath;
+    int startVert, targetVert;
 
     PowerDiagram(DeluanayComplex* delCplx, std::vector <Vertex> &vertlist,
                  double min[], double max[]);
     void printGraph();
     void makeDisplayList(bool complementSpacePD, bool onlyInsideVerts, bool pruneIsolatedVerts, bool intersectEdges);
-    void render(bool showPath);
+    void render(bool showPowerDiag, bool showPath);
+    void drawNodesForPicking();
+    int processPick(int cursorX, int cursorY);
     int getEdgeTo(int v1, int v2);
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);
     void savePathCRD(const char* filename);
-    bool findShortestPath(int start, int end, QVector<double>* X, QVector<double>* Y,
+    bool findShortestPath(QVector<double>* X, QVector<double>* Y,
                           double * length, double *minY, double *maxY);
-    int findShortestEscapePaths(int start, int steps, bool repeated, int maxIter, std::vector<QVector<double> >* Xs,
+    int findShortestEscapePaths(int steps, bool repeated, int maxIter, std::vector<QVector<double> >* Xs,
                                  std::vector<QVector<double> >* Ys,
                                  std::vector<double> * lengths, std::vector<double> *minYs,
                                  std::vector<double> *maxYs);
-    bool findShortestEscapePath(int start,QVector<double>* X, QVector<double>* Y,
-                                              double * length, double *minY, double *maxY);
+    bool findShortestEscapePath(QVector<double>* X, QVector<double>* Y,
+                                 double * length, double *minY, double *maxY);
     void getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
                         QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY);
     ~PowerDiagram();

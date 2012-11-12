@@ -81,6 +81,9 @@ typedef ListGraph::EdgeMap<double> CostMap;
 
 int Graph::runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNodes,
                         std::vector<std::vector<GraphEdge*> > *pathsEdges){
+    if(start<0 || start>=nodes.size()){
+        return -1;
+    }
     ListGraph::NodeMap<double> dist(*lemonGraph);
 //    dijkstra(*lemonGraph, *weights).distMap(dist).run(nodeMap[start]);
 
@@ -128,6 +131,10 @@ bool Graph::runDijkstraEscape(int start, std::vector<GraphNode*> *pathNodes,
 
 bool Graph::runDijkstraEscapeOneIter(int start, std::vector<GraphNode*> *pathNodes,
                              std::vector<GraphEdge*> *pathEdges, ListGraph::EdgeMap<double>* weightMap){
+    if(start<0 || start>=nodes.size()){
+        return -1;
+    }
+
     ListGraph::NodeMap<double> dist(*lemonGraph);
 
     Dijkstra<ListGraph, CostMap> dijkstra(*lemonGraph, *weightMap);
@@ -172,6 +179,9 @@ bool Graph::runDijkstraEscapeOneIter(int start, std::vector<GraphNode*> *pathNod
 
 bool Graph::runDijkstraEscapeRepeated(int start, int maxIter, std::vector<std::vector<GraphNode*> > *pathsNodes,
                         std::vector<std::vector<GraphEdge*> > *pathsEdges){
+    if(start<0 || start>=nodes.size()){
+        return -1;
+    }
     ListGraph::EdgeMap<double> weightMap(*lemonGraph);
     fillWeightMap(&weightMap);
 
@@ -279,6 +289,135 @@ void Graph::writeGraphCRD(const char* file){
             }
         }
         fprintf(fp, "\n");
+    }
+    fclose(fp);
+}
+
+void Graph::writeGraphOFF(const char* file){
+    ListGraph::EdgeMap<double> edgeLengths(*lemonGraph);
+    for(uint i=0;i<edges.size();i++){
+        GraphEdge gEdge = edges[i];
+        ListGraph::Edge edge = edgeMap[i];
+        edgeLengths[edge] = gEdge.pEdge->length;
+    }
+
+    ListGraph::NodeMap<double> dist(*lemonGraph);
+
+    Dijkstra<ListGraph, CostMap> dijkstra(*lemonGraph, edgeLengths);
+    dijkstra.distMap(dist);
+    dijkstra.init();
+    dijkstra.run(nodeMap[0]);
+
+    double maxDist = 0;
+    int maxIndex = 0;
+    for (int i=0;i<nodeMap.size();i++){
+        double curr = dist[nodeMap[i]];
+        if(dijkstra.reached(nodeMap[i]) && curr>maxDist){
+            maxDist = curr;
+            maxIndex = i;
+        }
+    }
+
+    dijkstra.distMap(dist);
+    dijkstra.init();
+    dijkstra.run(nodeMap[maxIndex]);
+
+    /*
+    int test = 0x01000002;
+    char *p = (char *)&test;
+    if (*p == 0x01)
+        std::cout<< "big endian\n";
+    else if (*p == 0x02)
+        std::cout<< "little endian\n";
+    FILE *fp=fopen(file, "wb");
+    int verts = nodes.size() + edges.size();
+    fwrite(&verts, sizeof(int), 1, fp);
+    int dim = 3;
+    fwrite(&dim, sizeof(int), 1, fp);
+    for(uint i=0; i < nodes.size(); i++){
+        GraphNode node = nodes[i];
+        float x = (float) node.x;
+        float y = (float) node.y;
+        float z = (float) node.z;
+        float rad = (float) node.radius;
+        fwrite(&x, sizeof(float), 1, fp);
+        fwrite(&y, sizeof(float), 1, fp);
+        fwrite(&z, sizeof(float), 1, fp);
+        fwrite(&rad, sizeof(float), 1, fp);
+    }
+    for(uint i=0; i < edges.size(); i++){
+        GraphEdge edge = edges[i];
+        GraphNode n1 = nodes[edge.v1];
+        GraphNode n2 = nodes[edge.v2];
+        double ep = 0.1;
+        float x = (float)(n1.x + n2.x)/2 + ep;
+        float y = (float)(n1.y + n2.y)/2 ;
+        float z = (float)(n1.z + n2.z)/2 ;
+        float fn = (float)(n1.radius + n2.radius)/2;
+        fwrite(&x, sizeof(float), 1, fp);
+        fwrite(&y, sizeof(float), 1, fp);
+        fwrite(&z, sizeof(float), 1, fp);
+        fwrite(&fn, sizeof(float), 1, fp);
+    }
+    for(uint i=0; i<edges.size();i++){
+        GraphEdge edge = edges[i];
+        int a = edge.v1;
+        int b = nodes.size()+i;
+        int c = edge.v2;
+        fwrite(&dim, sizeof(int), 1, fp);
+        fwrite(&a, sizeof(int), 1, fp);
+        fwrite(&b, sizeof(int), 1, fp);
+        fwrite(&c, sizeof(int), 1, fp);
+    }
+    int ter = -1;
+    fwrite(&ter, sizeof(int), 1, fp);
+    fclose(fp);
+    return;*/
+
+    FILE *fp = fopen(file,"w");
+    fprintf(fp, "OFF\n%d %d 0\n", nodes.size() + edges.size(), edges.size());
+    for(uint i=0; i < nodes.size(); i++){
+        GraphNode node = nodes[i];
+        fprintf(fp, "%f \t%f \t%f \t%f\n", node.x, node.y, node.z, dist[nodeMap[i]]);
+    }
+    for(uint i=0; i < edges.size(); i++){
+        GraphEdge edge = edges[i];
+        GraphNode n1 = nodes[edge.v1];
+        GraphNode n2 = nodes[edge.v2];
+        double ep = 0.1;
+        double x = (n1.x + n2.x)/2 ;
+        double y = (n1.y + n2.y)/2 ;
+        double z = (n1.z + n2.z)/2 ;
+//        double fn = (n1.radius + n2.radius)/2;
+        double fn = (dist[nodeMap[edge.v1]] + dist[nodeMap[edge.v2]])/2;
+        fprintf(fp, "%f \t%f \t%f \t%f\n", x, y, z, fn);
+    }
+    for(uint i=0; i<edges.size();i++){
+        GraphEdge edge = edges[i];
+        fprintf(fp, "3 %d %d %d\n", edge.v1, nodes.size() + i, edge.v2);
+    }
+    fclose(fp);
+}
+
+void Graph::writePathOFF(const char* file, std::vector<GraphNode*> *pathNodes){
+    FILE *fp = fopen(file,"w");
+    fprintf(fp, "OFF\n%d %d 0\n", 2*pathNodes->size() - 1, pathNodes->size()-1);
+    for(uint i=0; i < pathNodes->size(); i++){
+        GraphNode* node = pathNodes->at(i);
+        fprintf(fp, "%f \t%f \t%f \t%f\n", node->x, node->y, node->z, node->radius);
+    }
+    for(uint i=0; i < pathNodes->size()-1; i++){
+        GraphNode* n1 = pathNodes->at(i);
+        GraphNode* n2 = pathNodes->at(i+1);
+        double ep = 0.1;
+        double x = (n1->x + n2->x)/2 ;
+        double y = (n1->y + n2->y)/2 ;
+        double z = (n1->z + n2->z)/2 ;
+        double fn = (n1->radius + n2->radius)/2;
+        fprintf(fp, "%f \t%f \t%f \t%f\n", x, y, z, fn);
+    }
+    for(uint i=0; i< pathNodes->size()-1;i++){
+        fprintf(fp, "3 %d %d %d\n", i, pathNodes->size() + i, i+1);
     }
     fclose(fp);
 }

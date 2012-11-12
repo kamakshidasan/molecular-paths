@@ -54,6 +54,8 @@ PocketViewer::PocketViewer(Processor* pr,QWidget* parent)
     cHullNorm = false;
 
     showPath = true;
+
+    setMouseTracking(true);
 }
 
 void PocketViewer::init()
@@ -87,7 +89,6 @@ void PocketViewer::init()
 
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_COLOR_MATERIAL);
-    glEnable(GL_LINE_SMOOTH);
     glLineWidth(1.0);
 
     glEnable(GL_LINE_SMOOTH);
@@ -176,6 +177,31 @@ void PocketViewer::draw()
                             pocketSkinWireFrame,pocketWireframe, powerDiag, cHull, cHullWF, cHullNorm, showPath);
     }
     glPopMatrix();
+}
+
+void PocketViewer::mousePressEvent(QMouseEvent *e){
+    if(e->button()== Qt::MidButton){
+        m_processor->powerDiagram->startVert = -1;
+        m_processor->powerDiagram->targetVert = -1;
+        startLabel->setText(QString("-1"));
+        targetLabel->setText(QString("-1"));
+    }else{
+        preDraw();
+        m_processor->powerDiagram->drawNodesForPicking();
+        int select = m_processor->powerDiagram->processPick(e->x(), e->y());
+        if(select>=0){
+            if(e->button()== Qt::LeftButton){
+                m_processor->powerDiagram->startVert = select;
+                startLabel->setText(QString::number(select));
+            }
+            if(e->button()== Qt::RightButton){
+                m_processor->powerDiagram->targetVert = select;
+                targetLabel->setText(QString::number(select));
+            }
+        }
+        init();
+    }
+    QGLViewer::mousePressEvent(e);
 }
 
 void PocketViewer::setRank(int rank)

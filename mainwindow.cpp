@@ -122,6 +122,9 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
 
     ui->tableWidgetMouth->hide();
     ui->tableWidgetPocket->hide();
+
+    m_viewer1->startLabel = ui->startIndexLabel;
+    m_viewer1->targetLabel = ui->targetIndexLabel;
 }
 
 MainWindow::~MainWindow()
@@ -384,11 +387,9 @@ void MainWindow::onCheckCHullNorm()
 }
 
 void MainWindow::onSTPathClick(){
-    int startIndex = ui->startCombo->currentText().toInt();
-    int targetIndex = ui->targetCombo->currentText().toInt();
     QVector<double> X(100), Y(100);
     double length, minY, maxY;
-    bool found = m_processor->powerDiagram->findShortestPath(startIndex, targetIndex, &X, &Y, &length, &minY, &maxY);
+    bool found = m_processor->powerDiagram->findShortestPath(&X, &Y, &length, &minY, &maxY);
     if(!found){
         return;
     }
@@ -404,17 +405,16 @@ void MainWindow::onSTPathClick(){
     ui->graphWidget->yAxis->setLabel("Power Distance");
     // set axes ranges, so we see all data:
     ui->graphWidget->xAxis->setRange(0, length);
-    ui->graphWidget->yAxis->setRange(minY, maxY);
+    ui->graphWidget->yAxis->setRange(minY<0?minY:0, maxY);
     ui->graphWidget->replot();
 
     m_viewer1->updateGL();
 }
 
 void MainWindow::onShortestEscapePathClick(){
-    int startIndex = ui->startCombo->currentText().toInt();
     QVector<double> X(100), Y(100);
     double length, minY, maxY;
-    bool found = m_processor->powerDiagram->findShortestEscapePath(startIndex, &X, &Y, &length, &minY, &maxY);
+    bool found = m_processor->powerDiagram->findShortestEscapePath(&X, &Y, &length, &minY, &maxY);
     if(!found){
         return;
     }
@@ -446,11 +446,10 @@ void MainWindow::onEscapePathClickAll(){
 }
 
 void MainWindow::onEscapePathClick(bool repeated, int maxIter){
-    int startIndex = ui->startCombo->currentText().toInt();
     std::vector<QVector<double> > Xs, Ys;
     std::vector<double> lengths, minYs, maxYs;
     int shortest = m_processor->powerDiagram->
-            findShortestEscapePaths(startIndex, 100, repeated, maxIter, &Xs, &Ys, &lengths, &minYs, &maxYs);
+            findShortestEscapePaths(100, repeated, maxIter, &Xs, &Ys, &lengths, &minYs, &maxYs);
     if(shortest==-1){
         return;
     }

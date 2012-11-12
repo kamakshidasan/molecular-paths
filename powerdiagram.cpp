@@ -5,13 +5,10 @@
 #include <GL/glu.h>
 #include <skinsurface.h>
 
-bool inside(Vertex v, double min[], double max[], double pad){
-    double x = v.NormCoordinates[1];
-    double y = v.NormCoordinates[2];
-    double z = v.NormCoordinates[3];
-    return (x>(min[0]-pad) && x<(max[0]+pad) &&
-            y>(min[1]-pad) && y<(max[1]+pad) &&
-            z>(min[2]-pad) && z<(max[2]+pad));
+bool inside(Vector3 v, double min[], double max[], double pad){
+    return (v.X>(min[0]-pad) && v.X<(max[0]+pad) &&
+            v.Y>(min[1]-pad) && v.Y<(max[1]+pad) &&
+            v.Z>(min[2]-pad) && v.Z<(max[2]+pad));
 }
 
 std::vector<Triangle> getConvexHull(DeluanayComplex* delcx, std::vector<Vertex> &vertlist){
@@ -228,14 +225,13 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
             Vector3::DotProduct(&diff, &diff, &dsq);
             vert.powerDistance = dsq - (ball1.Radius*ball1.Radius);
 
-            if(inside(&cHull, vertList, vert.center)){
-//            if(inside(vert.center, min, max, (max[0]-min[0])/20.0)) {
+            if(inside(vert.center, min, max, 0.01) && inside (&cHull, vertList, vert.center)){
                 vert.inside = true;
             } else {
-//                map.push_back(-1);
                 vert.inside = false;
             }
             vertices.push_back(vert);
+            //vertices[index].setCenter(vert.center);
             map.push_back(index);
             index++;
         } else {
@@ -336,6 +332,7 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
 
     constructGraph(true);
     singlePath = true;
+    startVert = targetVert = -1;
 
 /*
     for(int i=0;i<edges.size();i++){
@@ -349,9 +346,26 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
 
 GLuint listID = -1, pathListID = -1, pathSpheresListID = -1;
 
-void PowerDiagram::render(bool showPath){
-    if(glIsList(listID) == GL_TRUE){
+void PowerDiagram::render(bool showPowerDiag, bool showPath){
+    if(showPowerDiag && glIsList(listID) == GL_TRUE){
         glCallList(listID);
+        glEnable(GL_COLOR_MATERIAL);
+        if(startVert>=0 && startVert<vertices.size()){
+            glPointSize(10);
+            glColor3d(0,1,1);
+            glBegin(GL_POINTS);
+            PowerVertex v = vertices[startVert];
+            glVertex3d(v.center.X, v.center.Y, v.center.Z);
+            glEnd();
+        }
+        if(targetVert>=0 && targetVert<vertices.size()){
+            glPointSize(10);
+            glColor3d(1,0,1);
+            glBegin(GL_POINTS);
+            PowerVertex v = vertices[targetVert];
+            glVertex3d(v.center.X, v.center.Y, v.center.Z);
+            glEnd();
+        }
     }
     if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
@@ -473,6 +487,54 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
     glEndList();
 }
 
+void convertToByte(uint i, GLubyte* bytes){
+    i = i+1;
+    bytes[0] = i & 0xff;
+    bytes[1] = (i>>8) & 0xff;
+    bytes[2] = (i>>16) & 0xff;
+//    std::cout << i << "  " << (uint)bytes[0] << "  " << (uint)bytes[1] << "  " << (uint)bytes[2] << "  " << std::endl;
+}
+
+uint convertToInt(GLubyte* bytes){
+    uint r = bytes[0];
+    uint g = bytes[1];
+    uint b = bytes[2];
+    uint i = r + (g<<8) + (b<<16);
+    return i;
+}
+
+void PowerDiagram::drawNodesForPicking() {
+    glDisable(GL_DITHER);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_POINT_SMOOTH);
+    glDisable(GL_BLEND);
+
+    glPointSize(10);
+    glBegin(GL_POINTS);
+    GLubyte color[3];
+    for(uint i=0;i<vertices.size();i++){
+        Vector3 v = vertices[i].center;
+        Tetrahedron t = delCplx->DeluanayTet[vertices[i].tetIndex];
+        if(vertices[i].inside && t.AlphaStatus<1){
+            convertToByte(i, color);
+            glColor3ub(color[0], color[1], color[2]);
+            glVertex3d(v.X, v.Y, v.Z);
+        }
+    }
+    glEnd();
+}
+
+int PowerDiagram::processPick(int cursorX, int cursorY)
+{
+    GLint viewport[4];
+    GLubyte pixel[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    glReadPixels(cursorX,viewport[3]-cursorY,1,1,GL_RGB ,GL_UNSIGNED_BYTE,(void *)pixel);
+    int index = convertToInt(pixel);
+    return index-1;
+}
+
 int PowerDiagram::getEdgeTo(int v1, int v2){
     PowerVertex pv1 = vertices[v1];
     for(int i=0;i<pv1.neigbours.size();i++){
@@ -484,13 +546,18 @@ int PowerDiagram::getEdgeTo(int v1, int v2){
 }
 
 void PowerDiagram::writeGraph(bool considerAlpha, const char* filename){
-//    currentGraph.runDijkstra(1, NULL);
-    currentGraph.writeGraphCRD(filename);
+//    currentGraph.writeGraphCRD(filename);
+    currentGraph.writeGraphOFF(filename);
+    std::string cmd = "python /home/tbmasood/Downloads/common_modules/tritools.py off_to_vtp ";
+    system(cmd.append(filename).data());
 }
 
 void PowerDiagram::savePathCRD(const char* filename){
     if(singlePath && !pathNodes.empty()){
         currentGraph.writePathCRD(filename, &pathNodes);
+//        currentGraph.writePathOFF(filename, &pathNodes);
+//        std::string cmd = "python /home/tbmasood/Downloads/common_modules/tritools.py off_to_vtp ";
+//        system(cmd.append(filename).data());
     } else if(!singlePath && !pathsNodes.empty()){
         currentGraph.writeAllPathsCRD(filename, &pathsNodes);
     }
@@ -498,7 +565,7 @@ void PowerDiagram::savePathCRD(const char* filename){
 
 void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.clear();
-    std::vector<int> map;
+    vertexMap.clear();
     int index = 0;
     for(uint i=0; i<vertices.size(); i++){
         PowerVertex* vert = &vertices[i];
@@ -513,10 +580,10 @@ void PowerDiagram::constructGraph(bool considerAlpha){
             node.radius = vert->powerDistance <= 0 ? 0 : sqrt(vert->powerDistance);
             node.pVert = vert;
             currentGraph.nodes.push_back(node);
-            map.push_back(index);
+            vertexMap.push_back(index);
             index++;
         }else{
-            map.push_back(-1);
+            vertexMap.push_back(-1);
         }
     }
     int edgeIndex = 0;
@@ -528,8 +595,8 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 GraphEdge edge;
                 edge.index = edgeIndex;
                 edge.pEdge = pEdge;
-                edge.v1 = map[pEdge->v1];
-                edge.v2 = map[pEdge->v2];
+                edge.v1 = vertexMap[pEdge->v1];
+                edge.v2 = vertexMap[pEdge->v2];
 
                 currentGraph.nodes[edge.v1].edges.push_back(edgeIndex);
                 currentGraph.nodes[edge.v2].edges.push_back(edgeIndex);
@@ -541,7 +608,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 GraphEdge edge;
                 edge.index = edgeIndex;
                 edge.pEdge = pEdge;
-                edge.v1 = map[pEdge->v1];
+                edge.v1 = vertexMap[pEdge->v1];
 
                 GraphNode node;
                 node.index = index;
@@ -549,6 +616,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 node.x = pEdge->intersect.X;
                 node.y = pEdge->intersect.Y;
                 node.z = pEdge->intersect.Z;
+                // check -- this may not be correct
                 node.radius = pEdge->leastPowerDistance <= 0 ? 0 : sqrt(pEdge->leastPowerDistance);
                 node.pVert = &vertices[pEdge->v2];
                 node.edges.push_back(edgeIndex);
@@ -565,7 +633,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
                 GraphEdge edge;
                 edge.index = edgeIndex;
                 edge.pEdge = pEdge;
-                edge.v1 = map[pEdge->v1];
+                edge.v1 = vertexMap[pEdge->v1];
 
                 GraphNode node;
                 node.index = index;
@@ -731,8 +799,12 @@ void initMultiplePathList(std::vector<std::vector<GraphNode*> > *pathsNodes){
     glEndList();
 }
 
-bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, QVector<double>* Y,
+bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
                                     double * length, double *minY, double *maxY){
+    if(startVert<0 || targetVert<0)
+        return false;
+    int start = vertexMap[startVert];
+    int target = vertexMap[targetVert];
     std::vector<GraphEdge*> pathEdges;
     double cost = currentGraph.runDijkstra(start, target, &pathNodes, &pathEdges);
     std::cout << cost << std::endl;
@@ -773,10 +845,14 @@ bool PowerDiagram::findShortestPath(int start, int target, QVector<double>* X, Q
     }
 }
 
-int PowerDiagram::findShortestEscapePaths(int start, int steps, bool repeated, int maxIter,
+int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
                                     std::vector<QVector<double> >* Xs, std::vector<QVector<double> >* Ys,
                                     std::vector<double> * lengths, std::vector<double> *minYs,
                                     std::vector<double> *maxYs){
+    if(startVert<0)
+        return false;
+    int start = vertexMap[startVert];
+
     std::vector<std::vector<GraphEdge*> > pathsEdges;
 
     int shortest = -1;
@@ -846,14 +922,22 @@ int PowerDiagram::findShortestEscapePaths(int start, int steps, bool repeated, i
 
         glEndList();
 
-        initMultiplePathList(&pathsNodes);
+        if(repeated){
+            initMultiplePathList(&pathsNodes);
+        }else if(glIsList(pathSpheresListID) == GL_TRUE){
+            glDeleteLists(pathSpheresListID, 1);
+        }
         singlePath = false;
     }
     return shortest;
 }
 
-bool PowerDiagram::findShortestEscapePath(int start,QVector<double>* X, QVector<double>* Y,
+bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y,
                                           double * length, double *minY, double *maxY){
+    if(startVert<0)
+        return false;
+    int start = vertexMap[startVert];
+
     std::vector<GraphEdge*> pathEdges;
     bool pathFound = currentGraph.runDijkstraEscape(start, &pathNodes, &pathEdges);
     if(pathFound && !pathNodes.empty()){
@@ -985,3 +1069,4 @@ PowerDiagram::~PowerDiagram()
     edges.clear();
     vertices.clear();
 }
+

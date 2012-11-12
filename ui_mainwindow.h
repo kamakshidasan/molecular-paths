@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Nov 5 23:19:21 2012
+** Created: Mon Nov 12 12:11:59 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -15,7 +15,6 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
 #include <QtGui/QGridLayout>
 #include <QtGui/QGroupBox>
 #include <QtGui/QHBoxLayout>
@@ -109,7 +108,9 @@ public:
     QVBoxLayout *verticalLayout_3;
     QHBoxLayout *horizontalLayout;
     QLabel *startLabel;
-    QComboBox *startCombo;
+    QLabel *startIndexLabel;
+    QLabel *label_2;
+    QLabel *targetIndexLabel;
     QHBoxLayout *horizontalLayout_6;
     QPushButton *buttonShortestEscapePath;
     QPushButton *buttonShortestEscapePathAll;
@@ -117,9 +118,6 @@ public:
     QLabel *label;
     QLineEdit *maxIterDijkstra;
     QPushButton *buttonShortestEscapePathRepeated;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *label_2;
-    QComboBox *targetCombo;
     QHBoxLayout *horizontalLayout_8;
     QCheckBox *checkShowPath;
     QPushButton *buttonShortestSTPath;
@@ -428,11 +426,21 @@ public:
 
         horizontalLayout->addWidget(startLabel);
 
-        startCombo = new QComboBox(groupBox_2);
-        startCombo->setObjectName(QString::fromUtf8("startCombo"));
-        startCombo->setEditable(true);
+        startIndexLabel = new QLabel(groupBox_2);
+        startIndexLabel->setObjectName(QString::fromUtf8("startIndexLabel"));
 
-        horizontalLayout->addWidget(startCombo);
+        horizontalLayout->addWidget(startIndexLabel);
+
+        label_2 = new QLabel(groupBox_2);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout->addWidget(label_2);
+
+        targetIndexLabel = new QLabel(groupBox_2);
+        targetIndexLabel->setObjectName(QString::fromUtf8("targetIndexLabel"));
+
+        horizontalLayout->addWidget(targetIndexLabel);
 
 
         verticalLayout_3->addLayout(horizontalLayout);
@@ -473,24 +481,6 @@ public:
 
 
         verticalLayout_3->addLayout(horizontalLayout_7);
-
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        label_2 = new QLabel(groupBox_2);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        horizontalLayout_2->addWidget(label_2);
-
-        targetCombo = new QComboBox(groupBox_2);
-        targetCombo->setObjectName(QString::fromUtf8("targetCombo"));
-        targetCombo->setEditable(true);
-
-        horizontalLayout_2->addWidget(targetCombo);
-
-
-        verticalLayout_3->addLayout(horizontalLayout_2);
 
         horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setSpacing(6);
@@ -695,12 +685,14 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Power Diagram", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Shortest Escape Route", 0, QApplication::UnicodeUTF8));
         startLabel->setText(QApplication::translate("MainWindow", "Start Node:", 0, QApplication::UnicodeUTF8));
+        startIndexLabel->setText(QApplication::translate("MainWindow", "-1", 0, QApplication::UnicodeUTF8));
+        label_2->setText(QApplication::translate("MainWindow", "Target Node:", 0, QApplication::UnicodeUTF8));
+        targetIndexLabel->setText(QApplication::translate("MainWindow", "-1", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePath->setText(QApplication::translate("MainWindow", "Find Shortest Escape Path", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePathAll->setText(QApplication::translate("MainWindow", "Find Shortest Escape Path (All)", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "Max Iterations:", 0, QApplication::UnicodeUTF8));
         maxIterDijkstra->setText(QApplication::translate("MainWindow", "10", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePathRepeated->setText(QApplication::translate("MainWindow", "Escape paths (Repeated Dijkstra)", 0, QApplication::UnicodeUTF8));
-        label_2->setText(QApplication::translate("MainWindow", "Target Node:", 0, QApplication::UnicodeUTF8));
         checkShowPath->setText(QApplication::translate("MainWindow", "Show Path(s)", 0, QApplication::UnicodeUTF8));
         buttonShortestSTPath->setText(QApplication::translate("MainWindow", "Find Shortest Source-Target path", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Shortest Path", 0, QApplication::UnicodeUTF8));
