@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue Nov 13 16:29:58 2012
+** Created: Wed Nov 14 02:33:51 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -122,8 +122,11 @@ public:
     QLineEdit *maxIterDijkstra;
     QPushButton *buttonShortestEscapePathRepeated;
     QHBoxLayout *horizontalLayout_8;
-    QCheckBox *checkShowPath;
     QPushButton *buttonShortestSTPath;
+    QHBoxLayout *horizontalLayout_2;
+    QCheckBox *checkShowPath;
+    QCheckBox *checkShowPathSkin;
+    QCheckBox *checkShowPathSpheres;
     QCustomPlot *graphWidget;
     QWidget *tab_7;
     QHBoxLayout *horizontalLayout_3;
@@ -428,7 +431,7 @@ public:
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
         groupBox_2 = new QGroupBox(tab_3);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-        groupBox_2->setGeometry(QRect(2, 9, 491, 199));
+        groupBox_2->setGeometry(QRect(2, 9, 491, 201));
         verticalLayout_3 = new QVBoxLayout(groupBox_2);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -501,12 +504,6 @@ public:
         horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setSpacing(6);
         horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
-        checkShowPath = new QCheckBox(groupBox_2);
-        checkShowPath->setObjectName(QString::fromUtf8("checkShowPath"));
-        checkShowPath->setChecked(true);
-
-        horizontalLayout_8->addWidget(checkShowPath);
-
         buttonShortestSTPath = new QPushButton(groupBox_2);
         buttonShortestSTPath->setObjectName(QString::fromUtf8("buttonShortestSTPath"));
 
@@ -514,6 +511,29 @@ public:
 
 
         verticalLayout_3->addLayout(horizontalLayout_8);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        checkShowPath = new QCheckBox(groupBox_2);
+        checkShowPath->setObjectName(QString::fromUtf8("checkShowPath"));
+        checkShowPath->setChecked(true);
+
+        horizontalLayout_2->addWidget(checkShowPath);
+
+        checkShowPathSkin = new QCheckBox(groupBox_2);
+        checkShowPathSkin->setObjectName(QString::fromUtf8("checkShowPathSkin"));
+        checkShowPathSkin->setChecked(true);
+
+        horizontalLayout_2->addWidget(checkShowPathSkin);
+
+        checkShowPathSpheres = new QCheckBox(groupBox_2);
+        checkShowPathSpheres->setObjectName(QString::fromUtf8("checkShowPathSpheres"));
+
+        horizontalLayout_2->addWidget(checkShowPathSpheres);
+
+
+        verticalLayout_3->addLayout(horizontalLayout_2);
 
         graphWidget = new QCustomPlot(tab_3);
         graphWidget->setObjectName(QString::fromUtf8("graphWidget"));
@@ -644,7 +664,7 @@ public:
         retranslateUi(MainWindow);
 
         tabWidget_2->setCurrentIndex(1);
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -711,8 +731,10 @@ public:
         label->setText(QApplication::translate("MainWindow", "Max Iterations:", 0, QApplication::UnicodeUTF8));
         maxIterDijkstra->setText(QApplication::translate("MainWindow", "10", 0, QApplication::UnicodeUTF8));
         buttonShortestEscapePathRepeated->setText(QApplication::translate("MainWindow", "Escape paths (Repeated Dijkstra)", 0, QApplication::UnicodeUTF8));
-        checkShowPath->setText(QApplication::translate("MainWindow", "Show Path(s)", 0, QApplication::UnicodeUTF8));
         buttonShortestSTPath->setText(QApplication::translate("MainWindow", "Find Shortest Source-Target path", 0, QApplication::UnicodeUTF8));
+        checkShowPath->setText(QApplication::translate("MainWindow", "Show Path(s)", 0, QApplication::UnicodeUTF8));
+        checkShowPathSkin->setText(QApplication::translate("MainWindow", "Show Path Skin", 0, QApplication::UnicodeUTF8));
+        checkShowPathSpheres->setText(QApplication::translate("MainWindow", "Show Path Spheres", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Shortest Path", 0, QApplication::UnicodeUTF8));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_6), QApplication::translate("MainWindow", "Power Diagram Controls", 0, QApplication::UnicodeUTF8));
         groupBoxMoleclueProperties->setTitle(QApplication::translate("MainWindow", "Molecular Properties", 0, QApplication::UnicodeUTF8));

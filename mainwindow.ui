@@ -377,7 +377,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -522,7 +522,7 @@
           <x>2</x>
           <y>9</y>
           <width>491</width>
-          <height>199</height>
+          <height>201</height>
          </rect>
         </property>
         <property name="title">
@@ -613,6 +613,17 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
+            <widget class="QPushButton" name="buttonShortestSTPath">
+             <property name="text">
+              <string>Find Shortest Source-Target path</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
             <widget class="QCheckBox" name="checkShowPath">
              <property name="text">
               <string>Show Path(s)</string>
@@ -623,9 +634,19 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="buttonShortestSTPath">
+            <widget class="QCheckBox" name="checkShowPathSkin">
              <property name="text">
-              <string>Find Shortest Source-Target path</string>
+              <string>Show Path Skin</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkShowPathSpheres">
+             <property name="text">
+              <string>Show Path Spheres</string>
              </property>
             </widget>
            </item>

@@ -1,3 +1,21 @@
+/***************************************************************************
+ *   Copyright (C) 2010 by talha bin masood                                *                                                 *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 //A simple class for handling GLSL shader compilation
 //Author: Movania Muhammad Mobeen
 //Last Modified: February 2, 2011
@@ -52,7 +70,7 @@ void GLSLShader::LoadFromString(GLenum type, const string& source) {
 }
 
 
-void GLSLShader::CreateAndLinkProgram() {
+void GLSLShader::CreateAndLinkProgram(GLuint geomIn, GLuint geomOut) {
         _program = glCreateProgram ();
         if (_shaders[VERTEX_SHADER] != 0) {
                 glAttachShader (_program, _shaders[VERTEX_SHADER]);
@@ -64,8 +82,8 @@ void GLSLShader::CreateAndLinkProgram() {
                 glAttachShader (_program, _shaders[GEOMETRY_SHADER]);
         }
 
-        glProgramParameteriEXT ( _program, GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS );
-        glProgramParameteriEXT ( _program, GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_QUADS );
+        glProgramParameteriEXT ( _program, GL_GEOMETRY_INPUT_TYPE_EXT, geomIn );
+        glProgramParameteriEXT ( _program, GL_GEOMETRY_OUTPUT_TYPE_EXT, geomOut );
 
         int temp;
         glGetIntegerv ( GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &temp );
@@ -138,4 +156,66 @@ void GLSLShader::LoadFromFile(GLenum whichShader, const string& filename){
 void GLSLShader::DeleteProgram(){
     glDeleteProgram(_program);
     _program=-1;
+}
+
+namespace shaders{
+    static GLSLShader sphereShader;
+    static GLSLShader cylinShader;
+
+    static bool sphereShaderInitialized = false;
+    static bool cylinShaderInitialized = false;
+
+    bool initSphereShader(){
+        if(sphereShaderInitialized)return true;
+        GLenum err = glewInit();
+        if (err != GLEW_OK){
+            std::cerr << glewGetString(err) << std::endl;
+            return false;
+        }
+        if (!GLEW_VERSION_2_1){
+            std::cerr << "No support for OpenGL 2.1" << std::endl;
+            return false;
+        }
+        sphereShader.LoadFromFile(GL_VERTEX_SHADER, "./shaders/sphere.vert");
+        sphereShader.LoadFromFile(GL_GEOMETRY_SHADER, "./shaders/sphere.geom");
+        sphereShader.LoadFromFile(GL_FRAGMENT_SHADER, "./shaders/sphere.frag");
+        sphereShader.CreateAndLinkProgram(GL_POINTS, GL_QUADS);
+        sphereShader.Use();
+        sphereShader.AddAttribute("radius");
+        sphereShader.AddUniform("ug_add_radius");
+        sphereShader.AddUniform("ug_alpha_value");
+        sphereShader.UnUse();
+        sphereShaderInitialized = true;
+        return true;
+    }
+
+    bool initCylinderShader(){
+        if(cylinShaderInitialized)return true;
+        GLenum err = glewInit();
+        if (err != GLEW_OK){
+            std::cerr << glewGetString(err) << std::endl;
+            return false;
+        }
+        if (!GLEW_VERSION_2_1){
+            std::cerr << "No support for OpenGL 2.1" << std::endl;
+            return false;
+        }
+        cylinShader.LoadFromFile(GL_VERTEX_SHADER, "./shaders/cylinder_vert.glsl");
+        cylinShader.LoadFromFile(GL_GEOMETRY_SHADER, "./shaders/cylinder_geom.glsl");
+        cylinShader.LoadFromFile(GL_FRAGMENT_SHADER, "./shaders/cylinder_frag.glsl");
+        cylinShader.CreateAndLinkProgram(GL_LINES, GL_QUADS);
+        cylinShader.Use();
+        cylinShader.AddAttribute("radius");
+        cylinShader.UnUse();
+        cylinShaderInitialized = true;
+        return true;
+    }
+
+    GLSLShader* getSphereShader(){
+        return &sphereShader;
+    }
+
+    GLSLShader* getCylinderShader(){
+        return &cylinShader;
+    }
 }

@@ -1,9 +1,28 @@
+/***************************************************************************
+ *   Copyright (C) 2010 by talha bin masood                                *                                                 *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 #include "powerdiagram.h"
 #include "lightmaterial.h"
 #include "metric.h"
 #include <list>
 #include <GL/glu.h>
 #include <skinsurface.h>
+#include <glslshader.h>
 
 bool inside(Vector3 v, double min[], double max[], double pad){
     return (v.X>(min[0]-pad) && v.X<(max[0]+pad) &&
@@ -334,6 +353,9 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
     constructGraph(true);
     singlePath = true;
     startVert = targetVert = -1;
+    showPath = true;
+    showPathSkin = true;
+    showPathSpheres = false;
 
 /*
     for(int i=0;i<edges.size();i++){
@@ -345,7 +367,7 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
 */
 }
 
-GLuint listID = -1, pathListID = -1, pathSpheresListID = -1;
+GLuint listID = -1, pathListID = -1, pathSkinListID = -1;
 
 void PowerDiagram::render(bool showPowerDiag, bool showPath){
     if(showPowerDiag && glIsList(listID) == GL_TRUE){
@@ -367,14 +389,35 @@ void PowerDiagram::render(bool showPowerDiag, bool showPath){
             glVertex3d(v.center.X, v.center.Y, v.center.Z);
             glEnd();
         }
+        glDisable(GL_COLOR_MATERIAL);
     }
     if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
     }
-    if(showPath && glIsList(pathSpheresListID) == GL_TRUE){
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glCallList(pathSpheresListID);
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if(showPathSkin && glIsList(pathSkinListID) == GL_TRUE){
+        glCallList(pathSkinListID);
+    }
+    if(showPathSpheres){
+        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+        if(shaders::initSphereShader()){
+            GLSLShader sphereShader = *(shaders::getSphereShader());
+            sphereShader.Use();
+            glBegin(GL_POINTS);
+            for(int i=0;i<pathNodes.size();i++){
+                if(i==0){
+                    glColor3d(0.8,0.2,0);
+                } else if (i == pathNodes.size()-1){
+                    glColor3d(0,0.5,0);
+                } else {
+                    glColor3d(0,0,1);
+                }
+                GraphNode* curr = pathNodes[i];
+                glVertexAttrib1f(sphereShader["radius"], (float)curr->radius);
+                glVertex3d(curr->x, curr->y, curr->z);
+            }
+            glEnd();
+            sphereShader.UnUse();
+        }
     }
 }
 
@@ -661,69 +704,104 @@ void PowerDiagram::constructGraph(bool considerAlpha){
 
 void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathEdges,
               GLUquadric* quad, bool useSelected){
-//  glBegin(GL_LINES);
-    for(int i=0;i<pathNodes->size()-1;i++){
-        if(useSelected){
-            if(pathEdges->at(i)->selected){
-                glColor3d(1, 0, 1);
-            }else{
-                glColor3d(0, 1, 1);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    if(shaders::initCylinderShader()){
+        GLSLShader cylinShader = *(shaders::getCylinderShader());
+        cylinShader.Use();
+        glBegin(GL_LINES);
+        glVertexAttrib1f(cylinShader["radius"], (float) 0.05);
+        for(int i=0;i<pathNodes->size()-1;i++){
+            if(useSelected){
+                if(pathEdges->at(i)->selected){
+                    glColor3d(1, 0, 1);
+                }else{
+                    glColor3d(0, 1, 1);
+                }
             }
+            GraphNode* curr = pathNodes->at(i);
+            GraphNode* next = pathNodes->at(i+1);
+            glVertex3d(curr->x, curr->y, curr->z);
+            glVertex3d(next->x, next->y, next->z);
         }
-        GraphNode* curr = pathNodes->at(i);
-        GraphNode* next = pathNodes->at(i+1);
-        Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
-        double len;
-        Vector3::DotProduct(&n, &n, &len);
-        len = sqrt(len);
-        n.Normalize();
-        glPushMatrix();
-        double div = sqrt(n.X * n.X + n.Z * n.Z);
-        if(div==0){
-            div = 0.0000001;
+        glEnd();
+        cylinShader.UnUse();
+    }else{
+        for(int i=0;i<pathNodes->size()-1;i++){
+            if(useSelected){
+                if(pathEdges->at(i)->selected){
+                    glColor3d(1, 0, 1);
+                }else{
+                    glColor3d(0, 1, 1);
+                }
+            }
+            GraphNode* curr = pathNodes->at(i);
+            GraphNode* next = pathNodes->at(i+1);
+            Vector3 n(next->x - curr->x, next->y - curr->y, next->z - curr->z);
+            double len;
+            Vector3::DotProduct(&n, &n, &len);
+            len = sqrt(len);
+            n.Normalize();
+            glPushMatrix();
+            double div = sqrt(n.X * n.X + n.Z * n.Z);
+            if(div==0){
+                div = 0.0000001;
+            }
+            double m[] = {n.Z/div, 0, -n.X/div, 0,
+                         -(n.X*n.Y)/div , div, -(n.Y*n.Z)/div, 0,
+                          n.X, n.Y, n.Z, 0,
+                         curr->x, curr->y, curr->z, 1};
+            glMultMatrixd(m);
+            gluCylinder(quad, 0.05, 0.05, len ,5, 5);
+            glPopMatrix();
         }
-        double m[] = {n.Z/div, 0, -n.X/div, 0,
-                     -(n.X*n.Y)/div , div, -(n.Y*n.Z)/div, 0,
-                      n.X, n.Y, n.Z, 0,
-                     curr->x, curr->y, curr->z, 1};
-        glMultMatrixd(m);
-        gluCylinder(quad, 0.05, 0.05, len ,5, 5);
-        glPopMatrix();
-//      glVertex3d(curr->x, curr->y, curr->z);
-//      glVertex3d(next->x, next->y, next->z);
     }
-//  glEnd();
 
-    glPointSize(8);
-//        glBegin(GL_POINTS);
-    for(int i=0;i<pathNodes->size();i++){
-        if(i==0){
-            glColor3d(0.8,0.2,0);
-        } else if (i == pathNodes->size()-1){
-            glColor3d(0,0.5,0);
-        } else {
-            glColor3d(0,0,1);
+    if(shaders::initSphereShader()){
+        GLSLShader sphereShader = *(shaders::getSphereShader());
+        sphereShader.Use();
+        glBegin(GL_POINTS);
+        glVertexAttrib1f(sphereShader["radius"], (float)0.15);
+        for(int i=0;i<pathNodes->size();i++){
+            if(i==0){
+                glColor3d(0.8,0.2,0);
+            } else if (i == pathNodes->size()-1){
+                glColor3d(0,0.5,0);
+            } else {
+                glColor3d(0,0,1);
+            }
+            GraphNode* curr = pathNodes->at(i);
+            glVertex3d(curr->x, curr->y, curr->z);
         }
-        GraphNode* curr = pathNodes->at(i);
-        glPushMatrix();
-        glTranslated(curr->x, curr->y, curr->z);
-        gluSphere(quad, 0.1, 6, 6);
-        glPopMatrix();
-//      glVertex3d(curr->x, curr->y, curr->z);
+        glEnd();
+        sphereShader.UnUse();
+    }else{
+        for(int i=0;i<pathNodes->size();i++){
+            if(i==0){
+                glColor3d(0.8,0.2,0);
+            } else if (i == pathNodes->size()-1){
+                glColor3d(0,0.5,0);
+            } else {
+                glColor3d(0,0,1);
+            }
+            GraphNode* curr = pathNodes->at(i);
+            glPushMatrix();
+            glTranslated(curr->x, curr->y, curr->z);
+            gluSphere(quad, 0.15, 6, 6);
+            glPopMatrix();
+        }
     }
-//  glEnd();
 }
 
 void initPathList(std::vector<GraphNode*> *pathNodes){
-    if(glIsList(pathSpheresListID) == GL_TRUE){
-        glDeleteLists(pathSpheresListID, 1);
+    if(glIsList(pathSkinListID) == GL_TRUE){
+        glDeleteLists(pathSkinListID, 1);
     }
-    pathSpheresListID = glGenLists(1);
-    glNewList(pathSpheresListID, GL_COMPILE);
+    pathSkinListID = glGenLists(1);
+    glNewList(pathSkinListID, GL_COMPILE);
 
     glEnable(GL_COLOR_MATERIAL);
 
-//        glColor3d(1,0,1);
+    glColor3d(0,1,0);
 
 //        for(int i=0;i<pathNodes.size();i++){
 //            GraphNode* curr = pathNodes[i];
@@ -757,11 +835,11 @@ void initPathList(std::vector<GraphNode*> *pathNodes){
 
 #include<set>
 void initMultiplePathList(std::vector<std::vector<GraphNode*> > *pathsNodes){
-    if(glIsList(pathSpheresListID) == GL_TRUE){
-        glDeleteLists(pathSpheresListID, 1);
+    if(glIsList(pathSkinListID) == GL_TRUE){
+        glDeleteLists(pathSkinListID, 1);
     }
-    pathSpheresListID = glGenLists(1);
-    glNewList(pathSpheresListID, GL_COMPILE);
+    pathSkinListID = glGenLists(1);
+    glNewList(pathSkinListID, GL_COMPILE);
 
     glEnable(GL_COLOR_MATERIAL);
     std::vector<GraphNode*> pathNodes;
@@ -925,8 +1003,8 @@ int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
 
         if(repeated){
             initMultiplePathList(&pathsNodes);
-        }else if(glIsList(pathSpheresListID) == GL_TRUE){
-            glDeleteLists(pathSpheresListID, 1);
+        }else if(glIsList(pathSkinListID) == GL_TRUE){
+            glDeleteLists(pathSkinListID, 1);
         }
         singlePath = false;
     }

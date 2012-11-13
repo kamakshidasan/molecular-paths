@@ -7,11 +7,8 @@
 
 class ProteinRenderer
 {
-private:
-    bool initialized;
 public:
     std::vector<Vertex>& vertList;
-    GLSLShader sphereShader;
 
     ProteinRenderer(std::vector<Vertex>& vertexList);
     bool init();

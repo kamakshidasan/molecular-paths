@@ -80,6 +80,8 @@ class MainWindow : public QMainWindow
         void onEscapePathClick(bool repeated, int maxIter);
         void onShortestEscapePathClick();
         void onCheckShowPathToggled();
+        void onCheckShowPathSkinToggled();
+        void onCheckShowPathSpheresToggled();
         void onCheckSpaceFillToggled();
 
         void onCheckBoxPocketSkinSurfaceToggled();

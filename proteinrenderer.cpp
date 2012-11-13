@@ -5,36 +5,19 @@
 ProteinRenderer::ProteinRenderer(std::vector<Vertex>& vertexList)
     :vertList(vertexList)
 {
-    initialized = false;
 }
 
+using namespace shaders;
+
 bool ProteinRenderer::init(){
-    if(initialized)return true;
-    GLenum err = glewInit();
-    if (err != GLEW_OK){
-        std::cerr << glewGetString(err) << std::endl;
-        return false;
-    }
-    if (!GLEW_VERSION_2_1){
-        std::cerr << "No support for OpenGL 2.1" << std::endl;
-        return false;
-    }
-    sphereShader.LoadFromFile(GL_VERTEX_SHADER, "./shaders/sphere.vert");
-    sphereShader.LoadFromFile(GL_GEOMETRY_SHADER, "./shaders/sphere.geom");
-    sphereShader.LoadFromFile(GL_FRAGMENT_SHADER, "./shaders/sphere.frag");
-    sphereShader.CreateAndLinkProgram();
-    sphereShader.Use();
-    sphereShader.AddAttribute("radius");
-    sphereShader.AddUniform("ug_add_radius");
-    sphereShader.AddUniform("ug_alpha_value");
-    sphereShader.UnUse();
-    initialized = true;
-    return true;
+    if(initSphereShader())return true;
+    return false;
 }
 
 void ProteinRenderer::render(){
     glEnable(GL_COLOR_MATERIAL);
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    GLSLShader sphereShader = (*getSphereShader());
     sphereShader.Use();
 //    glColor4d(0.1, 0.6, 0.9, 1);
 //    glColor4d(0.5, 0.1, 0.2, 1);
