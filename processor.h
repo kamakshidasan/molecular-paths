@@ -35,6 +35,7 @@
 #include <filereader.h>
 #include <rankmap.h>
 #include <simplexmasterlistmap.h>
+#include <proteinrenderer.h>
 
 class Processor
 {
@@ -44,6 +45,7 @@ class Processor
         std::vector<int> PocketNMouths;
         AlphaComplex *alcx;
         PowerDiagram* powerDiagram;
+        ProteinRenderer * proteinRenderer;
         FileReader *fr;
         Pocket *pocket;
         Mouth *mouth;
@@ -87,7 +89,7 @@ class Processor
         void CalculateVolumes(int rank, int persistence);
         void Render(int persistence,bool alphaShape,bool allPockets,bool onlyPockets,bool onlyVoids,bool skinSurface,bool mouths,bool allindflag,int pnum,int rank,bool wireFrame,
                     bool alphaSkinSurface,bool alphaSkinWireFrame,bool smoothShading,bool skinWireFrame,bool pocketWireFrame, bool powerDiag,
-                    bool cHull, bool cHullWF, bool cHullNorm, bool showPath);
+                    bool cHull, bool cHullWF, bool cHullNorm, bool showPath, bool showSpaceFill);
 
         void ProcessEpsilonInterval(double epsilon,int lowRank,int highRank);
         void ModifyFiltration();

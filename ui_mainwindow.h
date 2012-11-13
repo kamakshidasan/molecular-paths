@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Nov 12 12:11:59 2012
+** Created: Tue Nov 13 16:29:58 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -103,6 +103,9 @@ public:
     QCheckBox *checkCHull;
     QCheckBox *checkCHullWireFrame;
     QCheckBox *checkCHullNorm;
+    QGroupBox *groupBoxProtein;
+    QVBoxLayout *verticalLayout_5;
+    QCheckBox *checkSpaceFill;
     QWidget *tab_3;
     QGroupBox *groupBox_2;
     QVBoxLayout *verticalLayout_3;
@@ -407,6 +410,19 @@ public:
 
         verticalLayout->addWidget(checkCHullNorm);
 
+        groupBoxProtein = new QGroupBox(tab);
+        groupBoxProtein->setObjectName(QString::fromUtf8("groupBoxProtein"));
+        groupBoxProtein->setGeometry(QRect(430, 10, 221, 55));
+        verticalLayout_5 = new QVBoxLayout(groupBoxProtein);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        checkSpaceFill = new QCheckBox(groupBoxProtein);
+        checkSpaceFill->setObjectName(QString::fromUtf8("checkSpaceFill"));
+        checkSpaceFill->setChecked(true);
+
+        verticalLayout_5->addWidget(checkSpaceFill);
+
         tabWidget->addTab(tab, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QString::fromUtf8("tab_3"));
@@ -628,7 +644,7 @@ public:
         retranslateUi(MainWindow);
 
         tabWidget_2->setCurrentIndex(1);
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -682,6 +698,8 @@ public:
         checkCHull->setText(QApplication::translate("MainWindow", "Show Convex Hull", 0, QApplication::UnicodeUTF8));
         checkCHullWireFrame->setText(QApplication::translate("MainWindow", "Convex Hull Wireframe", 0, QApplication::UnicodeUTF8));
         checkCHullNorm->setText(QApplication::translate("MainWindow", "Show Hull Normals", 0, QApplication::UnicodeUTF8));
+        groupBoxProtein->setTitle(QApplication::translate("MainWindow", "Space Fill Visualization", 0, QApplication::UnicodeUTF8));
+        checkSpaceFill->setText(QApplication::translate("MainWindow", "Show Space fill model", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Power Diagram", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Shortest Escape Route", 0, QApplication::UnicodeUTF8));
         startLabel->setText(QApplication::translate("MainWindow", "Start Node:", 0, QApplication::UnicodeUTF8));

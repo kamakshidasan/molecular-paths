@@ -94,6 +94,7 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
     connect(ui->buttonShortestEscapePathAll,SIGNAL(clicked()),this,SLOT(onEscapePathClickAll()));
     connect(ui->buttonShortestEscapePathRepeated,SIGNAL(clicked()),this,SLOT(onEscapePathClickRepeated()));
     connect(ui->checkShowPath,SIGNAL(toggled(bool)),this,SLOT(onCheckShowPathToggled()));
+    connect(ui->checkSpaceFill,SIGNAL(toggled(bool)),this,SLOT(onCheckSpaceFillToggled()));
 
     connect(ui->checkBoxAlphaSkinSolid,SIGNAL(toggled(bool)),this,SLOT(onCheckBoxAlphaSkinSurfaceToggled()));
     connect(ui->checkBoxAlphaSkinWireFrame,SIGNAL(toggled(bool)),this,SLOT(onCheckBoxAlphaSkinWireFrameToggled()));
@@ -491,6 +492,10 @@ void MainWindow::onEscapePathClick(bool repeated, int maxIter){
 
 void MainWindow::onCheckShowPathToggled(){
     m_viewer1->setShowPath();
+}
+
+void MainWindow::onCheckSpaceFillToggled(){
+    m_viewer1->setShowSpaceFill();
 }
 
 void MainWindow::onCheckBoxPocketSkinSurfaceToggled()

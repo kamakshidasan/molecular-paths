@@ -40,6 +40,7 @@ void Processor::read(const char *filename,double centre[],double *size, bool con
         alcx = new AlphaComplex(vertexList);
         alcx->BuildSpectrum();
         powerDiagram = new PowerDiagram(alcx->delcx, vertexList, min, max);
+        proteinRenderer = new ProteinRenderer(vertexList);
 //        powerDiagram->printGraph();
         pocket = new Pocket(vertexList,centre,scale,alcx->delcx->DeluanayTrigs.size (),alcx->delcx->DeluanayEdges.size ());
         volume = new Volume(vertexList,vertexList.size(),alcx->delcx->DeluanayTrigs.size(),alcx->delcx->DeluanayEdges.size());
@@ -199,7 +200,7 @@ GLuint cHullNormId = -1;
  */
 void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool onlyPockets,bool onlyVoids,bool skinSurface,bool mouths,bool allindflag,int pnum,int rank,bool wireFrame,
                        bool alphaSkinSurface,bool alphaSkinWireFrame,bool smoothShading,bool skinWireFrame,bool pocketWireFrame, bool powerDiag,
-                       bool cHull, bool cHullWF, bool cHullNorm, bool showPath)
+                       bool cHull, bool cHullWF, bool cHullNorm, bool showPath, bool showSpaceFill)
 {
         glEnable(GL_NORMALIZE);
         if(alcx)
@@ -238,6 +239,10 @@ void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool only
             glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[3]);
             glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
 
+            if(proteinRenderer->init() && showSpaceFill){
+                proteinRenderer->render();
+//                std::cout << "Render Called" << std::endl;
+            }
             powerDiagram->render(powerDiag, showPath);
 
             glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, LightMaterial::MatAmb[3]);
@@ -248,6 +253,7 @@ void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool only
 
             glEnable(GL_COLOR_MATERIAL);
             if(cHull){
+                glLineWidth(1);
                 glColor3d(0.2, 0.6, 0.2);
                 if(cHullWF){
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

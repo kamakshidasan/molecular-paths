@@ -2,34 +2,13 @@
 #define POWERDIAGRAM_H
 
 #include <vector>
-#include <QtOpenGL>
+#include <GL/glew.h>
 #include "deluanaycomplex.h"
 #include "tetrahedron.h"
 #include "triangle.h"
 #include "graph.h"
 #include <iostream>
-#include <qglviewer.h>
-
-using namespace qglviewer;
-
-/*
-class VertexMouseGrabber : public MouseGrabber{
-public:
-    Vector3 center;
-    int index;
-protected:
-    void checkIfGrabsMouse(int x, int y, const Camera* const camera){
-        Vec c(center.X, center.Y, center.Z);
-        Vec proj = camera->projectedCoordinatesOf(c);
-        setGrabsMouse((fabs(x-proj.x) < 10) && (fabs(y-proj.y) < 10));
-//        std::cout << "Checked" << x << "  " << y << std::endl;
-    }
-
-    void mousePressEvent(QMouseEvent* const, qglviewer::Camera* const camera) {
-        std::cout << index << std::endl;
-    }
-};
-*/
+#include <QVector>
 
 class PowerVertex{
 public:
@@ -38,36 +17,6 @@ public:
     double powerDistance;
     std::vector<int> neigbours;
     bool inside;
-
-    /*
-    VertexMouseGrabber mouseGrabber;
-
-    PowerVertex(){
-    }
-
-    PowerVertex(const PowerVertex &vert){
-        tetIndex = vert.tetIndex;
-        center = vert.center;
-        powerDistance =vert.powerDistance;
-        neigbours = vert.neigbours;
-        inside = vert.inside;
-    }
-
-    PowerVertex& operator= (const PowerVertex &vert){
-        tetIndex = vert.tetIndex;
-        center = vert.center;
-        powerDistance =vert.powerDistance;
-        neigbours = vert.neigbours;
-        inside = vert.inside;
-        return *this;
-    }
-
-    void setCenter(Vector3 c){
-        center = c;
-        mouseGrabber.center = c;
-        mouseGrabber.index = tetIndex;
-    }
-    */
 };
 
 const uint INSIDE = 1;

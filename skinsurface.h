@@ -24,7 +24,7 @@
 #include <vector>
 #include <map>
 #include <assert.h>
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>

@@ -24,7 +24,7 @@
 #include<QTableWidgetItem>
 #include <QTableWidget>
 #include <QLineEdit>
-#include <QtOpenGL>
+#include <GL/glew.h>
 #include <cmath>
 #include <vector>
 #include <disjointset.h>

@@ -21,10 +21,10 @@
 #ifndef POCKET_H
 #define POCKET_H
 
-#include<QTableWidgetItem>
+#include <GL/glew.h>
+#include <QTableWidgetItem>
 #include <QTableWidget>
 #include <QLineEdit>
-#include <QtOpenGL>
 #include <vector>
 #include <spacefillmeasure.h>
 #include <vertex.h>

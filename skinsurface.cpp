@@ -219,11 +219,7 @@ void SkinSurface::Draw(bool smoothShading,bool skinWireFrame)
 		}
 
 		glEnd();
-	}
-        if(skinWireFrame)
-        {
-                glLineWidth(3.0);
-        }
+    }
 }
 
 void SkinSurface::Draw(bool smoothShading, bool skinWireFrame, int pocIndex)

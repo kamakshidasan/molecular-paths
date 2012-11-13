@@ -20,8 +20,9 @@
 #ifndef POCKETVIEWER_H
 #define POCKETVIEWER_H
 
-#include "QGLViewer/qglviewer.h"
 #include <processor.h>
+#include "QGLViewer/qglviewer.h"
+#include <QLabel>
 
 class PocketViewer : public QGLViewer,public Processor
 {
@@ -48,6 +49,7 @@ class PocketViewer : public QGLViewer,public Processor
         void setCHullNorm();
 
         void setShowPath();
+        void setShowSpaceFill();
 
         void setPocketSkinSurface();
         void setPocketSkinWireFrame();
@@ -90,6 +92,7 @@ class PocketViewer : public QGLViewer,public Processor
         bool cHullNorm;
 
         bool showPath;
+        bool showSpaceFill;
 
         bool pocketSkinSurface;
         bool pocketSkinWireFrame;

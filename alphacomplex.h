@@ -48,7 +48,7 @@
 #include <depth.h>
 #include <deluanayflow.h>
 #include <lightmaterial.h>
-#include <QtOpenGL>
+#include <GL/glew.h>
 #include <skinsurface.h>
 #include <rankmap.h>
 #include <simplexmasterlistmap.h>

@@ -377,7 +377,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -481,6 +481,31 @@
           <widget class="QCheckBox" name="checkCHullNorm">
            <property name="text">
             <string>Show Hull Normals</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QGroupBox" name="groupBoxProtein">
+        <property name="geometry">
+         <rect>
+          <x>430</x>
+          <y>10</y>
+          <width>221</width>
+          <height>55</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Space Fill Visualization</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QCheckBox" name="checkSpaceFill">
+           <property name="text">
+            <string>Show Space fill model</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

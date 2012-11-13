@@ -225,7 +225,8 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
             Vector3::DotProduct(&diff, &diff, &dsq);
             vert.powerDistance = dsq - (ball1.Radius*ball1.Radius);
 
-            if(inside(vert.center, min, max, 0.01) && inside (&cHull, vertList, vert.center)){
+            //inside(vert.center, min, max, 0.01) &&
+            if(inside (&cHull, vertList, vert.center)){
                 vert.inside = true;
             } else {
                 vert.inside = false;

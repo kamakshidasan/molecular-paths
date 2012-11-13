@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Mon Nov 12 12:19:02 2012
+** Created: Tue Nov 13 16:30:11 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      46,   14, // methods
+      47,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -67,16 +67,17 @@ static const uint qt_meta_data_MainWindow[] = {
      777,   11,   11,   11, 0x0a,
      805,   11,   11,   11, 0x0a,
      830,   11,   11,   11, 0x0a,
-     867,   11,   11,   11, 0x0a,
-     906,   11,   11,   11, 0x0a,
-     942,   11,   11,   11, 0x0a,
-     980,   11,   11,   11, 0x0a,
-    1007,   11,   11,   11, 0x0a,
-    1036,   11,   11,   11, 0x0a,
-    1069,   11,   11,   11, 0x0a,
-    1104,   11,   11,   11, 0x0a,
-    1135,   11,   11,   11, 0x0a,
+     856,   11,   11,   11, 0x0a,
+     893,   11,   11,   11, 0x0a,
+     932,   11,   11,   11, 0x0a,
+     968,   11,   11,   11, 0x0a,
+    1006,   11,   11,   11, 0x0a,
+    1033,   11,   11,   11, 0x0a,
+    1062,   11,   11,   11, 0x0a,
+    1095,   11,   11,   11, 0x0a,
+    1130,   11,   11,   11, 0x0a,
     1161,   11,   11,   11, 0x0a,
+    1187,   11,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -106,6 +107,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "onEscapePathClick(bool,int)\0"
     "onShortestEscapePathClick()\0"
     "onCheckShowPathToggled()\0"
+    "onCheckSpaceFillToggled()\0"
     "onCheckBoxPocketSkinSurfaceToggled()\0"
     "onCheckBoxPocketSkinWireFrameToggled()\0"
     "onCheckBoxAlphaSkinSurfaceToggled()\0"
@@ -160,17 +162,18 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 32: _t->onEscapePathClick((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 33: _t->onShortestEscapePathClick(); break;
         case 34: _t->onCheckShowPathToggled(); break;
-        case 35: _t->onCheckBoxPocketSkinSurfaceToggled(); break;
-        case 36: _t->onCheckBoxPocketSkinWireFrameToggled(); break;
-        case 37: _t->onCheckBoxAlphaSkinSurfaceToggled(); break;
-        case 38: _t->onCheckBoxAlphaSkinWireFrameToggled(); break;
-        case 39: _t->onRadiobuttonFlatClicked(); break;
-        case 40: _t->onRadioButtonSmoothClicked(); break;
-        case 41: _t->onRadioButtonAllPocketsClicked(); break;
-        case 42: _t->onRadioButtonIndivPocketsClicked(); break;
-        case 43: _t->onSpinBoxPocketsValueChanged(); break;
-        case 44: _t->onCheckBoxVolumeToggled(); break;
-        case 45: _t->onCheckBoxPocketWireFrameToggled(); break;
+        case 35: _t->onCheckSpaceFillToggled(); break;
+        case 36: _t->onCheckBoxPocketSkinSurfaceToggled(); break;
+        case 37: _t->onCheckBoxPocketSkinWireFrameToggled(); break;
+        case 38: _t->onCheckBoxAlphaSkinSurfaceToggled(); break;
+        case 39: _t->onCheckBoxAlphaSkinWireFrameToggled(); break;
+        case 40: _t->onRadiobuttonFlatClicked(); break;
+        case 41: _t->onRadioButtonSmoothClicked(); break;
+        case 42: _t->onRadioButtonAllPocketsClicked(); break;
+        case 43: _t->onRadioButtonIndivPocketsClicked(); break;
+        case 44: _t->onSpinBoxPocketsValueChanged(); break;
+        case 45: _t->onCheckBoxVolumeToggled(); break;
+        case 46: _t->onCheckBoxPocketWireFrameToggled(); break;
         default: ;
         }
     }
@@ -208,9 +211,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 46)
+        if (_id < 47)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 46;
+        _id -= 47;
     }
     return _id;
 }

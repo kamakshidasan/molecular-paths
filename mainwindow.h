@@ -20,15 +20,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QFileDialog>
-#include <QMessageBox>
-
 #include <pocketviewer.h>
 #include <processor.h>
 #include <iostream>
 #include <sys/time.h>
 
+#include <QMainWindow>
+#include <QFileDialog>
+#include <QMessageBox>
 
 namespace Ui
 {
@@ -81,6 +80,7 @@ class MainWindow : public QMainWindow
         void onEscapePathClick(bool repeated, int maxIter);
         void onShortestEscapePathClick();
         void onCheckShowPathToggled();
+        void onCheckSpaceFillToggled();
 
         void onCheckBoxPocketSkinSurfaceToggled();
         void onCheckBoxPocketSkinWireFrameToggled();

@@ -6,7 +6,8 @@ QT += opengl \
 INCLUDEPATH *= /usr/include/QGLViewer
 LIBS *= -L/usr/lib \
     -lqglviewer-qt4 \
-    -lgmp
+    -lgmp \
+    -lGLEW
 TARGET = PocketViewer
 TEMPLATE = app
 SOURCES += main.cpp \
@@ -44,7 +45,9 @@ SOURCES += main.cpp \
     metric.cpp \
     powerdiagram.cpp \
     graph.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    glslshader.cpp \
+    proteinrenderer.cpp
 HEADERS += pocketviewer.h \
     mainwindow.h \
     processor.h \
@@ -79,5 +82,7 @@ HEADERS += pocketviewer.h \
     metric.h \
     powerdiagram.h \
     graph.h \
-    qcustomplot.h
+    qcustomplot.h \
+    glslshader.h \
+    proteinrenderer.h
 FORMS += mainwindow.ui

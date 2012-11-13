@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <GL/glew.h>
 #include "pocketviewer.h"
 #include "ui_mainwindow.h"
 #include <iostream>
@@ -54,6 +55,7 @@ PocketViewer::PocketViewer(Processor* pr,QWidget* parent)
     cHullNorm = false;
 
     showPath = true;
+    showSpaceFill = true;
 
     setMouseTracking(true);
 }
@@ -99,7 +101,6 @@ void PocketViewer::init()
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-
 //    powerDiagram->makeDisplayList(m_processor->alcx->delcx, m_processor->vertexList, complementSpacePD);
 
 //    help();
@@ -174,7 +175,7 @@ void PocketViewer::draw()
         }
         m_processor->Render(persistence,alphaShape,allPockets,onlyPockets,onlyVoids,pocketSkinSurface,mouths,allOrIndivPocs,
                             currentPocNum,rank,wireFrame,alphaSkinSurface,alphaSkinWireFrame,smoothShading,
-                            pocketSkinWireFrame,pocketWireframe, powerDiag, cHull, cHullWF, cHullNorm, showPath);
+                            pocketSkinWireFrame,pocketWireframe, powerDiag, cHull, cHullWF, cHullNorm, showPath, showSpaceFill);
     }
     glPopMatrix();
 }
@@ -309,6 +310,12 @@ void PocketViewer::setCHullNorm()
 void PocketViewer::setShowPath()
 {
     showPath = !showPath;
+    updateGL();
+}
+
+void PocketViewer::setShowSpaceFill()
+{
+    showSpaceFill = !showSpaceFill;
     updateGL();
 }
 
