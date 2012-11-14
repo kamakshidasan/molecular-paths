@@ -25,6 +25,8 @@ Processor::Processor()
         alcx = 0;
         mouth = new Mouth();
         isRenderable = false;
+        powerDiagram = NULL;
+        proteinRenderer = NULL;
 }
 
 Processor::~Processor()
@@ -241,7 +243,6 @@ void Processor::Render(int persistence,bool alphaShape,bool allPockets,bool only
 
             if(proteinRenderer->init() && showSpaceFill){
                 proteinRenderer->render();
-//                std::cout << "Render Called" << std::endl;
             }
             powerDiagram->render(powerDiag, showPath);
 

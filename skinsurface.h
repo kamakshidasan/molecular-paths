@@ -59,6 +59,7 @@ class SkinSurface
         void Process();
         void Draw(bool smoothShading,bool skinWireFrame);
         void Draw(bool smoothShading,bool skinWireFrame,int pocIndex);
+        void DrawSolid();
 };
 
 #endif

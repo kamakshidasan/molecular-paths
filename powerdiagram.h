@@ -49,6 +49,7 @@ public:
     int triIndex;
     uint edgeType;
     Vector3 intersect, triIntersect;
+    bool intersectsDT;
     double leastPowerDistance;
     double weight;
     double length;
@@ -107,12 +108,15 @@ public:
 
     bool singlePath;
     int startVert, targetVert;
-    bool showPath, showPathSkin, showPathSpheres;
+    bool showPath, showPathSkin, showPathSpheres, showPathSkinWF;
+    bool showPDSpheres;
 
     PowerDiagram(DeluanayComplex* delCplx, std::vector <Vertex> &vertlist,
                  double min[], double max[]);
+    void alphaUpdated();
     void printGraph();
     void makeDisplayList(bool complementSpacePD, bool onlyInsideVerts, bool pruneIsolatedVerts, bool intersectEdges);
+    void makePDSpheresDisplayList(bool complementSpacePD);
     void render(bool showPowerDiag, bool showPath);
     void drawNodesForPicking();
     int processPick(int cursorX, int cursorY);

@@ -81,8 +81,11 @@ class MainWindow : public QMainWindow
         void onShortestEscapePathClick();
         void onCheckShowPathToggled();
         void onCheckShowPathSkinToggled();
+        void onCheckShowPathSkinWFToggled();
         void onCheckShowPathSpheresToggled();
+
         void onCheckSpaceFillToggled();
+        void onCheckSpaceFillPDToggled();
 
         void onCheckBoxPocketSkinSurfaceToggled();
         void onCheckBoxPocketSkinWireFrameToggled();

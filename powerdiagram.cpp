@@ -288,7 +288,7 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
                 }
 
                 Triangle tri = delCplx->DeluanayTrigs[commonTri];
-                bool intersects = intersect(tri, vertlist, &(vertices[i].center),
+                edge.intersectsDT = intersect(tri, vertlist, &(vertices[i].center),
                           &(vertices[x].center), &edge.triIntersect);
                 Vertex t1 = vertlist[tri.Corners[1]];
                 Vector3 tv1 = t1.getCoordVector();
@@ -298,7 +298,7 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
                 Vector3::DotProduct(&diff1, &diff1, &d1sq);
                 double pd1;
                 pd1 = d1sq - (t1.Radius*t1.Radius);
-                if(intersects){
+                if(edge.intersectsDT){
                     edge.setLeastPowerDistance(pd1, &vertices, true);
                 } else {
                     double leastPD = (vertices[i].powerDistance < vertices[x].powerDistance) ?
@@ -309,6 +309,8 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
                 vert -> neigbours.push_back(edgeIndex);
                 edgeIndex++;
             } else if (x == -1){
+                // TODO : Check this case again...
+
                 PowerEdge edge;
                 edge.v1 = i;
                 edge.v2 = x;
@@ -317,6 +319,7 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
                     continue;
                 if(vert->inside){
                     edge.edgeType = INTERSECTING | INFINITE;
+                    edge.intersectsDT = true;
                 } else {
                     edge.edgeType = OUTSIDE | INFINITE;
                 }
@@ -355,7 +358,9 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
     startVert = targetVert = -1;
     showPath = true;
     showPathSkin = true;
+    showPathSkinWF = true;
     showPathSpheres = false;
+    showPDSpheres = false;
 
 /*
     for(int i=0;i<edges.size();i++){
@@ -367,7 +372,48 @@ PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertli
 */
 }
 
-GLuint listID = -1, pathListID = -1, pathSkinListID = -1;
+void PowerDiagram::alphaUpdated(){
+    for(int i=0; i<vertices.size();i++){
+        PowerVertex* v = &vertices[i];
+        Tetrahedron tet = delCplx->DeluanayTet[v->tetIndex];
+        Vertex ball1 = vertList[tet.Corners[1]];
+        Vector3 ballCenter = ball1.getCoordVector();
+        Vector3 diff;
+        double dsq;
+        Vector3::DiffVector(&diff, &ballCenter, &v->center);
+        Vector3::DotProduct(&diff, &diff, &dsq);
+        v->powerDistance = dsq - (ball1.Radius*ball1.Radius);
+    }
+    for(int i=0;i<edges.size();i++){
+        PowerEdge* e = &edges[i];
+        int i = e->v1;
+        int x = e->v2;
+        if(e->edgeType != OUTSIDE){
+            if(e->intersectsDT){
+                Triangle tri = delCplx->DeluanayTrigs[e->triIndex];
+                Vertex t1 = vertList[tri.Corners[1]];
+                Vector3 tv1 = t1.getCoordVector();
+                Vector3 diff1;
+                double d1sq;
+                Vector3::DiffVector(&diff1, &tv1, &e->triIntersect);
+                Vector3::DotProduct(&diff1, &diff1, &d1sq);
+                double pd1;
+                pd1 = d1sq - (t1.Radius*t1.Radius);
+                e->setLeastPowerDistance(pd1, &vertices, true);
+            } else {
+                double leastPD = (vertices[i].powerDistance < vertices[x].powerDistance) ?
+                            vertices[i].powerDistance : vertices[x].powerDistance;
+                e->setLeastPowerDistance(leastPD, &vertices, true);
+            }
+        }
+    }
+    pathNodes.clear();
+    pathsNodes.clear();
+    constructGraph(true);
+}
+
+GLuint listID = -1, pdSpheresListID = -1, pathListID = -1, pathSkinListID = -1, pathSpheresListID = -1;
+bool compSpacePD = false;
 
 void PowerDiagram::render(bool showPowerDiag, bool showPath){
     if(showPowerDiag && glIsList(listID) == GL_TRUE){
@@ -391,38 +437,28 @@ void PowerDiagram::render(bool showPowerDiag, bool showPath){
         }
         glDisable(GL_COLOR_MATERIAL);
     }
+    if(showPDSpheres && glIsList(pdSpheresListID) == GL_TRUE){
+        glCallList(pdSpheresListID);
+    }
     if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
     }
     if(showPathSkin && glIsList(pathSkinListID) == GL_TRUE){
+        if(showPathSkinWF){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
         glCallList(pathSkinListID);
     }
-    if(showPathSpheres){
-        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-        if(shaders::initSphereShader()){
-            GLSLShader sphereShader = *(shaders::getSphereShader());
-            sphereShader.Use();
-            glBegin(GL_POINTS);
-            for(int i=0;i<pathNodes.size();i++){
-                if(i==0){
-                    glColor3d(0.8,0.2,0);
-                } else if (i == pathNodes.size()-1){
-                    glColor3d(0,0.5,0);
-                } else {
-                    glColor3d(0,0,1);
-                }
-                GraphNode* curr = pathNodes[i];
-                glVertexAttrib1f(sphereShader["radius"], (float)curr->radius);
-                glVertex3d(curr->x, curr->y, curr->z);
-            }
-            glEnd();
-            sphereShader.UnUse();
-        }
+    if(showPathSpheres && glIsList(pathSpheresListID) == GL_TRUE){
+        glCallList(pathSpheresListID);
     }
 }
 
 void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
                                    bool pruneIsolatedVerts, bool intersectEdges){
+    compSpacePD = complementSpacePD;
     if(glIsList(listID) == GL_TRUE){
         glDeleteLists(listID, 1);
     }
@@ -462,9 +498,6 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
             // Finite edges
 
             Vector3 v2 = vertices[edges[i].v2].center;
-    //        Tetrahedron t1 = delCplx->DeluanayTet[vertices[edges[i].v1].tetIndex];
-    //        Tetrahedron t2 = delCplx->DeluanayTet[vertices[edges[i].v2].tetIndex];
-    //        if(!complementSpacePD || (t1.AlphaStatus<1 && t2.AlphaStatus<1)){
 
             if(!onlyInsideVerts || edges[i].edgeType == INSIDE){
                 if(!complementSpacePD || tri.AlphaStatus < 1){
@@ -472,7 +505,6 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
                     glVertex3d(v2.X, v2.Y, v2.Z);
                     renderedIncidentEdge[edges[i].v1] = true;
                     renderedIncidentEdge[edges[i].v2] = true;
-//                    std::cout << "Edge: " << i << " \t" << edges[i].leastPowerDistance << std::endl;
                 }
             }
 
@@ -485,7 +517,6 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
                         glVertex3d(v.X, v.Y, v.Z);
                         glVertex3d(I.X, I.Y, I.Z);
                         renderedIncidentEdge[edges[i].v1] = true;
-//                        std::cout << "Edge: " << i << " \t" << edges[i].leastPowerDistance << std::endl;
                     }
                 }
             }
@@ -497,7 +528,6 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
                     glVertex3d(v1.X, v1.Y, v1.Z);
                     glVertex3d(I.X, I.Y, I.Z);
                     renderedIncidentEdge[edges[i].v1] = true;
-//                    std::cout << "Edge: " << i << " \t" << edges[i].leastPowerDistance << std::endl;
                 }
             }
         }
@@ -519,7 +549,6 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
         }
         if(!onlyInsideVerts || vertices[i].inside){
             if(!complementSpacePD || t.AlphaStatus<1){
-//                std::cout << "Vertex: " << i << " \t" << vertices[i].powerDistance << std::endl;
                 if(!pruneIsolatedVerts || renderedIncidentEdge[i]){
                     glVertex3d(v.X, v.Y, v.Z);
                 }
@@ -529,6 +558,40 @@ void PowerDiagram::makeDisplayList(bool complementSpacePD, bool onlyInsideVerts,
     glEnd();
     glDisable(GL_COLOR_MATERIAL);
     glEndList();
+
+    makePDSpheresDisplayList(complementSpacePD);
+}
+
+void PowerDiagram::makePDSpheresDisplayList(bool complementSpacePD){
+    shaders::initSphereShader();
+    if(glIsList(pdSpheresListID) == GL_TRUE){
+        glDeleteLists(pdSpheresListID, 1);
+    }
+    pdSpheresListID = glGenLists(1);
+    glNewList(pdSpheresListID, GL_COMPILE);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glEnable(GL_COLOR_MATERIAL);
+    glColor3d(0.1, 0.6, 0.9);
+    if(shaders::initSphereShader()){
+        GLSLShader sphereShader = *(shaders::getSphereShader());
+        sphereShader.Use();
+        glBegin(GL_POINTS);
+        for(int i=0;i<vertices.size();i++){
+            Vector3 v = vertices[i].center;
+            Tetrahedron t = delCplx->DeluanayTet[vertices[i].tetIndex];
+            if(vertices[i].inside){
+                if(!complementSpacePD || t.AlphaStatus<1){
+                    double radius = (vertices[i].powerDistance<=0) ? 0 : sqrt(vertices[i].powerDistance);
+                    glVertexAttrib1f(sphereShader["radius"], (float) radius);
+                    glVertex3d(v.X, v.Y, v.Z);
+                }
+            }
+        }
+        glEnd();
+        sphereShader.UnUse();
+    }
+    glDisable(GL_COLOR_MATERIAL);
+    glEndList();
 }
 
 void convertToByte(uint i, GLubyte* bytes){
@@ -536,7 +599,6 @@ void convertToByte(uint i, GLubyte* bytes){
     bytes[0] = i & 0xff;
     bytes[1] = (i>>8) & 0xff;
     bytes[2] = (i>>16) & 0xff;
-//    std::cout << i << "  " << (uint)bytes[0] << "  " << (uint)bytes[1] << "  " << (uint)bytes[2] << "  " << std::endl;
 }
 
 uint convertToInt(GLubyte* bytes){
@@ -702,6 +764,38 @@ void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.initLemonGraph();
 }
 
+void makePathSpheresDisplayList(std::vector<GraphNode*> *pathNodes){
+    shaders::initSphereShader();
+    if(glIsList(pathSpheresListID) == GL_TRUE){
+        glDeleteLists(pathSpheresListID, 1);
+    }
+    pathSpheresListID = glGenLists(1);
+    glNewList(pathSpheresListID, GL_COMPILE);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glEnable(GL_COLOR_MATERIAL);
+    if(shaders::initSphereShader()){
+        GLSLShader sphereShader = *(shaders::getSphereShader());
+        sphereShader.Use();
+        glBegin(GL_POINTS);
+        for(int i=0;i<pathNodes->size();i++){
+            if(i==0){
+                glColor3d(0.8,0.2,0);
+            } else if (i == pathNodes->size()-1){
+                glColor3d(0,0.5,0);
+            } else {
+                glColor3d(0,0,1);
+            }
+            GraphNode* curr = pathNodes->at(i);
+            glVertexAttrib1f(sphereShader["radius"], (float)curr->radius);
+            glVertex3d(curr->x, curr->y, curr->z);
+        }
+        glEnd();
+        sphereShader.UnUse();
+    }
+    glDisable(GL_COLOR_MATERIAL);
+    glEndList();
+}
+
 void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathEdges,
               GLUquadric* quad, bool useSelected){
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
@@ -792,25 +886,7 @@ void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathE
     }
 }
 
-void initPathList(std::vector<GraphNode*> *pathNodes){
-    if(glIsList(pathSkinListID) == GL_TRUE){
-        glDeleteLists(pathSkinListID, 1);
-    }
-    pathSkinListID = glGenLists(1);
-    glNewList(pathSkinListID, GL_COMPILE);
-
-    glEnable(GL_COLOR_MATERIAL);
-
-    glColor3d(0,1,0);
-
-//        for(int i=0;i<pathNodes.size();i++){
-//            GraphNode* curr = pathNodes[i];
-//            glPushMatrix();
-//            glTranslated(curr->x, curr->y, curr->z);
-//            gluSphere(quad, sqrt(curr->pVert->powerDistance), 8, 8);
-//            glPopMatrix();
-//        }
-
+void initPathSkinList(std::vector<GraphNode*> *pathNodes){
     FILE *fp = fopen("pathskin","w");
     fprintf(fp,"%d\n",pathNodes->size());
     fprintf(fp,"#junk\n");
@@ -826,15 +902,7 @@ void initPathList(std::vector<GraphNode*> *pathNodes){
     SkinSurface skin(center, 1, 1);
     skin.Read("skin_lev0.off",0);
     skin.Process();
-    skin.Draw(true, true);
 
-    glDisable(GL_COLOR_MATERIAL);
-
-    glEndList();
-}
-
-#include<set>
-void initMultiplePathList(std::vector<std::vector<GraphNode*> > *pathsNodes){
     if(glIsList(pathSkinListID) == GL_TRUE){
         glDeleteLists(pathSkinListID, 1);
     }
@@ -842,6 +910,15 @@ void initMultiplePathList(std::vector<std::vector<GraphNode*> > *pathsNodes){
     glNewList(pathSkinListID, GL_COMPILE);
 
     glEnable(GL_COLOR_MATERIAL);
+    glColor3d(0,0.7,0);
+    skin.DrawSolid();
+    glDisable(GL_COLOR_MATERIAL);
+
+    glEndList();
+}
+
+#include<set>
+void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *pathsNodes){
     std::vector<GraphNode*> pathNodes;
     std::set<int> unique;
 
@@ -856,26 +933,10 @@ void initMultiplePathList(std::vector<std::vector<GraphNode*> > *pathsNodes){
         }
     }
 
-    FILE *fp = fopen("pathskin","w");
-    fprintf(fp,"%d\n",pathNodes.size());
-    fprintf(fp,"#junk\n");
-    for(int i=0;i<pathNodes.size();i++){
-        GraphNode* curr = pathNodes.at(i);
-        fprintf(fp,"%d %f %f %f %f\n",i+1,curr->x, curr->y, curr->z,
-                curr->radius);
-    }
-    fclose(fp);
-    system("./smesh pathskin -s skin.off -t skin.tet");
-
-    double center[] = {0,0,0};
-    SkinSurface skin(center, 1, 1);
-    skin.Read("skin_lev0.off",0);
-    skin.Process();
-    skin.Draw(true, true);
-
-    glDisable(GL_COLOR_MATERIAL);
-
-    glEndList();
+    // make path skin display list
+    initPathSkinList(&pathNodes);
+    // make spheres display list
+    makePathSpheresDisplayList(&pathNodes);
 }
 
 bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
@@ -899,7 +960,6 @@ bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
         glEnable(GL_COLOR_MATERIAL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        glLineWidth(3);
         glColor3d(1,0,1);
 
         GLUquadric* quad = gluNewQuadric();
@@ -908,14 +968,12 @@ bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
 
         drawPath(&pathNodes, &pathEdges, quad, false);
 
-        glLineWidth(1);
-        glPointSize(6);
-
         glDisable(GL_COLOR_MATERIAL);
 
         glEndList();
 
-        initPathList(&pathNodes);
+        initPathSkinList(&pathNodes);
+        makePathSpheresDisplayList(&pathNodes);
         singlePath = true;
 
         return true;
@@ -1002,7 +1060,7 @@ int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
         glEndList();
 
         if(repeated){
-            initMultiplePathList(&pathsNodes);
+            initMultiplePathSkinList(&pathsNodes);
         }else if(glIsList(pathSkinListID) == GL_TRUE){
             glDeleteLists(pathSkinListID, 1);
         }
@@ -1047,7 +1105,8 @@ bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y
 
         glEndList();
 
-        initPathList(&pathNodes);
+        initPathSkinList(&pathNodes);
+        makePathSpheresDisplayList(&pathNodes);
         singlePath = true;
     }
     return pathFound;

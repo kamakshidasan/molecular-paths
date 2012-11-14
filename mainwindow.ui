@@ -492,7 +492,7 @@
           <x>430</x>
           <y>10</y>
           <width>221</width>
-          <height>55</height>
+          <height>81</height>
          </rect>
         </property>
         <property name="title">
@@ -502,10 +502,17 @@
          <item>
           <widget class="QCheckBox" name="checkSpaceFill">
            <property name="text">
-            <string>Show Space fill model</string>
+            <string>Show Space Fill Molecule</string>
            </property>
            <property name="checked">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkSpaceFillPD">
+           <property name="text">
+            <string>Show Space Fill PD</string>
            </property>
           </widget>
          </item>
@@ -522,7 +529,7 @@
           <x>2</x>
           <y>9</y>
           <width>491</width>
-          <height>201</height>
+          <height>211</height>
          </rect>
         </property>
         <property name="title">
@@ -622,7 +629,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
             <widget class="QCheckBox" name="checkShowPath">
              <property name="text">
@@ -634,6 +641,17 @@
             </widget>
            </item>
            <item>
+            <widget class="QCheckBox" name="checkShowPathSpheres">
+             <property name="text">
+              <string>Show Path Spheres</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
             <widget class="QCheckBox" name="checkShowPathSkin">
              <property name="text">
               <string>Show Path Skin</string>
@@ -644,9 +662,12 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkShowPathSpheres">
+            <widget class="QCheckBox" name="checkShowPathSkinWF">
              <property name="text">
-              <string>Show Path Spheres</string>
+              <string>Show Path Skin Wireframe</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>

@@ -157,6 +157,32 @@ void SkinSurface::Read(const char* vfname,int count)
 	fclose(fp);
 }
 
+void SkinSurface::DrawSolid()
+{
+    int a,b,c;
+    uint i = 0;
+
+    for ( i = 1; i < triList.size(); i++)
+    {
+        a = triList[i].Corners[1];
+        b = triList[i].Corners[2];
+        c = triList[i].Corners[3];
+
+        glBegin(GL_TRIANGLES);
+
+            glNormal3dv(vertexNormals[a].normals);
+            glVertex3d(vertList[a].NormCoordinates[1],vertList[a].NormCoordinates[2],vertList[a].NormCoordinates[3]);
+
+            glNormal3dv(vertexNormals[b].normals);
+            glVertex3d(vertList[b].NormCoordinates[1],vertList[b].NormCoordinates[2],vertList[b].NormCoordinates[3]);
+
+            glNormal3dv(vertexNormals[c].normals);
+            glVertex3d(vertList[c].NormCoordinates[1],vertList[c].NormCoordinates[2],vertList[c].NormCoordinates[3]);
+
+        glEnd();
+    }
+}
+
 void SkinSurface::Draw(bool smoothShading,bool skinWireFrame)
 {
 	int a,b,c;

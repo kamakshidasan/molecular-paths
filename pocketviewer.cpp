@@ -181,6 +181,10 @@ void PocketViewer::draw()
 }
 
 void PocketViewer::mousePressEvent(QMouseEvent *e){
+    if(m_processor->powerDiagram == NULL){
+        QGLViewer::mousePressEvent(e);
+        return;
+    }
     if(e->button()== Qt::MidButton){
         m_processor->powerDiagram->startVert = -1;
         m_processor->powerDiagram->targetVert = -1;
@@ -209,7 +213,8 @@ void PocketViewer::setRank(int rank)
 {
     this->rank = rank;
     remakePowerDiagramDL = true;
-    m_processor->powerDiagram->constructGraph(true);
+    m_processor->powerDiagram->alphaUpdated();
+    m_processor->proteinRenderer->makeDisplayList();
     updateGL();
 }
 
