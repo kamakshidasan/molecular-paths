@@ -28,7 +28,7 @@ class PocketViewer : public QGLViewer,public Processor
 {
     Q_OBJECT
     public:
-        PocketViewer(Processor *pr,QWidget* parent=NULL);
+        PocketViewer(Processor *pr, const QGLFormat& format, QWidget* parent=NULL);
         void setRank(int rank);
         void setPersistence(int persistence);
         void setAlphaShape();

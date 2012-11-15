@@ -28,6 +28,7 @@
 #include "graph.h"
 #include <iostream>
 #include <QVector>
+#include <QGLViewer/qglviewer.h>
 
 class PowerVertex{
 public:
@@ -119,7 +120,7 @@ public:
     void makePDSpheresDisplayList(bool complementSpacePD);
     void render(bool showPowerDiag, bool showPath);
     void drawNodesForPicking();
-    int processPick(int cursorX, int cursorY);
+    int processPick(int cursorX, int cursorY, qglviewer::Camera* camera);
     int getEdgeTo(int v1, int v2);
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);

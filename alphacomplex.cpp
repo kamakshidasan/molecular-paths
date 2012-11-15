@@ -1895,6 +1895,8 @@ void AlphaComplex::RenderUnModified (int rank, bool al, bool wf, bool skin, bool
     std::vector<Vertex> skinList;
     FILE *fp;
 
+    glPointSize(5);
+
     if(!skin)
     {
         if(al)
@@ -2091,6 +2093,7 @@ void AlphaComplex::RenderModified (int rank, bool al, bool wf, bool skin, bool s
             glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, LightMaterial::MatShin[3]);
             glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, LightMaterial::MatEmission);
 
+            glBegin(GL_TRIANGLES);
             for(i=1;i<delcx->DeluanayTrigs.size();i++)
             {
                 if((delcx->DeluanayTrigs[i].AlphaStatus == 1) && (delcx->DeluanayTrigs[i].isValid == true))
@@ -2104,12 +2107,11 @@ void AlphaComplex::RenderModified (int rank, bool al, bool wf, bool skin, bool s
                     v[0] = delcx->DeluanayTrigs[i].Normal->X;
                     v[1] = delcx->DeluanayTrigs[i].Normal->Y;
                     v[2] = delcx->DeluanayTrigs[i].Normal->Z;
-                    glBegin(GL_TRIANGLES);
+
                     glNormal3dv(v);
                     glVertex3dv(a);
                     glVertex3dv(b);
                     glVertex3dv(c);
-                    glEnd();
                 }
                 else
                 {
@@ -2119,7 +2121,9 @@ void AlphaComplex::RenderModified (int rank, bool al, bool wf, bool skin, bool s
                     }
                 }
             }
+            glEnd();
 
+            glBegin(GL_LINES);
             for(i=1;i<delcx->DeluanayEdges.size();i++)
             {
                 if((delcx->DeluanayEdges[i].AlphaStatus == 1) && (delcx->DeluanayEdges[i].RenderFlag == 1))
@@ -2129,13 +2133,13 @@ void AlphaComplex::RenderModified (int rank, bool al, bool wf, bool skin, bool s
                         a[j] = vertexList[delcx->DeluanayEdges[i].Corners[1]].NormCoordinates[j+1];
                         b[j] = vertexList[delcx->DeluanayEdges[i].Corners[2]].NormCoordinates[j+1];
                     }
-                    glBegin(GL_LINES);
                     glVertex3dv(a);
                     glVertex3dv(b);
-                    glEnd();
                 }
             }
+            glEnd();
 
+            glBegin(GL_POINTS);
             for(i=1;i<vertexList.size();i++)
             {
                 if(vertexList[i].AlphaStatus == 0)
@@ -2144,12 +2148,10 @@ void AlphaComplex::RenderModified (int rank, bool al, bool wf, bool skin, bool s
                     {
                         a[j] = vertexList[i].NormCoordinates[j+1];
                     }
-                    glBegin(GL_POINTS);
-
                     glVertex3dv(a);
-                    glEnd();
                 }
             }
+            glEnd();
         }
     }
     else
@@ -2257,6 +2259,54 @@ void AlphaComplex::Render(int rank,bool al,bool wf,bool skin,bool ss,bool swf)
     {
         RenderUnModified (rank,al,wf,skin,ss,swf);
     }
+//    RenderComplement(true);
+}
+
+/*!
+    \fn AlphaComplex::RenderUnModified(int rank,bool al,bool wf,bool skin,bool ss,bool swf)
+ */
+void AlphaComplex::RenderComplement (bool wf)
+{
+    uint i;
+    int j;
+    double a[3],b[3],c[3],v[3];
+
+    glPointSize(5);
+    glEnable(GL_COLOR_MATERIAL);
+
+    glColor3d(1, 1, 0);
+    if(!wf)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    }
+    else
+    {
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    }
+
+    glBegin(GL_TRIANGLES);
+    for(i=1;i<delcx->DeluanayTrigs.size();i++)
+    {
+        if(delcx->DeluanayTrigs[i].AlphaStatus != 1)
+        {
+            for(j=0;j<3;j++)
+            {
+                a[j] = vertexList[delcx->DeluanayTrigs[i].Corners[1]].NormCoordinates[j+1];
+                b[j] = vertexList[delcx->DeluanayTrigs[i].Corners[2]].NormCoordinates[j+1];
+                c[j] = vertexList[delcx->DeluanayTrigs[i].Corners[3]].NormCoordinates[j+1];
+            }
+            v[0] = delcx->DeluanayTrigs[i].Normal->X;
+            v[1] = delcx->DeluanayTrigs[i].Normal->Y;
+            v[2] = delcx->DeluanayTrigs[i].Normal->Z;
+
+            glNormal3dv(v);
+            glVertex3dv(a);
+            glVertex3dv(b);
+            glVertex3dv(c);
+        }
+    }
+    glEnd();
+    glDisable(GL_COLOR_MATERIAL);
 }
 
 /*!

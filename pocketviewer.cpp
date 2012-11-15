@@ -22,8 +22,8 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 
-PocketViewer::PocketViewer(Processor* pr,QWidget* parent)
-    : QGLViewer(parent)
+PocketViewer::PocketViewer(Processor* pr, const QGLFormat& format, QWidget* parent)
+    : QGLViewer(format, parent)
 {
     m_processor = pr;
     rank = 0;
@@ -193,7 +193,7 @@ void PocketViewer::mousePressEvent(QMouseEvent *e){
     }else{
         preDraw();
         m_processor->powerDiagram->drawNodesForPicking();
-        int select = m_processor->powerDiagram->processPick(e->x(), e->y());
+        int select = m_processor->powerDiagram->processPick(e->x(), e->y(), camera());
         if(select>=0){
             if(e->button()== Qt::LeftButton){
                 m_processor->powerDiagram->startVert = select;

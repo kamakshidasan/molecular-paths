@@ -175,6 +175,7 @@ class AlphaComplex
         void Render(int rank,bool al,bool wf,bool skin,bool ss,bool swf);
         void RenderUnModified(int rank,bool al,bool wf,bool skin,bool ss,bool swf);
         void RenderModified(int rank,bool al,bool wf,bool skin,bool ss,bool swf);
+        void RenderComplement (bool wf);
         void PrintML();
 
         void FindProperties(std::vector<Vertex> &vertexList,QLineEdit *totVol,QLineEdit *totSurf,int Rank);

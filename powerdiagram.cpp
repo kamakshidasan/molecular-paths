@@ -616,7 +616,7 @@ void PowerDiagram::drawNodesForPicking() {
     glDisable(GL_POINT_SMOOTH);
     glDisable(GL_BLEND);
 
-    glPointSize(10);
+    glPointSize(12);
     glBegin(GL_POINTS);
     GLubyte color[3];
     for(uint i=0;i<vertices.size();i++){
@@ -631,13 +631,26 @@ void PowerDiagram::drawNodesForPicking() {
     glEnd();
 }
 
-int PowerDiagram::processPick(int cursorX, int cursorY)
+int PowerDiagram::processPick(int cursorX, int cursorY, qglviewer::Camera* camera)
 {
     GLint viewport[4];
     GLubyte pixel[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
     glReadPixels(cursorX,viewport[3]-cursorY,1,1,GL_RGB ,GL_UNSIGNED_BYTE,(void *)pixel);
     int index = convertToInt(pixel);
+    // verification that the selected index is correct
+    // done to take care of FSAA
+    if(index>0 && index<=vertices.size()){
+        PowerVertex sel = vertices[index-1];
+        float coords[] = {sel.center.X, sel.center.Y, sel.center.Z};
+        float res[3];
+        camera->getProjectedCoordinatesOf(coords, res);
+        if(abs(cursorX-res[0])<6 && abs(cursorY-res[1])<6){
+            return index-1;
+        }else{
+            return -1;
+        }
+    }
     return index-1;
 }
 

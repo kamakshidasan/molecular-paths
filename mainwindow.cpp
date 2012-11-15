@@ -21,13 +21,17 @@
 #include "ui_mainwindow.h"
 #include "qcustomplot.h"
 
+QGLFormat format;
+
 MainWindow::MainWindow(Processor *pr,QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    m_viewer1 = new PocketViewer(pr,ui->FirstViewerPlaceHolder);
+    format.setSampleBuffers(true);
+    format.setSamples(4);
+    m_viewer1 = new PocketViewer(pr, format, ui->FirstViewerPlaceHolder);
 
     m_viewer1->resize(ui->FirstViewerPlaceHolder->size());
 
