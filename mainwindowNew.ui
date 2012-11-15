@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::West</enum>
+      </property>
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
+      <widget class="QWidget" name="tabWidgetPage2">
+       <attribute name="title">
+        <string>Alpha Shapes and Pockets</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QGroupBox" name="groupBoxAlphaShape">
+          <property name="title">
+           <string>AlphaShape</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelAlphaValue">
+             <property name="text">
+              <string>Alpha Value :</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditAlphaValue"/>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkBoxAlphaShape">
+             <property name="text">
+              <string>AlphaShape</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkBoxWireFrame">
+             <property name="text">
+              <string>WireFrame</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Epsilon Input:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="lineEditEpsilonInput"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxPockets">
+          <property name="title">
+           <string>Pockets</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QCheckBox" name="checkBoxAllPockets">
+             <property name="text">
+              <string>All Pockets</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxOnlyPockets">
+             <property name="text">
+              <string>Only Pockets</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxOnlyVoids">
+             <property name="text">
+              <string>Only Voids</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxAllMouths">
+             <property name="text">
+              <string>Mouths</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxPocketWireFrame">
+             <property name="text">
+              <string>Pocket Wire Frame</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxVolumeEnabled">
+             <property name="text">
+              <string>Display Properties</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxIndivPockets">
+          <property name="title">
+           <string>Individual Pockets</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="radioButtonAllPockets">
+             <property name="text">
+              <string>All Pockets</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="radioButtonIndivPockets">
+             <property name="text">
+              <string>Individual Pockets</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="spinBoxPockets"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxSkinSurface">
+          <property name="title">
+           <string>SkinSurface</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="checkBoxAlphaSkinSolid">
+             <property name="text">
+              <string>AlphaSkinSurface</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxPocketSkinSolid">
+             <property name="text">
+              <string>PocketSkinSurface</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxAlphaSkinWireFrame">
+             <property name="text">
+              <string>AlphaSkinWireFrame</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxPocketSkinWireFrame">
+             <property name="text">
+              <string>PocketSkinWireFrame</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButtonSmooth">
+             <property name="text">
+              <string>Smooth Shading</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButtonFlat">
+             <property name="text">
+              <string>Flat Shading</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabWidgetPage1">
+       <attribute name="title">
+        <string>Power Diagram</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>PowerDiagram</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QCheckBox" name="checkPowerDiag">
+             <property name="text">
+              <string>Show Power Diagram</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkComplementSpacePD">
+             <property name="text">
+              <string>Complement Space PD</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkInsideVerts">
+             <property name="text">
+              <string>Only Inside Vertices</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkPruneIsolatedVerts">
+             <property name="text">
+              <string>Prune Isolated Vertices</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkEdgeIntersect">
+             <property name="text">
+              <string>Intersect Edges</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+          <zorder>checkPowerDiag</zorder>
+          <zorder>checkInsideVerts</zorder>
+          <zorder>checkPruneIsolatedVerts</zorder>
+          <zorder>checkEdgeIntersect</zorder>
+          <zorder>checkComplementSpacePD</zorder>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="cHullBox">
+          <property name="title">
+           <string>Convex Hull</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="QCheckBox" name="checkCHull">
+             <property name="text">
+              <string>Show Convex Hull</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkCHullWireFrame">
+             <property name="text">
+              <string>Convex Hull Wireframe</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkCHullNorm">
+             <property name="text">
+              <string>Show Hull Normals</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxProtein">
+          <property name="title">
+           <string>Space Fill Visualization</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QCheckBox" name="checkSpaceFill">
+             <property name="text">
+              <string>Show Space Fill Molecule</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkSpaceFillPD">
+             <property name="text">
+              <string>Show Space Fill PD</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+       <zorder>groupBox</zorder>
+       <zorder>cHullBox</zorder>
+       <zorder>groupBoxProtein</zorder>
+       <zorder>verticalSpacer</zorder>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Shortest Paths</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_10">
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Escape Paths</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="startLabel">
+               <property name="text">
+                <string>Start Node:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="startIndexLabel">
+               <property name="text">
+                <string>-1</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Target Node:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="targetIndexLabel">
+               <property name="text">
+                <string>-1</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="buttonShortestEscapePath">
+             <property name="text">
+              <string>Find Shortest Escape Path</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="buttonShortestEscapePathAll">
+             <property name="text">
+              <string>Find Shortest Escape Path (All)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="buttonShortestEscapePathRepeated">
+             <property name="text">
+              <string>Escape paths (Repeated Dijkstra)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Max Iterations:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="maxIterDijkstra">
+               <property name="text">
+                <string>10</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="buttonShortestSTPath">
+             <property name="text">
+              <string>Find Shortest Source-Target path</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkShowPath">
+             <property name="text">
+              <string>Show Path(s)</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkShowPathSkin">
+             <property name="text">
+              <string>Show Path Skin</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkShowPathSkinWF">
+             <property name="text">
+              <string>Show Path Skin Wireframe</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkShowPathSpheres">
+             <property name="text">
+              <string>Show Path Spheres</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Pocket and Mouth Properties</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="QGroupBox" name="groupBoxMoleclueProperties">
+          <property name="title">
+           <string>Molecular Properties</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelMolTotalVolume">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Total Volume:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>lineEditMolTotalVolume</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditMolTotalVolume"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelMolTotalSurfaceArea">
+             <property name="text">
+              <string>Total Surface Area:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>lineEditMolTotSurfArea</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEditMolTotSurfArea"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxPocketProperties">
+          <property name="title">
+           <string>Pocket Properties</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelPocketTotalVolume">
+             <property name="text">
+              <string>Total Volume:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>lineEditPocketTotalVolume</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditPocketTotalVolume"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelPocketTotalSurfaceArea">
+             <property name="text">
+              <string>Total Surface Area:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>lineEditPocTotSurfArea</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEditPocTotSurfArea"/>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetPocket">
+             <property name="columnCount">
+              <number>5</number>
+             </property>
+             <column>
+              <property name="text">
+               <string>Identifier</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Select</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>No.of Mouths</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Volume</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Surface Area</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxMouthProperties">
+          <property name="title">
+           <string>Mouth Properties</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelMouthTotalSurfaceArea">
+             <property name="text">
+              <string>Total Surface Area:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>lineEditMouthTotalSurfArea</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditMouthTotalSurfArea"/>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTableWidget" name="tableWidgetMouth">
+             <property name="columnCount">
+              <number>4</number>
+             </property>
+             <column>
+              <property name="text">
+               <string>Identifier</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Select</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Parent Pocket</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Surface Area</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,5,0">
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelAlphaRank">
+          <property name="text">
+           <string>Alpha Rank</string>
+          </property>
+          <property name="buddy">
+           <cstring>alphaSlider</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSlider" name="alphaSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="lineEditAlphaRank"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelPersistence">
+          <property name="text">
+           <string>Persistence</string>
+          </property>
+          <property name="buddy">
+           <cstring>persistenceSlider</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLineEdit" name="lineEditPersistenceRank"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="persistenceSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QSplitter" name="splitter">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <widget class="QCustomPlot" name="graphWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>200</height>
+          </size>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionOpen_With_incremented_Radius"/>
+    <addaction name="actionOpen_As_Points"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_Graph"/>
+    <addaction name="actionSave_Current_Path"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionAlphaZero"/>
+    <addaction name="actionChangeFiltration"/>
+    <addaction name="actionUndoChange"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionOpen_With_incremented_Radius">
+   <property name="text">
+    <string>Open (With Incremented Radius)</string>
+   </property>
+  </action>
+  <action name="actionOpen_As_Points">
+   <property name="text">
+    <string>Open As Points</string>
+   </property>
+  </action>
+  <action name="actionSave_Graph">
+   <property name="text">
+    <string>Save Graph</string>
+   </property>
+  </action>
+  <action name="actionSave_Current_Path">
+   <property name="text">
+    <string>Save Current Path(s)</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionAlphaZero">
+   <property name="text">
+    <string>Alpha Value = 0.0</string>
+   </property>
+  </action>
+  <action name="actionChangeFiltration">
+   <property name="text">
+    <string>Change Filtration</string>
+   </property>
+  </action>
+  <action name="actionUndoChange">
+   <property name="text">
+    <string>Undo Change</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

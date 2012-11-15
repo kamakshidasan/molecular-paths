@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "ui_mainwindowNew.h"
 #include "qcustomplot.h"
 
 QGLFormat format;
@@ -31,12 +31,19 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
 
     format.setSampleBuffers(true);
     format.setSamples(4);
-    m_viewer1 = new PocketViewer(pr, format, ui->FirstViewerPlaceHolder);
 
-    m_viewer1->resize(ui->FirstViewerPlaceHolder->size());
+//    QVBoxLayout *vLayout = new QVBoxLayout();
+//    ui->FirstViewerPlaceHolder->setLayout(vLayout);
+//    m_viewer1 = new PocketViewer(pr, format, ui->FirstViewerPlaceHolder);
 
+    m_viewer1 = new PocketViewer(pr, format, parent);
+    ui->verticalLayout->addWidget(m_viewer1, 4);
+    ui->splitter->addWidget(m_viewer1);
+    ui->splitter->setStretchFactor(0, 0);
+    ui->splitter->setStretchFactor(1, 1);
+
+//    m_viewer1->resize(ui->FirstViewerPlaceHolder->size());
 //    m_viewer2 = new PocketViewer(pr,ui->SecondViewerPlaceHolder);
-
 //    m_viewer2->resize(ui->SecondViewerPlaceHolder->size());
 
     m_processor = pr;

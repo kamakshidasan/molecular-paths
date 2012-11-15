@@ -85,4 +85,5 @@ HEADERS += pocketviewer.h \
     qcustomplot.h \
     glslshader.h \
     proteinrenderer.h
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    mainwindowNew.ui

@@ -20,12 +20,16 @@
 #include "mainwindow.h"
 #include <QtGui/QApplication>
 #include <processor.h>
+//#include "ui_mainwindowNew.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Processor *pr = new Processor();
     MainWindow w(pr);
+//    QMainWindow w;
+//    Ui_MainWindow ui;
+//    ui.setupUi(&w);
     w.show();
     return a.exec();
 }
