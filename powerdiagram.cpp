@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by talha bin masood                                *                                                 *
+ *   Copyright (C) 2012 by talha bin masood                                *                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -24,13 +24,13 @@
 #include <skinsurface.h>
 #include <glslshader.h>
 
-bool inside(Vector3 v, double min[], double max[], double pad){
+static bool inside(Vector3 v, double min[], double max[], double pad){
     return (v.X>(min[0]-pad) && v.X<(max[0]+pad) &&
             v.Y>(min[1]-pad) && v.Y<(max[1]+pad) &&
             v.Z>(min[2]-pad) && v.Z<(max[2]+pad));
 }
 
-std::vector<Triangle> getConvexHull(DeluanayComplex* delcx, std::vector<Vertex> &vertlist){
+static std::vector<Triangle> getConvexHull(DeluanayComplex* delcx, std::vector<Vertex> &vertlist){
     std::vector<Triangle> cHull;
     for(int i=1; i< delcx->DeluanayTrigs.size(); i++){
         Triangle tri = delcx->DeluanayTrigs[i];
@@ -101,7 +101,7 @@ std::vector<Triangle> getConvexHull(DeluanayComplex* delcx, std::vector<Vertex> 
     return cHull;
 }
 
-bool inside(std::vector<Triangle> * cHull, std::vector<Vertex> &vertlist, Vector3 v){
+static bool inside(std::vector<Triangle> * cHull, std::vector<Vertex> &vertlist, Vector3 v){
     int positive =0;
     for(int i = 0; i< cHull->size();i++){
         Triangle t = cHull->at(i);
@@ -121,7 +121,7 @@ bool inside(std::vector<Triangle> * cHull, std::vector<Vertex> &vertlist, Vector
     return false;
 }
 
-bool intersect(Triangle tri, std::vector<Vertex> &vertlist, Vector3* pt1, Vector3* pt2, Vector3* I){
+static bool intersect(Triangle tri, std::vector<Vertex> &vertlist, Vector3* pt1, Vector3* pt2, Vector3* I){
     Vector3 dir;
     Vector3::DiffVector(&dir, pt2, pt1);
     Vector3 v0 = vertlist[tri.Corners[1]].getCoordVector();
@@ -183,7 +183,7 @@ bool intersect(Triangle tri, std::vector<Vertex> &vertlist, Vector3* pt1, Vector
     return true;                   // I is in T
 }
 
-bool intersect(std::vector<Triangle> * cHull, std::vector<Vertex> &vertlist, Vector3* pt1, Vector3* pt2, Vector3* I){
+static bool intersect(std::vector<Triangle> * cHull, std::vector<Vertex> &vertlist, Vector3* pt1, Vector3* pt2, Vector3* I){
     for(int i = 0; i< cHull->size();i++){
         Triangle tri = cHull->at(i);
         if(intersect(tri, vertlist, pt1, pt2, I)){
@@ -193,7 +193,7 @@ bool intersect(std::vector<Triangle> * cHull, std::vector<Vertex> &vertlist, Vec
     return false;
 }
 
-int getCommonTri(Tetrahedron* t1, Tetrahedron* t2){
+static int getCommonTri(Tetrahedron* t1, Tetrahedron* t2){
     for(int i=1;i<5;i++){
         for(int j=1;j<5;j++){
             if((t1->TetLink[i]!=-1) && (t1->TetLink[i] == t2->TetLink[j])){
@@ -204,7 +204,7 @@ int getCommonTri(Tetrahedron* t1, Tetrahedron* t2){
     return -1;
 }
 
-int getCHullTri(Tetrahedron* t, DeluanayComplex* delCplx){
+static int getCHullTri(Tetrahedron* t, DeluanayComplex* delCplx){
     for(int i=1;i<5;i++){
         if((t->TetLink[i]!=-1) ){
             Triangle tri = delCplx->DeluanayTrigs[t->TetLink[i]];
@@ -421,7 +421,7 @@ void PowerDiagram::render(bool showPowerDiag, bool showPath){
         glEnable(GL_COLOR_MATERIAL);
         if(startVert>=0 && startVert<vertices.size()){
             glPointSize(10);
-            glColor3d(0,1,1);
+            glColor3d(0.8,0.8,0);
             glBegin(GL_POINTS);
             PowerVertex v = vertices[startVert];
             glVertex3d(v.center.X, v.center.Y, v.center.Z);
@@ -429,7 +429,7 @@ void PowerDiagram::render(bool showPowerDiag, bool showPath){
         }
         if(targetVert>=0 && targetVert<vertices.size()){
             glPointSize(10);
-            glColor3d(1,0,1);
+            glColor3d(0,0.5,0);
             glBegin(GL_POINTS);
             PowerVertex v = vertices[targetVert];
             glVertex3d(v.center.X, v.center.Y, v.center.Z);
@@ -594,14 +594,14 @@ void PowerDiagram::makePDSpheresDisplayList(bool complementSpacePD){
     glEndList();
 }
 
-void convertToByte(uint i, GLubyte* bytes){
+static void convertToByte(uint i, GLubyte* bytes){
     i = i+1;
     bytes[0] = i & 0xff;
     bytes[1] = (i>>8) & 0xff;
     bytes[2] = (i>>16) & 0xff;
 }
 
-uint convertToInt(GLubyte* bytes){
+static uint convertToInt(GLubyte* bytes){
     uint r = bytes[0];
     uint g = bytes[1];
     uint b = bytes[2];
@@ -652,6 +652,50 @@ int PowerDiagram::processPick(int cursorX, int cursorY, qglviewer::Camera* camer
         }
     }
     return index-1;
+}
+
+void PowerDiagram::setStartVertex(int select){
+    if(startVert>=0 && startVert < vertices.size()){
+        PowerVertex vert = vertices[startVert];
+        Tetrahedron tet = delCplx->DeluanayTet[vert.tetIndex];
+        for(int i=1;i<=4;i++){
+            if(tet.Corners[i]>0){
+                vertList[tet.Corners[i]].selected = 0;
+            }
+        }
+    }
+    if(select >= 0 && select < vertices.size()){
+        PowerVertex vert = vertices[select];
+        Tetrahedron tet = delCplx->DeluanayTet[vert.tetIndex];
+        for(int i=1;i<=4;i++){
+            if(tet.Corners[i]>0){
+                vertList[tet.Corners[i]].selected = 1;
+            }
+        }
+    }
+    startVert = select;
+}
+
+void PowerDiagram::setTargetVertex(int select){
+    if(targetVert>=0 && targetVert < vertices.size()){
+        PowerVertex vert = vertices[targetVert];
+        Tetrahedron tet = delCplx->DeluanayTet[vert.tetIndex];
+        for(int i=1;i<=4;i++){
+            if(tet.Corners[i]>0){
+                vertList[tet.Corners[i]].selected = 0;
+            }
+        }
+    }
+    if(select >= 0 && select < vertices.size()){
+        PowerVertex vert = vertices[select];
+        Tetrahedron tet = delCplx->DeluanayTet[vert.tetIndex];
+        for(int i=1;i<=4;i++){
+            if(tet.Corners[i]>0){
+                vertList[tet.Corners[i]].selected = -1;
+            }
+        }
+    }
+    targetVert = select;
 }
 
 int PowerDiagram::getEdgeTo(int v1, int v2){
@@ -777,7 +821,7 @@ void PowerDiagram::constructGraph(bool considerAlpha){
     currentGraph.initLemonGraph();
 }
 
-void makePathSpheresDisplayList(std::vector<GraphNode*> *pathNodes){
+static void makePathSpheresDisplayList(std::vector<GraphNode*> *pathNodes){
     shaders::initSphereShader();
     if(glIsList(pathSpheresListID) == GL_TRUE){
         glDeleteLists(pathSpheresListID, 1);
@@ -792,7 +836,7 @@ void makePathSpheresDisplayList(std::vector<GraphNode*> *pathNodes){
         glBegin(GL_POINTS);
         for(int i=0;i<pathNodes->size();i++){
             if(i==0){
-                glColor3d(0.8,0.2,0);
+                glColor3d(0.8,0.8,0);
             } else if (i == pathNodes->size()-1){
                 glColor3d(0,0.5,0);
             } else {
@@ -809,7 +853,7 @@ void makePathSpheresDisplayList(std::vector<GraphNode*> *pathNodes){
     glEndList();
 }
 
-void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathEdges,
+static void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathEdges,
               GLUquadric* quad, bool useSelected){
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     if(shaders::initCylinderShader()){
@@ -870,7 +914,7 @@ void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathE
         glVertexAttrib1f(sphereShader["radius"], (float)0.15);
         for(int i=0;i<pathNodes->size();i++){
             if(i==0){
-                glColor3d(0.8,0.2,0);
+                glColor3d(0.8,0.8,0);
             } else if (i == pathNodes->size()-1){
                 glColor3d(0,0.5,0);
             } else {
@@ -899,7 +943,7 @@ void drawPath(std::vector<GraphNode*> *pathNodes, std::vector<GraphEdge*> *pathE
     }
 }
 
-void initPathSkinList(std::vector<GraphNode*> *pathNodes){
+static void initPathSkinList(std::vector<GraphNode*> *pathNodes){
     FILE *fp = fopen("pathskin","w");
     fprintf(fp,"%d\n",pathNodes->size());
     fprintf(fp,"#junk\n");
@@ -909,11 +953,11 @@ void initPathSkinList(std::vector<GraphNode*> *pathNodes){
                 curr->radius);
     }
     fclose(fp);
-    system("./smesh pathskin -s skin.off -t skin.tet");
+    system("./smesh pathskin -s pskin.off -t pskin.tet");
 
     double center[] = {0,0,0};
     SkinSurface skin(center, 1, 1);
-    skin.Read("skin_lev0.off",0);
+    skin.Read("pskin_lev0.off",0);
     skin.Process();
 
     if(glIsList(pathSkinListID) == GL_TRUE){
@@ -931,7 +975,7 @@ void initPathSkinList(std::vector<GraphNode*> *pathNodes){
 }
 
 #include<set>
-void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *pathsNodes){
+static void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *pathsNodes){
     std::vector<GraphNode*> pathNodes;
     std::set<int> unique;
 
@@ -1126,7 +1170,7 @@ bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y
 }
 
 void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
-                            QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY)
+                            QVector<double>* X, QVector<double>* Y, double *length, double *minY, double *maxY)
 {
     int steps = X->size();
     double totalLength = 0;
@@ -1176,7 +1220,7 @@ void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vect
             Vector3::DotProduct(&diff, &diff, &dsq);
             double pd1;
             pd1 = dsq - (t1.Radius*t1.Radius);
-//            pd1 = pd1<0? 0 : sqrt(pd1);
+            pd1 = (pd1<=0) ? 0 : sqrt(pd1);
 
             if(index == 0){
                 *minY = *maxY = pd1;

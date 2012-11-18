@@ -185,28 +185,42 @@ void PocketViewer::mousePressEvent(QMouseEvent *e){
         QGLViewer::mousePressEvent(e);
         return;
     }
-    if(e->button()== Qt::MidButton){
-        m_processor->powerDiagram->startVert = -1;
-        m_processor->powerDiagram->targetVert = -1;
-        startLabel->setText(QString("-1"));
-        targetLabel->setText(QString("-1"));
-    }else{
+    PowerDiagram * pd = m_processor->powerDiagram;
+    if(e->button()== Qt::MidButton || e->button()== Qt::RightButton){
         preDraw();
-        m_processor->powerDiagram->drawNodesForPicking();
-        int select = m_processor->powerDiagram->processPick(e->x(), e->y(), camera());
+        pd->drawNodesForPicking();
+        int select = pd->processPick(e->x(), e->y(), camera());
         if(select>=0){
-            if(e->button()== Qt::LeftButton){
-                m_processor->powerDiagram->startVert = select;
+            if(e->button()== Qt::MidButton){
+                pd->setStartVertex(select);
+                m_processor->proteinRenderer->makeDisplayList();
                 startLabel->setText(QString::number(select));
             }
             if(e->button()== Qt::RightButton){
-                m_processor->powerDiagram->targetVert = select;
+                pd->setTargetVertex(select);
+                m_processor->proteinRenderer->makeDisplayList();
                 targetLabel->setText(QString::number(select));
             }
         }
         init();
     }
     QGLViewer::mousePressEvent(e);
+}
+
+void PocketViewer::mouseDoubleClickEvent(QMouseEvent *e){
+    if(m_processor->powerDiagram == NULL){
+        QGLViewer::mouseDoubleClickEvent(e);
+        return;
+    }
+    PowerDiagram * pd = m_processor->powerDiagram;
+    if(e->button()== Qt::LeftButton){
+        pd->setStartVertex(-1);
+        pd->setTargetVertex(-1);
+        m_processor->proteinRenderer->makeDisplayList();
+        startLabel->setText(QString("-1"));
+        targetLabel->setText(QString("-1"));
+    }
+    QGLViewer::mouseDoubleClickEvent(e);
 }
 
 void PocketViewer::setRank(int rank)

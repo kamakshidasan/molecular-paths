@@ -49,6 +49,8 @@ class Vertex
         int ufKey;
         mpz_t V[5];
 
+        int selected;
+
         Vertex(){
         }
 

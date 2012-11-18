@@ -25,26 +25,37 @@ void ProteinRenderer::makeDisplayList(){
     sphereslistID = glGenLists(1);
     glNewList(sphereslistID, GL_COMPILE);
 
+//    glDisable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     GLSLShader sphereShader = (*getSphereShader());
     sphereShader.Use();
 //    glColor4d(0.1, 0.6, 0.9, 1);
 //    glColor4d(0.5, 0.1, 0.2, 1);
-    glColor4d(0.6, 0.2, 0, 1);
+
     glBegin(GL_POINTS);
     glUniform1f(sphereShader("ug_add_radius"), (float) 0.0);
     glUniform1f(sphereShader("ug_alpha_value"), (float) 0.0);
-    for(unsigned int i=0;i<vertList.size();i++){
+    for(unsigned int i=1;i<vertList.size();i++){
         Vertex* v = &vertList[i];
         Vector3 pos = v->getCoordVector();
+        switch(v->selected){
+        case 1:
+            glColor3d(0.8,0.8,0);
+            break;
+        case -1:
+            glColor3d(0,0.5,0);
+            break;
+        default:
+            glColor4d(0.6, 0.2, 0, 1);
+        }
         glVertexAttrib1f(sphereShader["radius"], (float)v->Radius);
         glVertex3d(pos.X, pos.Y, pos.Z);
     }
     glEnd();
     sphereShader.UnUse();
     glDisable(GL_COLOR_MATERIAL);
-
+//    glEnable(GL_LIGHTING);
     glEndList();
 }
 

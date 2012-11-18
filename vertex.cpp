@@ -55,6 +55,7 @@ Vertex::Vertex(double x, double y, double z, double radius,int index,double scal
         this->Repeats = -1;
         this->ufKey = -1;
         this->valid = true;
+        selected = 0;
 }
 
 Vertex::~Vertex()

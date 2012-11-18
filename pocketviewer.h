@@ -68,6 +68,7 @@ class PocketViewer : public QGLViewer,public Processor
         virtual void init();
         virtual QString helpString() const;
         void mousePressEvent(QMouseEvent *e);
+        void mouseDoubleClickEvent(QMouseEvent *e);
 
     private:
         Processor *m_processor;

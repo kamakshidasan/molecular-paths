@@ -142,6 +142,10 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
 
     m_viewer1->startLabel = ui->startIndexLabel;
     m_viewer1->targetLabel = ui->targetIndexLabel;
+
+    // give the axes some labels:
+    ui->graphWidget->xAxis->setLabel("Distance from Source");
+    ui->graphWidget->yAxis->setLabel("Ortho-Sphere radius");
 }
 
 MainWindow::~MainWindow()
@@ -217,7 +221,7 @@ void MainWindow::onAlphaValueZero()
 {
     int rank = m_processor->getRankForAlpha(0.0);
     float alpvalue;
-    int persistence = ui->persistenceSlider->value ();
+    int persistence = ui->persistenceSlider->value();
     ui->alphaSlider->setValue(rank);
 
     QString r1,r2;
@@ -417,9 +421,6 @@ void MainWindow::onSTPathClick(){
     }
     ui->graphWidget->addGraph();
     ui->graphWidget->graph(0)->setData(X, Y);
-    // give the axes some labels:
-    ui->graphWidget->xAxis->setLabel("Distance from Source");
-    ui->graphWidget->yAxis->setLabel("Power Distance");
     // set axes ranges, so we see all data:
     ui->graphWidget->xAxis->setRange(0, length);
     ui->graphWidget->yAxis->setRange(minY<0?minY:0, maxY);
@@ -442,9 +443,6 @@ void MainWindow::onShortestEscapePathClick(){
     }
     ui->graphWidget->addGraph();
     ui->graphWidget->graph(0)->setData(X, Y);
-    // give the axes some labels:
-    ui->graphWidget->xAxis->setLabel("Distance from Source");
-    ui->graphWidget->yAxis->setLabel("Power Distance");
     // set axes ranges, so we see all data:
     ui->graphWidget->xAxis->setRange(0, length);
     ui->graphWidget->yAxis->setRange(minY<0?minY:0, maxY);
@@ -494,9 +492,6 @@ void MainWindow::onEscapePathClick(bool repeated, int maxIter){
                 ui->graphWidget->graph(i)->setPen(QPen(Qt::red));
             }
         }
-        // give the axes some labels:
-        ui->graphWidget->xAxis->setLabel("Distance from Source");
-        ui->graphWidget->yAxis->setLabel("Power Distance");
         // set axes ranges, so we see all data:
         ui->graphWidget->xAxis->setRange(0, maxLength);
         ui->graphWidget->yAxis->setRange(minY<0 ? minY : 0, maxY);

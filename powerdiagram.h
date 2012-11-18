@@ -121,6 +121,8 @@ public:
     void render(bool showPowerDiag, bool showPath);
     void drawNodesForPicking();
     int processPick(int cursorX, int cursorY, qglviewer::Camera* camera);
+    void setStartVertex(int index);
+    void setTargetVertex(int index);
     int getEdgeTo(int v1, int v2);
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);

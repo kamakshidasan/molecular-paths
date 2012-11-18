@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by talha bin masood                                *                                                 *
+ *   Copyright (C) 2012 by talha bin masood                                *                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -505,3 +505,41 @@ void Graph::writeAllPathsCRD(const char* file, std::vector<std::vector<GraphNode
     fclose(fp);
 }
 
+void Graph::clearRGNodes(){
+    for(uint i=0;i<nodes.size();i++){
+        nodes[i].isRGNode = false;
+    }
+}
+
+void Graph::readReebGraph(const char* file){
+    rgEdges.clear();
+    clearRGNodes();
+    FILE* fp = fopen(file, "r");
+    uint numNodes, numEdges;
+    fscanf(fp, "%d %d", &numNodes, &numEdges);
+    for(uint i = 0; i<numNodes ;i++){
+        float fnValue;
+        uint index;
+        char type[7];
+        fscanf(fp, "%d %f %s", &index, &fnValue, type);
+        nodes[index].isRGNode = true;
+        if(strcmp(type, "MAXIMA")){
+            nodes[index].RGnodeType = 0;
+        } else if(strcmp(type, "MINIMA")){
+            nodes[index].RGnodeType = 1;
+        } else if(strcmp(type, "SADDLE")){
+            nodes[index].RGnodeType = 2;
+        }
+    }
+    for(uint i = 0; i<numEdges; i++){
+        uint v1, v2;
+        int unknownField;
+        fscanf(fp, "%d %d %d", &v1, &v2, &unknownField);
+        RGEdge edge;
+        edge.v1 = v1;
+        edge.v2 = v2;
+        edge.index = i;
+        rgEdges.push_back(edge);
+    }
+    fclose(fp);
+}

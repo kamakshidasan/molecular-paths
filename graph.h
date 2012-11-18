@@ -32,19 +32,26 @@ class PowerEdge;
 
 class GraphNode {
 public:
-    PowerVertex * pVert;
+    PowerVertex* pVert;
     uint index;
     double x, y, z;
     double radius;
     bool boundary;
     std::vector<uint> edges;
+
+    bool isRGNode;
+    uint RGnodeType;
+
+    GraphNode(){
+        isRGNode = false;
+    }
 };
 
 class GraphEdge{
 public:
     uint v1, v2;
     uint index;
-    PowerEdge * pEdge;
+    PowerEdge* pEdge;
     double weight;
     bool selected;
 
@@ -67,6 +74,12 @@ public:
     }
 };
 
+class RGEdge{
+public:
+    uint v1, v2;
+    uint index;
+};
+
 using namespace lemon;
 
 class Graph
@@ -74,6 +87,7 @@ class Graph
 public:
     std::vector<GraphNode> nodes;
     std::vector<GraphEdge> edges;
+    std::vector<RGEdge> rgEdges;
     std::vector<ListGraph::Node> nodeMap;
     std::vector<ListGraph::Edge> edgeMap;
     ListGraph::NodeMap<GraphNode*> * revNodeMap;
@@ -93,19 +107,21 @@ public:
     int runDijkstra(int start, std::vector<std::vector<GraphNode*> > *pathsNodes,
                      std::vector<std::vector<GraphEdge*> > *pathsEdges);
     double runDijkstra(int start, int target, std::vector<GraphNode*> *pathNodes,
-                       std::vector<GraphEdge*> *pathEdges);
+                     std::vector<GraphEdge*> *pathEdges);
     bool runDijkstraEscape(int start, std::vector<GraphNode*> *pathNodes,
-                                 std::vector<GraphEdge*> *pathEdges);
+                     std::vector<GraphEdge*> *pathEdges);
     bool runDijkstraEscapeOneIter(int start, std::vector<GraphNode*> *pathNodes,
-                                 std::vector<GraphEdge*> *pathEdges, ListGraph::EdgeMap<double>* weightMap);
+                     std::vector<GraphEdge*> *pathEdges, ListGraph::EdgeMap<double>* weightMap);
     bool runDijkstraEscapeRepeated(int start, int maxIter, std::vector<std::vector<GraphNode*> > *pathsNodes,
-                            std::vector<std::vector<GraphEdge*> > *pathsEdges);
+                     std::vector<std::vector<GraphEdge*> > *pathsEdges);
     void writeGraph(const char* file);
     void writeGraphCRD(const char* file);
     void writeGraphOFF(const char* file);
     void writePathOFF(const char* file, std::vector<GraphNode*> *pathNodes);
     void writePathCRD(const char* file, std::vector<GraphNode*> *pathNodes);
     void writeAllPathsCRD(const char* file, std::vector<std::vector<GraphNode*> > *pathsNodes);
+    void clearRGNodes();
+    void readReebGraph(const char* file);
 };
 
 #endif // GRAPH_H
