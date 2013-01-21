@@ -91,6 +91,8 @@ public:
     }
 };
 
+class Processor;
+
 class PowerDiagram
 {
 private:
@@ -106,18 +108,20 @@ public:
     std::vector<GraphNode*> pathNodes;
     std::vector<std::vector<GraphNode*> > pathsNodes;
     std::vector<int> vertexMap;
+    Processor *processor;
 
     bool singlePath;
     int startVert, targetVert;
     bool showPath, showPathSkin, showPathSpheres, showPathSkinWF;
     bool showPDSpheres;
 
-    PowerDiagram(DeluanayComplex* delCplx, std::vector <Vertex> &vertlist,
+    PowerDiagram(Processor *processor, DeluanayComplex* delCplx, std::vector <Vertex> &vertlist,
                  double min[], double max[]);
     void alphaUpdated();
     void printGraph();
     void makeDisplayList(bool complementSpacePD, bool onlyInsideVerts, bool pruneIsolatedVerts, bool intersectEdges);
     void makePDSpheresDisplayList(bool complementSpacePD);
+    void makePDSpheresSkinList();
     void render(bool showPowerDiag, bool showPath);
     void drawNodesForPicking();
     int processPick(int cursorX, int cursorY, qglviewer::Camera* camera);

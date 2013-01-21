@@ -183,6 +183,58 @@ void SkinSurface::DrawSolid()
     }
 }
 
+#include "scalarfield.h"
+void SkinSurface::DrawWithField(ScalarField* field)
+{
+    int a,b,c;
+    uint i = 0;
+
+    Color low(1,0,0);
+    Color high(0,0,1);
+
+    for ( i = 1; i < triList.size(); i++)
+    {
+        a = triList[i].Corners[1];
+        b = triList[i].Corners[2];
+        c = triList[i].Corners[3];
+
+        glBegin(GL_TRIANGLES);
+
+            float pt[3];
+            pt[0] = (float) vertList[a].NormCoordinates[1];
+            pt[1] = (float) vertList[a].NormCoordinates[2];
+            pt[2] = (float) vertList[a].NormCoordinates[3];
+            float val = field->getValueBiLinear(pt);
+            Color col = field->getColor2(low, high, val);
+//            col = (val<0)? low : high;
+            glColor3f(col.r, col.g, col.b);
+            glNormal3dv(vertexNormals[a].normals);
+            glVertex3d(vertList[a].NormCoordinates[1],vertList[a].NormCoordinates[2],vertList[a].NormCoordinates[3]);
+
+            pt[0] = (float) vertList[b].NormCoordinates[1];
+            pt[1] = (float) vertList[b].NormCoordinates[2];
+            pt[2] = (float) vertList[b].NormCoordinates[3];
+            val = field->getValueBiLinear(pt);
+            col = field->getColor2(low, high, val);
+//            col = (val<0)? low : high;
+            glColor3f(col.r, col.g, col.b);
+            glNormal3dv(vertexNormals[b].normals);
+            glVertex3d(vertList[b].NormCoordinates[1],vertList[b].NormCoordinates[2],vertList[b].NormCoordinates[3]);
+
+            pt[0] = (float) vertList[c].NormCoordinates[1];
+            pt[1] = (float) vertList[c].NormCoordinates[2];
+            pt[2] = (float) vertList[c].NormCoordinates[3];
+            val = field->getValueBiLinear(pt);
+            col = field->getColor2(low, high, val);
+//            col = (val<0)? low : high;
+            glColor3f(col.r, col.g, col.b);
+            glNormal3dv(vertexNormals[c].normals);
+            glVertex3d(vertList[c].NormCoordinates[1],vertList[c].NormCoordinates[2],vertList[c].NormCoordinates[3]);
+
+        glEnd();
+    }
+}
+
 void SkinSurface::Draw(bool smoothShading,bool skinWireFrame)
 {
 	int a,b,c;

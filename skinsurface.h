@@ -31,6 +31,7 @@
 
 #include <vertex.h>
 #include <triangle.h>
+#include "scalarfield.h"
 
 class VertexNormals
 {
@@ -60,6 +61,7 @@ class SkinSurface
         void Draw(bool smoothShading,bool skinWireFrame);
         void Draw(bool smoothShading,bool skinWireFrame,int pocIndex);
         void DrawSolid();
+        void DrawWithField(ScalarField* field);
 };
 
 #endif

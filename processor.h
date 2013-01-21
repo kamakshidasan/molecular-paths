@@ -36,6 +36,7 @@
 #include <rankmap.h>
 #include <simplexmasterlistmap.h>
 #include <proteinrenderer.h>
+#include <scalarfield.h>
 
 class Processor
 {
@@ -44,14 +45,16 @@ class Processor
         std::vector<Vertex> vertexList;
         std::vector<int> PocketNMouths;
         AlphaComplex *alcx;
-        PowerDiagram* powerDiagram;
-        ProteinRenderer * proteinRenderer;
+        PowerDiagram *powerDiagram;
+        ProteinRenderer *proteinRenderer;
         FileReader *fr;
         Pocket *pocket;
         Mouth *mouth;
         Volume *volume;
         double scale;
         bool isRenderable;
+
+        ScalarField* elecField;
 
         std::vector<SimplexMasterListMap> refinedCandidateTrigs;
         std::vector<SimplexMasterListMap> refinedCandidateTets;

@@ -37,15 +37,22 @@ void Processor::read(const char *filename,double centre[],double *size, bool con
 {
         double min[3], max[3];
         fr->ReadVertices(filename,vertexList,centre,&scale, min, max, constantRadius, incrementRadius);
+
+        elecField = loadField("/home/tbmasood/Downloads/1GRM.dx");
+        std::cout << elecField->dim[0] << " " << elecField->dim[1] << " " << elecField->dim[2] << std::endl;
+        int indices[] = {0,0,0};
+        std::cout << elecField->data[0] << " " << elecField->getValue(indices) << std::endl;
+
         *size = scale;
         //alcx = new AlphaComplex(vertexList,centre,&scale);
         alcx = new AlphaComplex(vertexList);
         alcx->BuildSpectrum();
-        powerDiagram = new PowerDiagram(alcx->delcx, vertexList, min, max);
+        powerDiagram = new PowerDiagram(this, alcx->delcx, vertexList, min, max);
         proteinRenderer = new ProteinRenderer(vertexList);
 //        powerDiagram->printGraph();
         pocket = new Pocket(vertexList,centre,scale,alcx->delcx->DeluanayTrigs.size (),alcx->delcx->DeluanayEdges.size ());
         volume = new Volume(vertexList,vertexList.size(),alcx->delcx->DeluanayTrigs.size(),alcx->delcx->DeluanayEdges.size());
+
         isRenderable = true;
 }
 

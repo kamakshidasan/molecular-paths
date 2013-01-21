@@ -216,9 +216,12 @@ static int getCHullTri(Tetrahedron* t, DeluanayComplex* delCplx){
     return -1;
 }
 
-PowerDiagram::PowerDiagram(DeluanayComplex* delCplx, std::vector<Vertex> &vertlist,
+#include "processor.h"
+
+PowerDiagram::PowerDiagram(Processor* process, DeluanayComplex* delCplx, std::vector<Vertex> &vertlist,
                            double min[], double max[]) : vertList(vertlist)
 {
+    this->processor = process;
     this->delCplx = delCplx;
     for(int i=0;i<3;i++){
         this->min[i] = min[i];
@@ -410,10 +413,12 @@ void PowerDiagram::alphaUpdated(){
     pathNodes.clear();
     pathsNodes.clear();
     constructGraph(true);
+//    makePDSpheresSkinList();
 }
 
-GLuint listID = -1, pdSpheresListID = -1, pathListID = -1, pathSkinListID = -1, pathSpheresListID = -1;
-bool compSpacePD = false;
+static GLuint listID = -1, pdSpheresListID = -1, pathListID = -1, pathSkinListID = -1,
+        pathSpheresListID = -1, pdSkinListID = -1;
+static bool compSpacePD = false;
 
 void PowerDiagram::render(bool showPowerDiag, bool showPath){
     if(showPowerDiag && glIsList(listID) == GL_TRUE){
@@ -439,6 +444,14 @@ void PowerDiagram::render(bool showPowerDiag, bool showPath){
     }
     if(showPDSpheres && glIsList(pdSpheresListID) == GL_TRUE){
         glCallList(pdSpheresListID);
+    }
+    if(showPathSkin && glIsList(pdSkinListID) == GL_TRUE){
+        if(showPathSkinWF){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        glCallList(pdSkinListID);
     }
     if(showPath && glIsList(pathListID) == GL_TRUE){
         glCallList(pathListID);
@@ -591,6 +604,37 @@ void PowerDiagram::makePDSpheresDisplayList(bool complementSpacePD){
         sphereShader.UnUse();
     }
     glDisable(GL_COLOR_MATERIAL);
+    glEndList();
+}
+
+void PowerDiagram::makePDSpheresSkinList(){
+    FILE *fp = fopen("pdskin","w");
+    fprintf(fp,"%d\n",currentGraph.nodes.size());
+    fprintf(fp,"#junk\n");
+    for(int i=0;i<currentGraph.nodes.size();i++){
+        GraphNode curr = currentGraph.nodes.at(i);
+        fprintf(fp,"%d %f %f %f %f\n",i+1,curr.x, curr.y, curr.z,
+                curr.radius); // *sqrt(2)
+    }
+    fclose(fp);
+    system("./smesh pdskin -s pdskin.off -t pskin.tet");
+
+    double center[] = {0,0,0};
+    SkinSurface skin(center, 1, 1);
+    skin.Read("pdskin_lev0.off",0);
+    skin.Process();
+
+    if(glIsList(pdSkinListID) == GL_TRUE){
+        glDeleteLists(pdSkinListID, 1);
+    }
+    pdSkinListID = glGenLists(1);
+    glNewList(pdSkinListID, GL_COMPILE);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColor3d(0.1, 0.2, 0.8);
+    skin.DrawSolid();
+    glDisable(GL_COLOR_MATERIAL);
+
     glEndList();
 }
 
@@ -950,7 +994,7 @@ static void initPathSkinList(std::vector<GraphNode*> *pathNodes){
     for(int i=0;i<pathNodes->size();i++){
         GraphNode* curr = pathNodes->at(i);
         fprintf(fp,"%d %f %f %f %f\n",i+1,curr->x, curr->y, curr->z,
-                curr->radius);
+                curr->radius); // *sqrt(2)
     }
     fclose(fp);
     system("./smesh pathskin -s pskin.off -t pskin.tet");
@@ -974,8 +1018,40 @@ static void initPathSkinList(std::vector<GraphNode*> *pathNodes){
     glEndList();
 }
 
+static void initPathFieldSkinList(std::vector<GraphNode*> *pathNodes, ScalarField* field){
+    FILE *fp = fopen("pathskin","w");
+    fprintf(fp,"%d\n",pathNodes->size());
+    fprintf(fp,"#junk\n");
+    for(int i=0;i<pathNodes->size();i++){
+        GraphNode* curr = pathNodes->at(i);
+        fprintf(fp,"%d %f %f %f %f\n",i+1,curr->x, curr->y, curr->z,
+                curr->radius); // *sqrt(2)
+    }
+    fclose(fp);
+    system("./smesh pathskin -s pskin.off -t pskin.tet");
+
+    double center[] = {0,0,0};
+    SkinSurface skin(center, 1, 1);
+    skin.Read("pskin_lev0.off",0);
+    skin.Process();
+
+    if(glIsList(pathSkinListID) == GL_TRUE){
+        glDeleteLists(pathSkinListID, 1);
+    }
+    pathSkinListID = glGenLists(1);
+    glNewList(pathSkinListID, GL_COMPILE);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColor3d(0,0.7,0);
+//    skin.DrawSolid();
+    skin.DrawWithField(field);
+    glDisable(GL_COLOR_MATERIAL);
+
+    glEndList();
+}
+
 #include<set>
-static void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *pathsNodes){
+static void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *pathsNodes, ScalarField* field){
     std::vector<GraphNode*> pathNodes;
     std::set<int> unique;
 
@@ -991,7 +1067,8 @@ static void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *path
     }
 
     // make path skin display list
-    initPathSkinList(&pathNodes);
+    // initPathSkinList(&pathNodes);
+    initPathFieldSkinList(&pathNodes, field);
     // make spheres display list
     makePathSpheresDisplayList(&pathNodes);
 }
@@ -1029,7 +1106,7 @@ bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
 
         glEndList();
 
-        initPathSkinList(&pathNodes);
+        initPathFieldSkinList(&pathNodes, processor->elecField);
         makePathSpheresDisplayList(&pathNodes);
         singlePath = true;
 
@@ -1117,7 +1194,7 @@ int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
         glEndList();
 
         if(repeated){
-            initMultiplePathSkinList(&pathsNodes);
+            initMultiplePathSkinList(&pathsNodes, processor->elecField);
         }else if(glIsList(pathSkinListID) == GL_TRUE){
             glDeleteLists(pathSkinListID, 1);
         }
@@ -1162,7 +1239,7 @@ bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y
 
         glEndList();
 
-        initPathSkinList(&pathNodes);
+        initPathFieldSkinList(&pathNodes, processor->elecField);
         makePathSpheresDisplayList(&pathNodes);
         singlePath = true;
     }

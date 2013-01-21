@@ -1773,7 +1773,8 @@ void AlphaComplex::WritePersistence()
                         }
                         else
                         {
-                            fprintf(fp,"Rank = %d Dimension = %d, Positive = %d, Negative = %d, Repeats = %d, Persistence = %d, AlphaPersistence = %lf\n",r,2,mlix,delcx->DeluanayTrigs[mlNode->ix].Entry,delcx->DeluanayTrigs[mlNode->ix].MainRepeats,delcx->DeluanayTrigs[mlNode->ix].Persistence,delcx->DeluanayTrigs[mlNode->ix].AlphaPersistence);
+                            fprintf(fp,"Rank = %d Dimension = %d, Positive = %d, Negative = %d, Repeats = %d, Persistence = %d, AlphaPersistence = %lf\n",
+                                    r,2,mlix,delcx->DeluanayTrigs[mlNode->ix].Entry,delcx->DeluanayTrigs[mlNode->ix].MainRepeats,delcx->DeluanayTrigs[mlNode->ix].Persistence,delcx->DeluanayTrigs[mlNode->ix].AlphaPersistence);
                         }
                     }
                 }
