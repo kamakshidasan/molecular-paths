@@ -27,7 +27,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabWidgetPage2">
        <attribute name="title">
@@ -766,19 +766,32 @@
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QCustomPlot" name="graphWidget" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QTabWidget" name="graphTab">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>200</height>
-          </size>
-         </property>
+         <widget class="QCustomPlot" name="radiusGraph">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <attribute name="title">
+           <string>Orthosphere radius (Å)</string>
+          </attribute>
+         </widget>
+         <widget class="QCustomPlot" name="elecFieldGraph">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>220</height>
+           </size>
+          </property>
+          <attribute name="title">
+           <string>Electric field</string>
+          </attribute>
+         </widget>
         </widget>
        </widget>
       </item>

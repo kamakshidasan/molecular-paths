@@ -144,8 +144,10 @@ MainWindow::MainWindow(Processor *pr,QWidget *parent) :
     m_viewer1->targetLabel = ui->targetIndexLabel;
 
     // give the axes some labels:
-    ui->graphWidget->xAxis->setLabel("Distance from Source");
-    ui->graphWidget->yAxis->setLabel("Ortho-Sphere radius");
+    ui->radiusGraph->xAxis->setLabel(QString("Distance from Source (Angstrom)"));
+    ui->radiusGraph->yAxis->setLabel("Ortho-Sphere radius (Angstrom)");
+    ui->elecFieldGraph->xAxis->setLabel("Distance from Source (Angstrom)");
+    ui->elecFieldGraph->yAxis->setLabel("Electro-static Potential (kT/e)");
 }
 
 MainWindow::~MainWindow()
@@ -408,45 +410,65 @@ void MainWindow::onCheckCHullNorm()
 }
 
 void MainWindow::onSTPathClick(){
-    QVector<double> X(100), Y(100);
-    double length, minY, maxY;
-    bool found = m_processor->powerDiagram->findShortestPath(&X, &Y, &length, &minY, &maxY);
+    QVector<double> X(100), Y(100), Y2(100);
+    double length, minY, maxY, minY2, maxY2;
+    bool found = m_processor->powerDiagram->findShortestPath(&X, &Y, &Y2, &length, &minY, &maxY, &minY2, &maxY2);
     if(!found){
         return;
     }
 
-    int numGraphs = ui->graphWidget->graphCount();
+    int numGraphs = ui->radiusGraph->graphCount();
     for(int i=0;i<numGraphs;i++){
-        ui->graphWidget->removeGraph(0);
+        ui->radiusGraph->removeGraph(0);
     }
-    ui->graphWidget->addGraph();
-    ui->graphWidget->graph(0)->setData(X, Y);
+    ui->radiusGraph->addGraph();
+    ui->radiusGraph->graph(0)->setData(X, Y);
     // set axes ranges, so we see all data:
-    ui->graphWidget->xAxis->setRange(0, length);
-    ui->graphWidget->yAxis->setRange(minY<0?minY:0, maxY);
-    ui->graphWidget->replot();
+    ui->radiusGraph->xAxis->setRange(0, length);
+    ui->radiusGraph->yAxis->setRange(minY<0?minY:0, maxY);
+    ui->radiusGraph->replot();
+
+    numGraphs = ui->elecFieldGraph->graphCount();
+    for(int i=0;i<numGraphs;i++){
+        ui->elecFieldGraph->removeGraph(0);
+    }
+    ui->elecFieldGraph->addGraph();
+    ui->elecFieldGraph->graph(0)->setData(X, Y2);
+    ui->elecFieldGraph->xAxis->setRange(0, length);
+    ui->elecFieldGraph->yAxis->setRange(minY2<0?minY2:0, maxY2);
+    ui->elecFieldGraph->replot();
 
     m_viewer1->updateGL();
 }
 
 void MainWindow::onShortestEscapePathClick(){
-    QVector<double> X(100), Y(100);
-    double length, minY, maxY;
-    bool found = m_processor->powerDiagram->findShortestEscapePath(&X, &Y, &length, &minY, &maxY);
+    QVector<double> X(100), Y(100), Y2(100);
+    double length, minY, maxY, minY2, maxY2;
+    bool found = m_processor->powerDiagram->findShortestEscapePath(&X, &Y, &Y2, &length, &minY, &maxY, &minY2, &maxY2);
     if(!found){
         return;
     }
 
-    int numGraphs = ui->graphWidget->graphCount();
+    int numGraphs = ui->radiusGraph->graphCount();
     for(int i=0;i<numGraphs;i++){
-        ui->graphWidget->removeGraph(0);
+        ui->radiusGraph->removeGraph(0);
     }
-    ui->graphWidget->addGraph();
-    ui->graphWidget->graph(0)->setData(X, Y);
+    ui->radiusGraph->addGraph();
+    ui->radiusGraph->graph(0)->setData(X, Y);
     // set axes ranges, so we see all data:
-    ui->graphWidget->xAxis->setRange(0, length);
-    ui->graphWidget->yAxis->setRange(minY<0?minY:0, maxY);
-    ui->graphWidget->replot();
+    ui->radiusGraph->xAxis->setRange(0, length);
+    ui->radiusGraph->yAxis->setRange(minY<0?minY:0, maxY);
+    ui->radiusGraph->replot();
+
+    numGraphs = ui->elecFieldGraph->graphCount();
+    for(int i=0;i<numGraphs;i++){
+        ui->elecFieldGraph->removeGraph(0);
+    }
+    ui->elecFieldGraph->addGraph();
+    ui->elecFieldGraph->graph(0)->setData(X, Y2);
+    ui->elecFieldGraph->xAxis->setRange(0, length);
+    ui->elecFieldGraph->yAxis->setRange(minY2<0?minY2:0, maxY2);
+    ui->elecFieldGraph->replot();
 
     m_viewer1->updateGL();
 }
@@ -461,24 +483,24 @@ void MainWindow::onEscapePathClickAll(){
 }
 
 void MainWindow::onEscapePathClick(bool repeated, int maxIter){
-    std::vector<QVector<double> > Xs, Ys;
-    std::vector<double> lengths, minYs, maxYs;
+    std::vector<QVector<double> > Xs, Ys, Y2s;
+    std::vector<double> lengths, minYs, maxYs, minY2s, maxY2s;
     int shortest = m_processor->powerDiagram->
-            findShortestEscapePaths(100, repeated, maxIter, &Xs, &Ys, &lengths, &minYs, &maxYs);
+            findShortestEscapePaths(100, repeated, maxIter, &Xs, &Ys, &Y2s, &lengths, &minYs, &minY2s, &maxYs, &maxY2s);
     if(shortest==-1){
         return;
     }
-    int numGraphs = ui->graphWidget->graphCount();
+    int numGraphs = ui->radiusGraph->graphCount();
     for(int i=0;i<numGraphs;i++){
-        ui->graphWidget->removeGraph(0);
+        ui->radiusGraph->removeGraph(0);
     }
     if(!Xs.empty()){
         double maxLength = lengths[0];
         double maxY = maxYs[0];
         double minY = minYs[0];
         for(int i=0;i<Xs.size();i++){
-            ui->graphWidget->addGraph();
-            ui->graphWidget->graph(i)->setData(Xs[i], Ys[i]);
+            ui->radiusGraph->addGraph();
+            ui->radiusGraph->graph(i)->setData(Xs[i], Ys[i]);
             if(maxLength<lengths[i]){
                 maxLength = lengths[i];
             }
@@ -489,14 +511,44 @@ void MainWindow::onEscapePathClick(bool repeated, int maxIter){
                 minY = minYs[i];
             }
             if(i==shortest){
-                ui->graphWidget->graph(i)->setPen(QPen(Qt::red));
+                ui->radiusGraph->graph(i)->setPen(QPen(Qt::red));
             }
         }
         // set axes ranges, so we see all data:
-        ui->graphWidget->xAxis->setRange(0, maxLength);
-        ui->graphWidget->yAxis->setRange(minY<0 ? minY : 0, maxY);
+        ui->radiusGraph->xAxis->setRange(0, maxLength);
+        ui->radiusGraph->yAxis->setRange(minY<0 ? minY : 0, maxY);
     }
-    ui->graphWidget->replot();
+    ui->radiusGraph->replot();
+
+    numGraphs = ui->elecFieldGraph->graphCount();
+    for(int i=0;i<numGraphs;i++){
+        ui->elecFieldGraph->removeGraph(0);
+    }
+    if(!Xs.empty()){
+        double maxLength = lengths[0];
+        double maxY = maxY2s[0];
+        double minY = minY2s[0];
+        for(int i=0;i<Xs.size();i++){
+            ui->elecFieldGraph->addGraph();
+            ui->elecFieldGraph->graph(i)->setData(Xs[i], Y2s[i]);
+            if(maxLength<lengths[i]){
+                maxLength = lengths[i];
+            }
+            if(maxY<maxY2s[i]){
+                maxY = maxY2s[i];
+            }
+            if(minY>minY2s[i]){
+                minY = minY2s[i];
+            }
+            if(i==shortest){
+                ui->elecFieldGraph->graph(i)->setPen(QPen(Qt::red));
+            }
+        }
+        // set axes ranges, so we see all data:
+        ui->elecFieldGraph->xAxis->setRange(0, maxLength);
+        ui->elecFieldGraph->yAxis->setRange(minY<0 ? minY : 0, maxY);
+    }
+    ui->elecFieldGraph->replot();
 
     m_viewer1->updateGL();
 }

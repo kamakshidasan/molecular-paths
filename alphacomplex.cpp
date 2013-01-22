@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "alphacomplex.h"
+#include "processor.h"
 
 #define Switch(i, j) { int tmp; tmp = i; i = j; j = tmp; }
 
@@ -103,7 +104,7 @@ static int myMin(int a, int b)
 /*!
     \fn AlphaComplex::AlphaComplex(std::vector <Vertex> &vertlist)
  */
-AlphaComplex::AlphaComplex(std::vector <Vertex> &vertlist)
+AlphaComplex::AlphaComplex(Processor* process, std::vector <Vertex> &vertlist) : processor(process)
 {
     double center[3] = {0.0,0.0,0.0};
     this->vertexList = vertlist;
@@ -2058,7 +2059,18 @@ void AlphaComplex::RenderUnModified (int rank, bool al, bool wf, bool skin, bool
             }
             currentRank = rank;
         }
-        alphaSkin->Draw(ss,swf);
+//        alphaSkin->Draw(ss,swf);
+        glEnable(GL_COLOR_MATERIAL);
+        if(swf){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        alphaSkin->DrawWithField(processor->elecField);
+        if(swf){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        glDisable(GL_COLOR_MATERIAL);
     }
 }
 
@@ -2243,7 +2255,18 @@ void AlphaComplex::RenderModified (int rank, bool al, bool wf, bool skin, bool s
             }
             currentRank = rank;
         }
-        alphaSkin->Draw(ss,swf);
+//        alphaSkin->Draw(ss,swf);
+        glEnable(GL_COLOR_MATERIAL);
+        if(swf){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        alphaSkin->DrawWithField(processor->elecField);
+        if(swf){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        glDisable(GL_COLOR_MATERIAL);
     }
 }
 

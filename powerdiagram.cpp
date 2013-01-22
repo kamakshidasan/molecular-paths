@@ -1073,8 +1073,8 @@ static void initMultiplePathSkinList(std::vector<std::vector<GraphNode*> > *path
     makePathSpheresDisplayList(&pathNodes);
 }
 
-bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
-                                    double * length, double *minY, double *maxY){
+bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y, QVector<double>* Y2,
+                                    double * length, double *minY, double *maxY, double *minY2, double *maxY2){
     if(startVert<0 || targetVert<0)
         return false;
     int start = vertexMap[startVert];
@@ -1083,7 +1083,7 @@ bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
     double cost = currentGraph.runDijkstra(start, target, &pathNodes, &pathEdges);
     std::cout << cost << std::endl;
     if(!pathNodes.empty()){
-        getPathWeights(&pathNodes, &pathEdges, X, Y, length, minY, maxY);
+        getPathWeights(&pathNodes, &pathEdges, X, Y, Y2, length, minY, maxY, minY2, maxY2);
 
         if(glIsList(pathListID) == GL_TRUE){
             glDeleteLists(pathListID, 1);
@@ -1118,8 +1118,9 @@ bool PowerDiagram::findShortestPath(QVector<double>* X, QVector<double>* Y,
 
 int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
                                     std::vector<QVector<double> >* Xs, std::vector<QVector<double> >* Ys,
-                                    std::vector<double> * lengths, std::vector<double> *minYs,
-                                    std::vector<double> *maxYs){
+                                    std::vector<QVector<double> >* Y2s, std::vector<double> * lengths,
+                                    std::vector<double> *minYs, std::vector<double> *minY2s,
+                                    std::vector<double> *maxYs, std::vector<double> *maxY2s){
     if(startVert<0)
         return false;
     int start = vertexMap[startVert];
@@ -1149,12 +1150,15 @@ int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
     }
 
     for(int k=0;k < pathsNodes.size();k++){
-        QVector<double> X(steps), Y(steps);
+        QVector<double> X(steps), Y(steps), Y2(steps);
         Xs->push_back(X);
         Ys->push_back(Y);
+        Y2s->push_back(Y2);
         lengths->push_back(0);
         minYs->push_back(0);
         maxYs->push_back(0);
+        minY2s->push_back(0);
+        maxY2s->push_back(0);
     }
     if(!pathsNodes.empty()){
 
@@ -1182,8 +1186,8 @@ int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
                 }
                 drawPath(&pathNodes, &pathEdges, quad, true);
             }
-            getPathWeights(&pathNodes, &pathEdges, &(Xs->at(k)), &(Ys->at(k)), &(lengths->at(k)),
-                           &(minYs->at(k)), &(maxYs->at(k)));
+            getPathWeights(&pathNodes, &pathEdges, &(Xs->at(k)), &(Ys->at(k)), &(Y2s->at(k)), &(lengths->at(k)),
+                           &(minYs->at(k)), &(maxYs->at(k)), &(minY2s->at(k)), &(maxY2s->at(k)));
         }
 
         glLineWidth(1);
@@ -1203,8 +1207,8 @@ int PowerDiagram::findShortestEscapePaths(int steps, bool repeated, int maxIter,
     return shortest;
 }
 
-bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y,
-                                          double * length, double *minY, double *maxY){
+bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y, QVector<double>* Y2,
+                                          double * length, double *minY, double *maxY,  double *minY2, double *maxY2){
     if(startVert<0)
         return false;
     int start = vertexMap[startVert];
@@ -1212,7 +1216,7 @@ bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y
     std::vector<GraphEdge*> pathEdges;
     bool pathFound = currentGraph.runDijkstraEscape(start, &pathNodes, &pathEdges);
     if(pathFound && !pathNodes.empty()){
-        getPathWeights(&pathNodes, &pathEdges, X, Y, length, minY, maxY);
+        getPathWeights(&pathNodes, &pathEdges, X, Y, Y2, length, minY, maxY, minY2, maxY2);
 
         GLUquadric* quad = gluNewQuadric();
         gluQuadricNormals(quad, GLU_SMOOTH);
@@ -1247,7 +1251,8 @@ bool PowerDiagram::findShortestEscapePath(QVector<double>* X, QVector<double>* Y
 }
 
 void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
-                            QVector<double>* X, QVector<double>* Y, double *length, double *minY, double *maxY)
+                            QVector<double>* X, QVector<double>* Y, QVector<double>* Y2,
+                            double *length, double *minY, double *maxY, double *minY2, double *maxY2)
 {
     int steps = X->size();
     double totalLength = 0;
@@ -1299,14 +1304,24 @@ void PowerDiagram::getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vect
             pd1 = dsq - (t1.Radius*t1.Radius);
             pd1 = (pd1<=0) ? 0 : sqrt(pd1);
 
+            float point[3];
+            point[0] = (float) pt.X;
+            point[1] = (float) pt.Y;
+            point[2] = (float) pt.Z;
+            float val = processor->elecField->getValueBiLinear(point);
+
             if(index == 0){
                 *minY = *maxY = pd1;
+                *minY2 = *maxY2 = val;
             } else {
                 *minY = (*minY < pd1)? *minY : pd1;
                 *maxY = (*maxY > pd1)? *maxY : pd1;
+                *minY2 = (*minY2 < val)? *minY2 : val;
+                *maxY2 = (*maxY2 > val)? *maxY2 : val;
             }
             (*X)[index] = index * stepSize;
             (*Y)[index] = pd1;
+            (*Y2)[index] = val;
             index++;
             curr+=stepSize;
         }

@@ -28,6 +28,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <qcustomplot.h>
 
 namespace Ui
 {
@@ -104,6 +105,7 @@ class MainWindow : public QMainWindow
         PocketViewer * m_viewer1;
         PocketViewer * m_viewer2;
         Processor *m_processor;
+        QCustomPlot *graphWidget;
 };
 
 #endif // MAINWINDOW_H

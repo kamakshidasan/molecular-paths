@@ -72,6 +72,7 @@ class AlphaComplex
         double Epsilon;
         int LowRank;
         bool isFiltrationModified;
+        Processor* processor;
 
 
         int MaxRank(int s, int r);
@@ -138,7 +139,7 @@ class AlphaComplex
         DeluanayComplex *delcx;
         Size *size;
 
-        AlphaComplex(std::vector <Vertex> &vertlist);
+        AlphaComplex(Processor* process, std::vector <Vertex> &vertlist);
         AlphaComplex(std::vector <Vertex> &vertlist,double center[],double * scale);
         ~AlphaComplex();
 

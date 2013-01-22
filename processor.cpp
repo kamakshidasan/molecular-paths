@@ -45,7 +45,7 @@ void Processor::read(const char *filename,double centre[],double *size, bool con
 
         *size = scale;
         //alcx = new AlphaComplex(vertexList,centre,&scale);
-        alcx = new AlphaComplex(vertexList);
+        alcx = new AlphaComplex(this, vertexList);
         alcx->BuildSpectrum();
         powerDiagram = new PowerDiagram(this, alcx->delcx, vertexList, min, max);
         proteinRenderer = new ProteinRenderer(vertexList);

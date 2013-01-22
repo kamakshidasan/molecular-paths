@@ -131,16 +131,18 @@ public:
     void constructGraph(bool considerAlpha);
     void writeGraph(bool considerAlpha, const char* filename);
     void savePathCRD(const char* filename);
-    bool findShortestPath(QVector<double>* X, QVector<double>* Y,
-                          double * length, double *minY, double *maxY);
-    int findShortestEscapePaths(int steps, bool repeated, int maxIter, std::vector<QVector<double> >* Xs,
-                                 std::vector<QVector<double> >* Ys,
-                                 std::vector<double> * lengths, std::vector<double> *minYs,
-                                 std::vector<double> *maxYs);
-    bool findShortestEscapePath(QVector<double>* X, QVector<double>* Y,
-                                 double * length, double *minY, double *maxY);
+    bool findShortestPath(QVector<double>* X, QVector<double>* Y, QVector<double>* Y2,
+                          double * length, double *minY, double *maxY, double *minY2, double *maxY2);
+    int findShortestEscapePaths(int steps, bool repeated, int maxIter,
+                                std::vector<QVector<double> >* Xs, std::vector<QVector<double> >* Ys,
+                                std::vector<QVector<double> >* Y2s, std::vector<double> * lengths,
+                                std::vector<double> *minYs, std::vector<double> *minY2s,
+                                std::vector<double> *maxYs, std::vector<double> *maxY2s);
+    bool findShortestEscapePath(QVector<double>* X, QVector<double>* Y, QVector<double>* Y2,
+                                double * length, double *minY, double *maxY,  double *minY2, double *maxY2);
     void getPathWeights(std::vector<GraphNode*> *pathNodes,  std::vector<GraphEdge*> *pathEdges,
-                        QVector<double>* X, QVector<double>* Y, double * length, double *minY, double *maxY);
+                        QVector<double>* X, QVector<double>* Y, QVector<double>* Y2,
+                        double *length, double *minY, double *maxY, double *minY2, double *maxY2);
     ~PowerDiagram();
 };
 
