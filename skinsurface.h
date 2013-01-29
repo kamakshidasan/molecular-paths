@@ -57,6 +57,7 @@ class SkinSurface
         SkinSurface(double center[],double scale,int alpha_poc);
         void InitMaterial(int i);
         void Read(const char* vfname,int count);
+        void ReadWrite(const char* vfname, const char* outFileName, ScalarField* field, int count);
         void Process();
         void Draw(bool smoothShading,bool skinWireFrame);
         void Draw(bool smoothShading,bool skinWireFrame,int pocIndex);

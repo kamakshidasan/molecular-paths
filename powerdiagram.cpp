@@ -365,6 +365,8 @@ PowerDiagram::PowerDiagram(Processor* process, DeluanayComplex* delCplx, std::ve
     showPathSpheres = false;
     showPDSpheres = false;
 
+    makePDSpheresSkinList(process->elecField);
+
 /*
     for(int i=0;i<edges.size();i++){
         PowerEdge edge = edges[i];
@@ -607,7 +609,7 @@ void PowerDiagram::makePDSpheresDisplayList(bool complementSpacePD){
     glEndList();
 }
 
-void PowerDiagram::makePDSpheresSkinList(){
+void PowerDiagram::makePDSpheresSkinList(ScalarField* field){
     FILE *fp = fopen("pdskin","w");
     fprintf(fp,"%d\n",currentGraph.nodes.size());
     fprintf(fp,"#junk\n");
@@ -622,6 +624,7 @@ void PowerDiagram::makePDSpheresSkinList(){
     double center[] = {0,0,0};
     SkinSurface skin(center, 1, 1);
     skin.Read("pdskin_lev0.off",0);
+    skin.ReadWrite("pdskin_lev0.off", "pdSkinField", field, 0);
     skin.Process();
 
     if(glIsList(pdSkinListID) == GL_TRUE){
@@ -632,7 +635,7 @@ void PowerDiagram::makePDSpheresSkinList(){
 
     glEnable(GL_COLOR_MATERIAL);
     glColor3d(0.1, 0.2, 0.8);
-    skin.DrawSolid();
+    skin.DrawWithField(field);
     glDisable(GL_COLOR_MATERIAL);
 
     glEndList();
@@ -1032,7 +1035,7 @@ static void initPathFieldSkinList(std::vector<GraphNode*> *pathNodes, ScalarFiel
 
     double center[] = {0,0,0};
     SkinSurface skin(center, 1, 1);
-    skin.Read("pskin_lev0.off",0);
+    skin.ReadWrite("pskin_lev0.off", "pskinField.off", field, 0);
     skin.Process();
 
     if(glIsList(pathSkinListID) == GL_TRUE){

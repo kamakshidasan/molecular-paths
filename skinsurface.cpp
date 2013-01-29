@@ -157,6 +157,100 @@ void SkinSurface::Read(const char* vfname,int count)
 	fclose(fp);
 }
 
+void SkinSurface::ReadWrite(const char* vfname, const char* outFileName, ScalarField* field, int count)
+{
+    FILE* fp = fopen(vfname, "r");
+    FILE* outFile = fopen(outFileName, "w");
+    assert(fp);
+    char waste[4];
+    int n1 = 0,n2 = 0, i = 0,j;
+    unsigned int t[3] = {0,0,0};
+    double v[3] = {0,0,0};
+    double b = 0;
+    int vsize;
+    int tsize;
+    std::vector<int> temp;
+    temp.clear();
+
+    if(count == 0)
+    {
+        triList.clear();
+        vertList.clear();
+        verTrimap.clear();
+        Triangle tri(t);
+        triList.push_back(tri);
+                vertexNormals.clear();
+        vsize = 0;
+        tsize = 0;
+    }
+    else
+    {
+        vsize = vertList.size();
+        tsize = triList.size()-1;
+    }
+
+    fscanf(fp, "%s",waste);
+    fscanf(fp, "%d %d %d",&n1,&n2,&j);
+
+    fprintf(outFile, "OFF\n");
+    fprintf(outFile, "%d %d %d\n", n1, n2, j);
+
+    for(i = 0; i < n1; i++)
+    {
+        fscanf(fp, "%lf %lf %lf", v, v+1, v+2);
+        Vertex vert(v[0],v[1],v[2],b,-1,0.0);
+        vertList.push_back(vert);
+
+        float pt[3];
+        pt[0] = (float) v[0];
+        pt[1] = (float) v[1];
+        pt[2] = (float) v[2];
+        float val = field->getValueBiLinear(pt);
+        val = (val>2) ? 2:val;
+        val = (val<-2) ? -2:val;
+
+        fprintf(outFile, "%lf %lf %lf %f\n", v[0], v[1], v[2], val);
+    }
+
+        // translate around center then scale
+        /*if(AlphaOrPocket == 0)
+        {
+            for (i = 0; i < vertList.size(); i++)
+            {
+                    vertList[i].NormCoordinates[1] -= scenter[0];
+                    vertList[i].NormCoordinates[2] -= scenter[1];
+                    vertList[i].NormCoordinates[3] -= scenter[2];
+                    vertList[i].NormCoordinates[1] *= sscale;
+                    vertList[i].NormCoordinates[2] *= sscale;
+                    vertList[i].NormCoordinates[3] *= sscale;
+            }
+        }*/
+
+    for(i = 0; i < n1; i++)
+    {
+        verTrimap.push_back(temp);
+    }
+
+    for(i = 1; i <= n2; i++)
+    {
+        fscanf(fp, "%d %d %d %d",&j, t, t+1, t+2);
+        t[0] += vsize;
+        t[1] += vsize;
+        t[2] += vsize;
+        verTrimap[t[0]].push_back(tsize+i);
+        verTrimap[t[1]].push_back(tsize+i);
+        verTrimap[t[2]].push_back(tsize+i);
+        Triangle tri(t);
+                tri.PocIndex = count;
+        triList.push_back(tri);
+
+        fprintf(outFile, "%d %d %d %d\n", j, t[0], t[1], t[2]);
+    }
+
+    fclose(fp);
+    fclose(outFile);
+}
+
 void SkinSurface::DrawSolid()
 {
     int a,b,c;

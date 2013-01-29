@@ -778,7 +778,7 @@
            </size>
           </property>
           <attribute name="title">
-           <string>Orthosphere radius (Å)</string>
+           <string>Orthosphere radius</string>
           </attribute>
          </widget>
          <widget class="QCustomPlot" name="elecFieldGraph">

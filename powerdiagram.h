@@ -92,6 +92,7 @@ public:
 };
 
 class Processor;
+class ScalarField;
 
 class PowerDiagram
 {
@@ -121,7 +122,7 @@ public:
     void printGraph();
     void makeDisplayList(bool complementSpacePD, bool onlyInsideVerts, bool pruneIsolatedVerts, bool intersectEdges);
     void makePDSpheresDisplayList(bool complementSpacePD);
-    void makePDSpheresSkinList();
+    void makePDSpheresSkinList(ScalarField* field);
     void render(bool showPowerDiag, bool showPath);
     void drawNodesForPicking();
     int processPick(int cursorX, int cursorY, qglviewer::Camera* camera);
