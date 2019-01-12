@@ -5,9 +5,11 @@ QT += opengl \
     xml
 INCLUDEPATH *= /usr/include/QGLViewer
 LIBS *= -L/usr/lib \
-    -lqglviewer-qt4 \
+    -lQGLViewer \
     -lgmp \
-    -lGLEW
+    -lGLEW \
+    -lGLU \
+    -lglut
 TARGET = PocketViewer
 TEMPLATE = app
 SOURCES += main.cpp \
